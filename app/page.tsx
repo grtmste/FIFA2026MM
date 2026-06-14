@@ -3,18 +3,30 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { calcMatchPoints } from "@/lib/scoring";
-import { Participant, Match, Prediction, BonusAnswer } from "@/lib/types";
+import { Participant, Match, Prediction, BonusAnswer, Stage } from "@/lib/types";
+
+const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
+
+const STAGE_TABLE_LABELS: Record<Stage, string> = {
+  group: "Alagrupi mängud",
+  r32: "1/16 finaali mängud",
+  r16: "1/8 finaali mängud",
+  qf: "Veerandfinaali mängud",
+  sf: "Poolfinaali mängud",
+  final: "Finaalmäng",
+};
 
 interface Row {
   id: string;
   name: string;
-  matchPoints: number;
+  stagePoints: Record<Stage, number>;
   bonusPoints: number;
   total: number;
 }
 
 export default function LeaderboardPage() {
   const [rows, setRows] = useState<Row[]>([]);
+  const [stages, setStages] = useState<Stage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,26 +52,43 @@ export default function LeaderboardPage() {
         (matches ?? []).map((m: Match) => [m.id, m])
       );
 
+      const stagesWithMatches = STAGE_ORDER.filter((stage) =>
+        ((matches ?? []) as Match[]).some((m) => m.stage === stage)
+      );
+
       const computedRows: Row[] = ((participants ?? []) as Participant[]).map(
         (p) => {
-          const matchPoints = ((predictions ?? []) as Prediction[])
+          const stagePoints: Record<Stage, number> = {
+            group: 0,
+            r32: 0,
+            r16: 0,
+            qf: 0,
+            sf: 0,
+            final: 0,
+          };
+
+          ((predictions ?? []) as Prediction[])
             .filter((pred) => pred.participant_id === p.id)
-            .reduce((sum, pred) => {
+            .forEach((pred) => {
               const match = matchById.get(pred.match_id);
-              if (!match) return sum;
-              return sum + calcMatchPoints(pred, match);
-            }, 0);
+              if (!match) return;
+              stagePoints[match.stage] += calcMatchPoints(pred, match);
+            });
 
           const bonusPoints = ((bonusAnswers ?? []) as BonusAnswer[])
             .filter((ans) => ans.participant_id === p.id)
             .reduce((sum, ans) => sum + (ans.points_awarded ?? 0), 0);
 
+          const total =
+            STAGE_ORDER.reduce((sum, stage) => sum + stagePoints[stage], 0) +
+            bonusPoints;
+
           return {
             id: p.id,
             name: p.name,
-            matchPoints,
+            stagePoints,
             bonusPoints,
-            total: matchPoints + bonusPoints,
+            total,
           };
         }
       );
@@ -69,6 +98,7 @@ export default function LeaderboardPage() {
       );
 
       setRows(computedRows);
+      setStages(stagesWithMatches);
       setError(null);
     } catch (err) {
       console.error(err);
@@ -113,38 +143,61 @@ export default function LeaderboardPage() {
       )}
 
       {!loading && !error && rows.length > 0 && (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-slate-50 text-left text-xs uppercase text-slate-500">
-                <th className="px-2 py-2 text-center">#</th>
-                <th className="px-2 py-2">Nimi</th>
-                <th className="px-2 py-2 text-center">Mäng</th>
-                <th className="px-2 py-2 text-center">Boonus</th>
-                <th className="px-2 py-2 text-center">Kokku</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, idx) => (
-                <tr
-                  key={row.id}
-                  className={`border-t border-slate-100 ${
-                    idx === 0 ? "bg-amber-50" : ""
-                  }`}
-                >
-                  <td className="px-2 py-2 text-center font-semibold text-navy">
-                    {idx + 1}
-                  </td>
-                  <td className="px-2 py-2 font-medium text-navy">{row.name}</td>
-                  <td className="px-2 py-2 text-center text-slate-600">{row.matchPoints}</td>
-                  <td className="px-2 py-2 text-center text-slate-600">{row.bonusPoints}</td>
-                  <td className="px-2 py-2 text-center font-bold text-gold">
-                    {row.total}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-4">
+          {(stages.length > 0 ? stages : (["group"] as Stage[])).map((stage, idx) => {
+            const isLast = idx === (stages.length > 0 ? stages.length : 1) - 1;
+
+            return (
+              <div
+                key={stage}
+                className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+              >
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+                      <th className="px-2 py-2 text-center">#</th>
+                      <th className="px-2 py-2">Nimi</th>
+                      <th className="px-2 py-2 text-center">{STAGE_TABLE_LABELS[stage]}</th>
+                      {isLast && (
+                        <>
+                          <th className="px-2 py-2 text-center">Boonus</th>
+                          <th className="px-2 py-2 text-center">Kokku</th>
+                        </>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((row, rowIdx) => (
+                      <tr
+                        key={row.id}
+                        className={`border-t border-slate-100 ${
+                          rowIdx === 0 ? "bg-amber-50" : ""
+                        }`}
+                      >
+                        <td className="px-2 py-2 text-center font-semibold text-navy">
+                          {rowIdx + 1}
+                        </td>
+                        <td className="px-2 py-2 font-medium text-navy">{row.name}</td>
+                        <td className="px-2 py-2 text-center text-slate-600">
+                          {row.stagePoints[stage]}
+                        </td>
+                        {isLast && (
+                          <>
+                            <td className="px-2 py-2 text-center text-slate-600">
+                              {row.bonusPoints}
+                            </td>
+                            <td className="px-2 py-2 text-center font-bold text-gold">
+                              {row.total}
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
