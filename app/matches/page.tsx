@@ -1,13 +1,14 @@
 import { supabase } from "@/lib/supabase";
 import { Match, Stage, STAGE_LABELS } from "@/lib/types";
 import MatchCard from "@/components/MatchCard";
+import { groupColor } from "@/lib/groupColors";
 
 export const revalidate = 0;
 
 const KNOCKOUT_ORDER: Stage[] = ["r32", "r16", "qf", "sf", "final"];
 
 export default async function MatchesPage() {
-  const { data: matches } = await supabase
+  const { data: matches, error } = await supabase
     .from("matches")
     .select("*")
     .order("id", { ascending: true });
@@ -23,13 +24,23 @@ export default async function MatchesPage() {
     <div className="space-y-6">
       <h2 className="text-xl font-bold text-gold">Mängud</h2>
 
+      {(error || allMatches.length === 0) && (
+        <p className="text-sm text-red-400">
+          Mänge ei leitud. Kontrolli, et Supabase on seadistatud ja
+          scripts/seed.sql on käivitatud.
+        </p>
+      )}
+
       <section className="space-y-4">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
           Alagrupi mängud
         </h3>
         {groups.map((groupName) => (
           <div key={groupName} className="space-y-2">
-            <h4 className="text-sm font-bold text-gold">
+            <h4
+              className="rounded-md px-2 py-1 text-sm font-bold text-white"
+              style={{ backgroundColor: groupColor(groupName) }}
+            >
               Grupp {groupName}
             </h4>
             <div className="space-y-2">

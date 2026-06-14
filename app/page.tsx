@@ -16,52 +16,68 @@ interface Row {
 export default function LeaderboardPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
-    const [
-      { data: participants },
-      { data: matches },
-      { data: predictions },
-      { data: bonusAnswers },
-    ] = await Promise.all([
-      supabase.from("participants").select("*"),
-      supabase.from("matches").select("*"),
-      supabase.from("predictions").select("*"),
-      supabase.from("bonus_answers").select("*"),
-    ]);
+    try {
+      const [
+        { data: participants, error: participantsError },
+        { data: matches, error: matchesError },
+        { data: predictions, error: predictionsError },
+        { data: bonusAnswers, error: bonusAnswersError },
+      ] = await Promise.all([
+        supabase.from("participants").select("*"),
+        supabase.from("matches").select("*"),
+        supabase.from("predictions").select("*"),
+        supabase.from("bonus_answers").select("*"),
+      ]);
 
-    const matchById = new Map<number, Match>(
-      (matches ?? []).map((m: Match) => [m.id, m])
-    );
+      const firstError =
+        participantsError || matchesError || predictionsError || bonusAnswersError;
+      if (firstError) throw firstError;
 
-    const computedRows: Row[] = ((participants ?? []) as Participant[]).map(
-      (p) => {
-        const matchPoints = ((predictions ?? []) as Prediction[])
-          .filter((pred) => pred.participant_id === p.id)
-          .reduce((sum, pred) => {
-            const match = matchById.get(pred.match_id);
-            if (!match) return sum;
-            return sum + calcMatchPoints(pred, match);
-          }, 0);
+      const matchById = new Map<number, Match>(
+        (matches ?? []).map((m: Match) => [m.id, m])
+      );
 
-        const bonusPoints = ((bonusAnswers ?? []) as BonusAnswer[])
-          .filter((ans) => ans.participant_id === p.id)
-          .reduce((sum, ans) => sum + (ans.points_awarded ?? 0), 0);
+      const computedRows: Row[] = ((participants ?? []) as Participant[]).map(
+        (p) => {
+          const matchPoints = ((predictions ?? []) as Prediction[])
+            .filter((pred) => pred.participant_id === p.id)
+            .reduce((sum, pred) => {
+              const match = matchById.get(pred.match_id);
+              if (!match) return sum;
+              return sum + calcMatchPoints(pred, match);
+            }, 0);
 
-        return {
-          id: p.id,
-          name: p.name,
-          matchPoints,
-          bonusPoints,
-          total: matchPoints + bonusPoints,
-        };
-      }
-    );
+          const bonusPoints = ((bonusAnswers ?? []) as BonusAnswer[])
+            .filter((ans) => ans.participant_id === p.id)
+            .reduce((sum, ans) => sum + (ans.points_awarded ?? 0), 0);
 
-    computedRows.sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+          return {
+            id: p.id,
+            name: p.name,
+            matchPoints,
+            bonusPoints,
+            total: matchPoints + bonusPoints,
+          };
+        }
+      );
 
-    setRows(computedRows);
-    setLoading(false);
+      computedRows.sort(
+        (a, b) => b.total - a.total || a.name.localeCompare(b.name)
+      );
+
+      setRows(computedRows);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError(
+        "Andmete laadimine ebaõnnestus. Kontrolli, et Supabase on seadistatud ja andmebaas on ettevalmistatud."
+      );
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -86,13 +102,17 @@ export default function LeaderboardPage() {
 
       {loading && <p className="text-sm text-gray-400">Laadimine...</p>}
 
-      {!loading && rows.length === 0 && (
+      {!loading && error && (
+        <p className="text-sm text-red-400">{error}</p>
+      )}
+
+      {!loading && !error && rows.length === 0 && (
         <p className="text-sm text-gray-400">
           Osalejaid ei ole veel lisatud. Admin saab osalejaid lisada admin alas.
         </p>
       )}
 
-      {!loading && rows.length > 0 && (
+      {!loading && !error && rows.length > 0 && (
         <div className="overflow-hidden rounded-xl border border-navy-light">
           <table className="w-full text-sm">
             <thead>

@@ -4,19 +4,24 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { adminCookieValue, COOKIE_NAME, isAdminAuthenticated } from "@/lib/auth";
+import {
+  adminCookieValue,
+  COOKIE_NAME,
+  getAdminPassword,
+  isAdminAuthenticated,
+} from "@/lib/auth";
 
 function revalidateAll() {
   revalidatePath("/");
   revalidatePath("/matches");
-  revalidatePath("/boonusküsimused");
+  revalidatePath("/boonused");
   revalidatePath("/admin");
 }
 
 export async function loginAction(formData: FormData) {
   const password = String(formData.get("password") ?? "");
 
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (password !== getAdminPassword()) {
     redirect("/admin?error=1");
   }
 

@@ -5,7 +5,7 @@ export const revalidate = 0;
 
 export default async function BonusPage() {
   const [
-    { data: questions },
+    { data: questions, error: questionsError },
     { data: participants },
     { data: answers },
   ] = await Promise.all([
@@ -21,6 +21,13 @@ export default async function BonusPage() {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-bold text-gold">Boonusküsimused</h2>
+
+      {(questionsError || bonusQuestions.length === 0) && (
+        <p className="text-sm text-red-400">
+          Boonusküsimusi ei leitud. Kontrolli, et Supabase on seadistatud ja
+          scripts/seed.sql on käivitatud.
+        </p>
+      )}
 
       {allParticipants.length === 0 && (
         <p className="text-sm text-gray-400">
