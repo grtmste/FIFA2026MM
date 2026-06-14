@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Match } from "@/lib/types";
 import { formatMatchDate, formatMatchTime } from "@/lib/format";
 import { groupColor } from "@/lib/groupColors";
@@ -7,8 +8,9 @@ export default function MatchCard({ match }: { match: Match }) {
     match.actual_home_score !== null && match.actual_away_score !== null;
 
   return (
-    <div
-      className="flex overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+    <Link
+      href={`/matches/${match.id}`}
+      className="flex overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-colors hover:border-gold"
       style={{ borderLeft: `4px solid ${groupColor(match.group_name)}` }}
     >
       <div className="flex w-9 flex-shrink-0 items-center justify-center bg-slate-50 text-xs font-bold text-slate-400">
@@ -48,6 +50,6 @@ export default function MatchCard({ match }: { match: Match }) {
           {match.venue ?? "Selgub"}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
