@@ -9,8 +9,8 @@ const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
 
 const STAGE_TABLE_LABELS: Record<Stage, string> = {
   group: "Alagrupi mängud",
-  r32: "1/16 finaali mängud",
-  r16: "1/8 finaali mängud",
+  r32: "1/32 finaali mängud",
+  r16: "1/16 finaali mängud",
   qf: "Veerandfinaali mängud",
   sf: "Poolfinaali mängud",
   final: "Finaalmäng",
