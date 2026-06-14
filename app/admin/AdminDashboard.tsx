@@ -248,7 +248,7 @@ function PredictionsTab({
             const existing = predictionByMatch.get(match.id);
             return (
               <form
-                key={match.id}
+                key={`${selectedParticipantId}-${match.id}`}
                 action={savePrediction}
                 className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
               >
@@ -387,7 +387,7 @@ function BonusTab({
             const existing = answerByQuestion.get(q.id);
             return (
               <form
-                key={q.id}
+                key={`${selectedParticipantId}-${q.id}`}
                 action={saveBonusAnswer}
                 className="space-y-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
               >
