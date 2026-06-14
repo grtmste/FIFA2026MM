@@ -1,0 +1,132 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { supabase } from "@/lib/supabase";
+import { calcMatchPoints } from "@/lib/scoring";
+import { Participant, Match, Prediction, BonusAnswer } from "@/lib/types";
+
+interface Row {
+  id: string;
+  name: string;
+  matchPoints: number;
+  bonusPoints: number;
+  total: number;
+}
+
+export default function LeaderboardPage() {
+  const [rows, setRows] = useState<Row[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadData = useCallback(async () => {
+    const [
+      { data: participants },
+      { data: matches },
+      { data: predictions },
+      { data: bonusAnswers },
+    ] = await Promise.all([
+      supabase.from("participants").select("*"),
+      supabase.from("matches").select("*"),
+      supabase.from("predictions").select("*"),
+      supabase.from("bonus_answers").select("*"),
+    ]);
+
+    const matchById = new Map<number, Match>(
+      (matches ?? []).map((m: Match) => [m.id, m])
+    );
+
+    const computedRows: Row[] = ((participants ?? []) as Participant[]).map(
+      (p) => {
+        const matchPoints = ((predictions ?? []) as Prediction[])
+          .filter((pred) => pred.participant_id === p.id)
+          .reduce((sum, pred) => {
+            const match = matchById.get(pred.match_id);
+            if (!match) return sum;
+            return sum + calcMatchPoints(pred, match);
+          }, 0);
+
+        const bonusPoints = ((bonusAnswers ?? []) as BonusAnswer[])
+          .filter((ans) => ans.participant_id === p.id)
+          .reduce((sum, ans) => sum + (ans.points_awarded ?? 0), 0);
+
+        return {
+          id: p.id,
+          name: p.name,
+          matchPoints,
+          bonusPoints,
+          total: matchPoints + bonusPoints,
+        };
+      }
+    );
+
+    computedRows.sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+
+    setRows(computedRows);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadData();
+
+    const channel = supabase
+      .channel("leaderboard-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "matches" }, loadData)
+      .on("postgres_changes", { event: "*", schema: "public", table: "predictions" }, loadData)
+      .on("postgres_changes", { event: "*", schema: "public", table: "bonus_answers" }, loadData)
+      .on("postgres_changes", { event: "*", schema: "public", table: "participants" }, loadData)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadData]);
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold text-gold">Edetabel</h2>
+
+      {loading && <p className="text-sm text-gray-400">Laadimine...</p>}
+
+      {!loading && rows.length === 0 && (
+        <p className="text-sm text-gray-400">
+          Osalejaid ei ole veel lisatud. Admin saab osalejaid lisada admin alas.
+        </p>
+      )}
+
+      {!loading && rows.length > 0 && (
+        <div className="overflow-hidden rounded-xl border border-navy-light">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-navy-light text-left text-xs uppercase text-gray-400">
+                <th className="px-2 py-2 text-center">#</th>
+                <th className="px-2 py-2">Nimi</th>
+                <th className="px-2 py-2 text-center">Mäng</th>
+                <th className="px-2 py-2 text-center">Boonus</th>
+                <th className="px-2 py-2 text-center">Kokku</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, idx) => (
+                <tr
+                  key={row.id}
+                  className={`border-t border-navy-light ${
+                    idx === 0 ? "bg-gold/10" : ""
+                  }`}
+                >
+                  <td className="px-2 py-2 text-center font-semibold">
+                    {idx + 1}
+                  </td>
+                  <td className="px-2 py-2 font-medium">{row.name}</td>
+                  <td className="px-2 py-2 text-center">{row.matchPoints}</td>
+                  <td className="px-2 py-2 text-center">{row.bonusPoints}</td>
+                  <td className="px-2 py-2 text-center font-bold text-gold">
+                    {row.total}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

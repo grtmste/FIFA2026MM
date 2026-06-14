@@ -1,0 +1,135 @@
+-- FIFA World Cup 2026 Prediction App - Seed Data
+-- Run this AFTER schema.sql in the Supabase SQL editor.
+--
+-- Times are stored as Estonian local time (EEST, UTC+3) for the group stage,
+-- matching the "Jalka MM 2026" prediction game schedule.
+
+-- ---------------------------------------------------------------------------
+-- Group stage matches (72 matches, groups A-L)
+-- ---------------------------------------------------------------------------
+
+insert into matches (id, stage, group_name, home_team, away_team, match_date, venue, actual_home_score, actual_away_score) values
+(1,  'group', 'A', 'Mehhiko', 'Lõuna-Aafrika', '2026-06-11 22:00:00+03', null, null, null),
+(2,  'group', 'A', 'Lõuna-Korea', 'Tšehhi', '2026-06-12 05:00:00+03', null, null, null),
+(3,  'group', 'B', 'Kanada', 'Bosnia ja Hertsegoviina', '2026-06-12 22:00:00+03', null, null, null),
+(4,  'group', 'D', 'USA', 'Paraguay', '2026-06-13 04:00:00+03', null, null, null),
+(5,  'group', 'B', 'Katar', 'Šveits', '2026-06-13 22:00:00+03', null, null, null),
+(6,  'group', 'C', 'Brasiilia', 'Maroko', '2026-06-14 01:00:00+03', null, null, null),
+(7,  'group', 'C', 'Haiti', 'Šotimaa', '2026-06-14 04:00:00+03', null, null, null),
+(8,  'group', 'D', 'Austraalia', 'Türgi', '2026-06-14 07:00:00+03', null, null, null),
+(9,  'group', 'E', 'Saksamaa', 'Curaçao', '2026-06-14 20:00:00+03', null, null, null),
+(10, 'group', 'F', 'Holland', 'Jaapan', '2026-06-14 23:00:00+03', null, null, null),
+(11, 'group', 'E', 'Elevandiluurannik', 'Ecuador', '2026-06-15 02:00:00+03', null, null, null),
+(12, 'group', 'F', 'Rootsi', 'Tuneesia', '2026-06-15 05:00:00+03', null, null, null),
+(13, 'group', 'H', 'Hispaania', 'Roheneemesaared', '2026-06-15 19:00:00+03', null, null, null),
+(14, 'group', 'G', 'Belgia', 'Egiptus', '2026-06-15 22:00:00+03', null, null, null),
+(15, 'group', 'H', 'Saudi Araabia', 'Uruguay', '2026-06-16 01:00:00+03', null, null, null),
+(16, 'group', 'G', 'Iraan', 'Uus-Meremaa', '2026-06-16 04:00:00+03', null, null, null),
+(17, 'group', 'I', 'Prantsusmaa', 'Senegal', '2026-06-16 22:00:00+03', null, null, null),
+(18, 'group', 'I', 'Iraak', 'Norra', '2026-06-17 01:00:00+03', null, null, null),
+(19, 'group', 'J', 'Argentiina', 'Alžeeria', '2026-06-17 04:00:00+03', null, null, null),
+(20, 'group', 'J', 'Austria', 'Jordaania', '2026-06-17 07:00:00+03', null, null, null),
+(21, 'group', 'K', 'Portugal', 'Kongo', '2026-06-17 20:00:00+03', null, null, null),
+(22, 'group', 'L', 'Inglismaa', 'Horvaatia', '2026-06-17 23:00:00+03', null, null, null),
+(23, 'group', 'L', 'Ghana', 'Panama', '2026-06-18 02:00:00+03', null, null, null),
+(24, 'group', 'K', 'Usbekistan', 'Colombia', '2026-06-18 05:00:00+03', null, null, null),
+(25, 'group', 'A', 'Tšehhi', 'Lõuna-Aafrika', '2026-06-18 19:00:00+03', null, null, null),
+(26, 'group', 'B', 'Šveits', 'Bosnia ja Hertsegoviina', '2026-06-18 22:00:00+03', null, null, null),
+(27, 'group', 'B', 'Kanada', 'Katar', '2026-06-19 01:00:00+03', null, null, null),
+(28, 'group', 'A', 'Mehhiko', 'Lõuna-Korea', '2026-06-19 04:00:00+03', null, null, null),
+(29, 'group', 'D', 'USA', 'Austraalia', '2026-06-19 22:00:00+03', null, null, null),
+(30, 'group', 'C', 'Šotimaa', 'Maroko', '2026-06-20 01:00:00+03', null, null, null),
+(31, 'group', 'C', 'Brasiilia', 'Haiti', '2026-06-20 03:30:00+03', null, null, null),
+(32, 'group', 'D', 'Türgi', 'Paraguay', '2026-06-20 06:00:00+03', null, null, null),
+(33, 'group', 'F', 'Holland', 'Rootsi', '2026-06-20 20:00:00+03', null, null, null),
+(34, 'group', 'E', 'Saksamaa', 'Elevandiluurannik', '2026-06-20 23:00:00+03', null, null, null),
+(35, 'group', 'E', 'Ecuador', 'Curaçao', '2026-06-21 03:00:00+03', null, null, null),
+(36, 'group', 'F', 'Tuneesia', 'Jaapan', '2026-06-21 07:00:00+03', null, null, null),
+(37, 'group', 'H', 'Hispaania', 'Saudi Araabia', '2026-06-21 19:00:00+03', null, null, null),
+(38, 'group', 'G', 'Belgia', 'Iraan', '2026-06-21 22:00:00+03', null, null, null),
+(39, 'group', 'H', 'Uruguay', 'Roheneemesaared', '2026-06-22 01:00:00+03', null, null, null),
+(40, 'group', 'G', 'Uus-Meremaa', 'Egiptus', '2026-06-22 04:00:00+03', null, null, null),
+(41, 'group', 'J', 'Argentiina', 'Austria', '2026-06-22 20:00:00+03', null, null, null),
+(42, 'group', 'I', 'Prantsusmaa', 'Iraak', '2026-06-23 00:00:00+03', null, null, null),
+(43, 'group', 'I', 'Norra', 'Senegal', '2026-06-23 03:00:00+03', null, null, null),
+(44, 'group', 'J', 'Jordaania', 'Alžeeria', '2026-06-23 06:00:00+03', null, null, null),
+(45, 'group', 'K', 'Portugal', 'Usbekistan', '2026-06-23 20:00:00+03', null, null, null),
+(46, 'group', 'L', 'Inglismaa', 'Ghana', '2026-06-23 23:00:00+03', null, null, null),
+(47, 'group', 'L', 'Panama', 'Horvaatia', '2026-06-24 02:00:00+03', null, null, null),
+(48, 'group', 'K', 'Colombia', 'Kongo', '2026-06-24 05:00:00+03', null, null, null),
+(49, 'group', 'B', 'Šveits', 'Kanada', '2026-06-24 22:00:00+03', null, null, null),
+(50, 'group', 'B', 'Bosnia ja Hertsegoviina', 'Katar', '2026-06-24 22:00:00+03', null, null, null),
+(51, 'group', 'C', 'Šotimaa', 'Brasiilia', '2026-06-25 01:00:00+03', null, null, null),
+(52, 'group', 'C', 'Maroko', 'Haiti', '2026-06-25 01:00:00+03', null, null, null),
+(53, 'group', 'A', 'Tšehhi', 'Mehhiko', '2026-06-25 04:00:00+03', null, null, null),
+(54, 'group', 'A', 'Lõuna-Aafrika', 'Lõuna-Korea', '2026-06-25 04:00:00+03', null, null, null),
+(55, 'group', 'E', 'Curaçao', 'Elevandiluurannik', '2026-06-25 23:00:00+03', null, null, null),
+(56, 'group', 'E', 'Ecuador', 'Saksamaa', '2026-06-25 23:00:00+03', null, null, null),
+(57, 'group', 'F', 'Jaapan', 'Rootsi', '2026-06-26 02:00:00+03', null, null, null),
+(58, 'group', 'F', 'Tuneesia', 'Holland', '2026-06-26 02:00:00+03', null, null, null),
+(59, 'group', 'D', 'Türgi', 'USA', '2026-06-26 05:00:00+03', null, null, null),
+(60, 'group', 'D', 'Paraguay', 'Austraalia', '2026-06-26 05:00:00+03', null, null, null),
+(61, 'group', 'I', 'Norra', 'Prantsusmaa', '2026-06-26 22:00:00+03', null, null, null),
+(62, 'group', 'I', 'Senegal', 'Iraak', '2026-06-26 22:00:00+03', null, null, null),
+(63, 'group', 'H', 'Roheneemesaared', 'Saudi Araabia', '2026-06-27 03:00:00+03', null, null, null),
+(64, 'group', 'H', 'Uruguay', 'Hispaania', '2026-06-27 03:00:00+03', null, null, null),
+(65, 'group', 'G', 'Egiptus', 'Iraan', '2026-06-27 06:00:00+03', null, null, null),
+(66, 'group', 'G', 'Uus-Meremaa', 'Belgia', '2026-06-27 06:00:00+03', null, null, null),
+(67, 'group', 'L', 'Panama', 'Inglismaa', '2026-06-27 22:00:00+03', null, null, null),
+(68, 'group', 'L', 'Horvaatia', 'Ghana', '2026-06-27 22:00:00+03', null, null, null),
+(69, 'group', 'K', 'Colombia', 'Portugal', '2026-06-28 00:30:00+03', null, null, null),
+(70, 'group', 'K', 'Kongo', 'Usbekistan', '2026-06-28 00:30:00+03', null, null, null),
+(71, 'group', 'J', 'Alžeeria', 'Austria', '2026-06-28 05:00:00+03', null, null, null),
+(72, 'group', 'J', 'Jordaania', 'Argentiina', '2026-06-28 05:00:00+03', null, null, null);
+
+-- ---------------------------------------------------------------------------
+-- Knockout stage placeholders (teams TBD - "Selgub")
+-- 1/16 finaali (R32): 16 matches, 1/8 finaali (R16): 8, veerandfinaal (QF): 4,
+-- poolfinaal (SF): 2, finaal: 1
+-- ---------------------------------------------------------------------------
+
+insert into matches (id, stage, group_name, home_team, away_team, match_date, venue, actual_home_score, actual_away_score) values
+(73,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(74,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(75,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(76,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(77,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(78,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(79,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(80,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(81,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(82,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(83,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(84,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(85,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(86,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(87,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(88,  'r32', null, 'Selgub', 'Selgub', null, null, null, null),
+(89,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(90,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(91,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(92,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(93,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(94,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(95,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(96,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(97,  'qf',  null, 'Selgub', 'Selgub', null, null, null, null),
+(98,  'qf',  null, 'Selgub', 'Selgub', null, null, null, null),
+(99,  'qf',  null, 'Selgub', 'Selgub', null, null, null, null),
+(100, 'qf',  null, 'Selgub', 'Selgub', null, null, null, null),
+(101, 'sf',  null, 'Selgub', 'Selgub', null, null, null, null),
+(102, 'sf',  null, 'Selgub', 'Selgub', null, null, null, null),
+(103, 'final', null, 'Selgub', 'Selgub', null, null, null, null);
+
+-- ---------------------------------------------------------------------------
+-- Bonus questions
+-- ---------------------------------------------------------------------------
+
+insert into bonus_questions (id, question_text, max_points, correct_answer) values
+(1, 'Milline meeskond võidab turniiri?', 10, null),
+(2, 'Kes on turniiri suurim väravakütt?', 5, null),
+(3, 'Millised 4 meeskonda jõuavad poolfinaali?', 7, null),
+(4, 'Mitu mängu lõppevad viigiga alagrupi faasis?', 4, null),
+(5, 'Millisele meeskonnale lüüakse alagrupi faasis kõige rohkem väravaid?', 5, null),
+(6, 'Milline on edukaim Aafrika võistkond?', 6, null),
+(7, 'Kas Marju laseb seekord kellelgi teisel võita?', 3, null);
