@@ -20,84 +20,86 @@ export default async function BonusPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-gold">Boonusküsimused</h2>
+      <h2 className="text-xl font-bold text-navy">Boonusküsimused</h2>
 
       {(questionsError || bonusQuestions.length === 0) && (
-        <p className="text-sm text-red-400">
+        <p className="text-sm text-red-500">
           Boonusküsimusi ei leitud. Kontrolli, et Supabase on seadistatud ja
           scripts/seed.sql on käivitatud.
         </p>
       )}
 
       {allParticipants.length === 0 && (
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-slate-400">
           Osalejaid ei ole veel lisatud.
         </p>
       )}
 
-      {bonusQuestions.map((question, idx) => (
-        <section
-          key={question.id}
-          className="space-y-2 rounded-xl border border-navy-light bg-navy-light/40 p-3"
-        >
-          <h3 className="text-sm font-semibold">
-            {idx + 1}. {question.question_text}
-          </h3>
-          <p className="text-xs text-gray-400">
-            Maksimum: {question.max_points} punkti
-            {question.correct_answer && (
-              <>
-                {" "}
-                · Õige vastus:{" "}
-                <span className="text-gold">{question.correct_answer}</span>
-              </>
+      <div className="grid gap-4 md:grid-cols-2">
+        {bonusQuestions.map((question, idx) => (
+          <section
+            key={question.id}
+            className="space-y-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+          >
+            <h3 className="text-sm font-semibold text-navy">
+              {idx + 1}. {question.question_text}
+            </h3>
+            <p className="text-xs text-slate-500">
+              Maksimum: {question.max_points} punkti
+              {question.correct_answer && (
+                <>
+                  {" "}
+                  · Õige vastus:{" "}
+                  <span className="font-semibold text-gold">{question.correct_answer}</span>
+                </>
+              )}
+            </p>
+
+            {allParticipants.length > 0 && (
+              <div className="overflow-hidden rounded-lg border border-slate-200">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+                      <th className="px-2 py-1">Nimi</th>
+                      <th className="px-2 py-1">Vastus</th>
+                      <th className="px-2 py-1 text-center">Punktid</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allParticipants.map((participant) => {
+                      const answer = allAnswers.find(
+                        (a) =>
+                          a.participant_id === participant.id &&
+                          a.question_id === question.id
+                      );
+
+                      return (
+                        <tr
+                          key={participant.id}
+                          className="border-t border-slate-100"
+                        >
+                          <td className="px-2 py-1 font-medium text-navy">
+                            {participant.name}
+                          </td>
+                          <td className="px-2 py-1 text-slate-600">
+                            {answer?.answer_text || "–"}
+                          </td>
+                          <td className="px-2 py-1 text-center text-slate-600">
+                            {answer?.points_awarded !== null &&
+                            answer?.points_awarded !== undefined
+                              ? `${answer.points_awarded} p`
+                              : "–"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
-          </p>
-
-          {allParticipants.length > 0 && (
-            <div className="overflow-hidden rounded-lg border border-navy-light">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-navy text-left text-xs uppercase text-gray-400">
-                    <th className="px-2 py-1">Nimi</th>
-                    <th className="px-2 py-1">Vastus</th>
-                    <th className="px-2 py-1 text-center">Punktid</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allParticipants.map((participant) => {
-                    const answer = allAnswers.find(
-                      (a) =>
-                        a.participant_id === participant.id &&
-                        a.question_id === question.id
-                    );
-
-                    return (
-                      <tr
-                        key={participant.id}
-                        className="border-t border-navy-light"
-                      >
-                        <td className="px-2 py-1 font-medium">
-                          {participant.name}
-                        </td>
-                        <td className="px-2 py-1 text-gray-300">
-                          {answer?.answer_text || "–"}
-                        </td>
-                        <td className="px-2 py-1 text-center">
-                          {answer?.points_awarded !== null &&
-                          answer?.points_awarded !== undefined
-                            ? `${answer.points_awarded} p`
-                            : "–"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      ))}
+          </section>
+        ))}
+      </div>
     </div>
   );
 }

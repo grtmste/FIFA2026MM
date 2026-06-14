@@ -98,25 +98,25 @@ export default function LeaderboardPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-gold">Edetabel</h2>
+      <h2 className="text-xl font-bold text-navy">Edetabel</h2>
 
-      {loading && <p className="text-sm text-gray-400">Laadimine...</p>}
+      {loading && <p className="text-sm text-slate-400">Laadimine...</p>}
 
       {!loading && error && (
-        <p className="text-sm text-red-400">{error}</p>
+        <p className="text-sm text-red-500">{error}</p>
       )}
 
       {!loading && !error && rows.length === 0 && (
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-slate-400">
           Osalejaid ei ole veel lisatud. Admin saab osalejaid lisada admin alas.
         </p>
       )}
 
       {!loading && !error && rows.length > 0 && (
-        <div className="overflow-hidden rounded-xl border border-navy-light">
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-navy-light text-left text-xs uppercase text-gray-400">
+              <tr className="bg-slate-50 text-left text-xs uppercase text-slate-500">
                 <th className="px-2 py-2 text-center">#</th>
                 <th className="px-2 py-2">Nimi</th>
                 <th className="px-2 py-2 text-center">Mäng</th>
@@ -128,16 +128,16 @@ export default function LeaderboardPage() {
               {rows.map((row, idx) => (
                 <tr
                   key={row.id}
-                  className={`border-t border-navy-light ${
-                    idx === 0 ? "bg-gold/10" : ""
+                  className={`border-t border-slate-100 ${
+                    idx === 0 ? "bg-amber-50" : ""
                   }`}
                 >
-                  <td className="px-2 py-2 text-center font-semibold">
+                  <td className="px-2 py-2 text-center font-semibold text-navy">
                     {idx + 1}
                   </td>
-                  <td className="px-2 py-2 font-medium">{row.name}</td>
-                  <td className="px-2 py-2 text-center">{row.matchPoints}</td>
-                  <td className="px-2 py-2 text-center">{row.bonusPoints}</td>
+                  <td className="px-2 py-2 font-medium text-navy">{row.name}</td>
+                  <td className="px-2 py-2 text-center text-slate-600">{row.matchPoints}</td>
+                  <td className="px-2 py-2 text-center text-slate-600">{row.bonusPoints}</td>
                   <td className="px-2 py-2 text-center font-bold text-gold">
                     {row.total}
                   </td>

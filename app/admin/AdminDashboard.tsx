@@ -8,6 +8,8 @@ import {
   Participant,
   Prediction,
 } from "@/lib/types";
+import { groupColor } from "@/lib/groupColors";
+import { formatMatchDate, formatMatchTime } from "@/lib/format";
 import {
   addParticipant,
   deleteParticipant,
@@ -52,13 +54,15 @@ export default function AdminDashboard({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 overflow-x-auto rounded-lg border border-navy-light bg-navy-light/40 p-1">
+      <div className="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-slate-100 p-1">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex-1 rounded-md px-2 py-2 text-xs font-semibold whitespace-nowrap ${
-              tab === t.id ? "bg-gold text-navy" : "text-gray-300"
+            className={`flex-1 rounded-md px-2 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+              tab === t.id
+                ? "bg-gold text-white"
+                : "text-slate-500 hover:text-navy"
             }`}
           >
             {t.label}
@@ -100,18 +104,18 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
     <div className="space-y-3">
       <form
         action={addParticipant}
-        className="flex gap-2 rounded-xl border border-navy-light bg-navy-light/40 p-3"
+        className="flex gap-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
       >
         <input
           type="text"
           name="name"
           placeholder="Uue osaleja nimi"
           required
-          className="flex-1 rounded-lg border border-navy-light bg-navy px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:border-gold focus:outline-none"
+          className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-navy placeholder-slate-400 focus:border-gold focus:outline-none"
         />
         <button
           type="submit"
-          className="rounded-lg bg-gold px-3 py-2 text-sm font-bold text-navy"
+          className="rounded-lg bg-gold px-3 py-2 text-sm font-bold text-white"
         >
           Lisa
         </button>
@@ -121,7 +125,7 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
         {participants.map((p) => (
           <div
             key={p.id}
-            className="flex items-center gap-2 rounded-xl border border-navy-light bg-navy-light/40 p-2"
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
           >
             <form action={updateParticipant} className="flex flex-1 gap-2">
               <input type="hidden" name="id" value={p.id} />
@@ -129,7 +133,7 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
                 type="text"
                 name="name"
                 defaultValue={p.name}
-                className="flex-1 rounded-lg border border-navy-light bg-navy px-3 py-2 text-sm text-gray-100 focus:border-gold focus:outline-none"
+                className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-navy focus:border-gold focus:outline-none"
               />
               <button
                 type="submit"
@@ -142,7 +146,7 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
               <input type="hidden" name="id" value={p.id} />
               <button
                 type="submit"
-                className="rounded-lg border border-red-500/50 px-2 py-2 text-xs font-semibold text-red-400"
+                className="rounded-lg border border-red-300 px-2 py-2 text-xs font-semibold text-red-500"
               >
                 Kustuta
               </button>
@@ -151,7 +155,7 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
         ))}
 
         {participants.length === 0 && (
-          <p className="text-sm text-gray-400">Osalejaid ei ole veel lisatud.</p>
+          <p className="text-sm text-slate-400">Osalejaid ei ole veel lisatud.</p>
         )}
       </div>
     </div>
@@ -168,14 +172,14 @@ function ParticipantSelect({
   onSelectParticipant: (id: string) => void;
 }) {
   if (participants.length === 0) {
-    return <p className="text-sm text-gray-400">Osalejaid ei ole veel lisatud.</p>;
+    return <p className="text-sm text-slate-400">Osalejaid ei ole veel lisatud.</p>;
   }
 
   return (
     <select
       value={selectedParticipantId}
       onChange={(e) => onSelectParticipant(e.target.value)}
-      className="w-full rounded-lg border border-navy-light bg-navy-light/40 px-3 py-2 text-sm text-gray-100 focus:border-gold focus:outline-none"
+      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-navy focus:border-gold focus:outline-none"
     >
       {participants.map((p) => (
         <option key={p.id} value={p.id}>
@@ -183,6 +187,29 @@ function ParticipantSelect({
         </option>
       ))}
     </select>
+  );
+}
+
+function MatchLabel({ match }: { match: Match }) {
+  return (
+    <div className="flex flex-1 items-center gap-2 text-xs">
+      {match.group_name && (
+        <span
+          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+          style={{ backgroundColor: groupColor(match.group_name) }}
+        >
+          {match.group_name}
+        </span>
+      )}
+      <div className="flex flex-col">
+        <span className="font-medium text-navy">
+          {match.home_team} - {match.away_team}
+        </span>
+        <span className="text-[10px] text-slate-400">
+          {formatMatchDate(match.match_date)} {formatMatchTime(match.match_date)}
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -207,14 +234,6 @@ function PredictionsTab({
     return map;
   }, [predictions, selectedParticipantId]);
 
-  const groups = useMemo(
-    () =>
-      Array.from(
-        new Set(groupMatches.map((m) => m.group_name).filter(Boolean))
-      ).sort() as string[],
-    [groupMatches]
-  );
-
   return (
     <div className="space-y-3">
       <ParticipantSelect
@@ -223,95 +242,33 @@ function PredictionsTab({
         onSelectParticipant={onSelectParticipant}
       />
 
-      {selectedParticipantId &&
-        groups.map((groupName) => (
-          <div key={groupName} className="space-y-2">
-            <h4 className="text-sm font-bold text-gold">Grupp {groupName}</h4>
-            {groupMatches
-              .filter((m) => m.group_name === groupName)
-              .map((match) => {
-                const existing = predictionByMatch.get(match.id);
-                return (
-                  <form
-                    key={match.id}
-                    action={savePrediction}
-                    className="flex items-center gap-2 rounded-xl border border-navy-light bg-navy-light/40 p-2"
-                  >
-                    <input type="hidden" name="participant_id" value={selectedParticipantId} />
-                    <input type="hidden" name="match_id" value={match.id} />
-                    <span className="flex-1 text-xs">
-                      {match.home_team} - {match.away_team}
-                    </span>
-                    <input
-                      type="number"
-                      name="predicted_home_score"
-                      min={0}
-                      defaultValue={existing?.predicted_home_score ?? ""}
-                      className="w-12 rounded-md border border-navy-light bg-navy px-1 py-1 text-center text-sm"
-                    />
-                    <span className="text-xs text-gray-500">:</span>
-                    <input
-                      type="number"
-                      name="predicted_away_score"
-                      min={0}
-                      defaultValue={existing?.predicted_away_score ?? ""}
-                      className="w-12 rounded-md border border-navy-light bg-navy px-1 py-1 text-center text-sm"
-                    />
-                    <button
-                      type="submit"
-                      className="rounded-md border border-gold px-2 py-1 text-xs font-semibold text-gold"
-                    >
-                      OK
-                    </button>
-                  </form>
-                );
-              })}
-          </div>
-        ))}
-    </div>
-  );
-}
-
-function ResultsTab({ groupMatches }: { groupMatches: Match[] }) {
-  const groups = useMemo(
-    () =>
-      Array.from(
-        new Set(groupMatches.map((m) => m.group_name).filter(Boolean))
-      ).sort() as string[],
-    [groupMatches]
-  );
-
-  return (
-    <div className="space-y-3">
-      {groups.map((groupName) => (
-        <div key={groupName} className="space-y-2">
-          <h4 className="text-sm font-bold text-gold">Grupp {groupName}</h4>
-          {groupMatches
-            .filter((m) => m.group_name === groupName)
-            .map((match) => (
+      {selectedParticipantId && (
+        <div className="space-y-2">
+          {groupMatches.map((match) => {
+            const existing = predictionByMatch.get(match.id);
+            return (
               <form
                 key={match.id}
-                action={saveMatchResult}
-                className="flex items-center gap-2 rounded-xl border border-navy-light bg-navy-light/40 p-2"
+                action={savePrediction}
+                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
               >
+                <input type="hidden" name="participant_id" value={selectedParticipantId} />
                 <input type="hidden" name="match_id" value={match.id} />
-                <span className="flex-1 text-xs">
-                  {match.home_team} - {match.away_team}
-                </span>
+                <MatchLabel match={match} />
                 <input
                   type="number"
-                  name="actual_home_score"
+                  name="predicted_home_score"
                   min={0}
-                  defaultValue={match.actual_home_score ?? ""}
-                  className="w-12 rounded-md border border-navy-light bg-navy px-1 py-1 text-center text-sm"
+                  defaultValue={existing?.predicted_home_score ?? ""}
+                  className="w-12 rounded-md border border-slate-200 bg-white px-1 py-1 text-center text-sm text-navy"
                 />
-                <span className="text-xs text-gray-500">:</span>
+                <span className="text-xs text-slate-400">:</span>
                 <input
                   type="number"
-                  name="actual_away_score"
+                  name="predicted_away_score"
                   min={0}
-                  defaultValue={match.actual_away_score ?? ""}
-                  className="w-12 rounded-md border border-navy-light bg-navy px-1 py-1 text-center text-sm"
+                  defaultValue={existing?.predicted_away_score ?? ""}
+                  className="w-12 rounded-md border border-slate-200 bg-white px-1 py-1 text-center text-sm text-navy"
                 />
                 <button
                   type="submit"
@@ -320,8 +277,47 @@ function ResultsTab({ groupMatches }: { groupMatches: Match[] }) {
                   OK
                 </button>
               </form>
-            ))}
+            );
+          })}
         </div>
+      )}
+    </div>
+  );
+}
+
+function ResultsTab({ groupMatches }: { groupMatches: Match[] }) {
+  return (
+    <div className="space-y-2">
+      {groupMatches.map((match) => (
+        <form
+          key={match.id}
+          action={saveMatchResult}
+          className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
+        >
+          <input type="hidden" name="match_id" value={match.id} />
+          <MatchLabel match={match} />
+          <input
+            type="number"
+            name="actual_home_score"
+            min={0}
+            defaultValue={match.actual_home_score ?? ""}
+            className="w-12 rounded-md border border-slate-200 bg-white px-1 py-1 text-center text-sm text-navy"
+          />
+          <span className="text-xs text-slate-400">:</span>
+          <input
+            type="number"
+            name="actual_away_score"
+            min={0}
+            defaultValue={match.actual_away_score ?? ""}
+            className="w-12 rounded-md border border-slate-200 bg-white px-1 py-1 text-center text-sm text-navy"
+          />
+          <button
+            type="submit"
+            className="rounded-md border border-gold px-2 py-1 text-xs font-semibold text-gold"
+          >
+            OK
+          </button>
+        </form>
       ))}
     </div>
   );
@@ -350,8 +346,8 @@ function BonusTab({
 
   return (
     <div className="space-y-4">
-      <div className="space-y-2 rounded-xl border border-navy-light bg-navy-light/40 p-3">
-        <h4 className="text-sm font-bold text-gold">Õiged vastused</h4>
+      <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <h4 className="text-sm font-bold text-navy">Õiged vastused</h4>
         {bonusQuestions.map((q, idx) => (
           <form
             key={q.id}
@@ -359,7 +355,7 @@ function BonusTab({
             className="flex items-center gap-2"
           >
             <input type="hidden" name="question_id" value={q.id} />
-            <span className="flex-1 text-xs">
+            <span className="flex-1 text-xs text-slate-600">
               {idx + 1}. {q.question_text}
             </span>
             <input
@@ -367,7 +363,7 @@ function BonusTab({
               name="correct_answer"
               defaultValue={q.correct_answer ?? ""}
               placeholder="Õige vastus"
-              className="w-28 rounded-md border border-navy-light bg-navy px-2 py-1 text-xs"
+              className="w-28 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-navy"
             />
             <button
               type="submit"
@@ -393,11 +389,11 @@ function BonusTab({
               <form
                 key={q.id}
                 action={saveBonusAnswer}
-                className="space-y-2 rounded-xl border border-navy-light bg-navy-light/40 p-3"
+                className="space-y-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
               >
                 <input type="hidden" name="participant_id" value={selectedParticipantId} />
                 <input type="hidden" name="question_id" value={q.id} />
-                <p className="text-xs font-semibold">
+                <p className="text-xs font-semibold text-navy">
                   {idx + 1}. {q.question_text} ({q.max_points} p)
                 </p>
                 <input
@@ -405,17 +401,17 @@ function BonusTab({
                   name="answer_text"
                   defaultValue={existing?.answer_text ?? ""}
                   placeholder="Osaleja vastus"
-                  className="w-full rounded-md border border-navy-light bg-navy px-2 py-1 text-sm"
+                  className="w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-sm text-navy"
                 />
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-gray-400">Punktid:</label>
+                  <label className="text-xs text-slate-500">Punktid:</label>
                   <input
                     type="number"
                     name="points_awarded"
                     min={0}
                     max={q.max_points}
                     defaultValue={existing?.points_awarded ?? ""}
-                    className="w-20 rounded-md border border-navy-light bg-navy px-2 py-1 text-center text-sm"
+                    className="w-20 rounded-md border border-slate-200 bg-white px-2 py-1 text-center text-sm text-navy"
                   />
                   <button
                     type="submit"

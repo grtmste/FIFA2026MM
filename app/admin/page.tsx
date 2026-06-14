@@ -22,21 +22,21 @@ export default async function AdminPage({
   if (!authenticated) {
     return (
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-gold">Admin sisselogimine</h2>
-        <form action={loginAction} className="space-y-3">
+        <h2 className="text-xl font-bold text-navy">Admin sisselogimine</h2>
+        <form action={loginAction} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <input
             type="password"
             name="password"
             placeholder="Salasõna"
             required
-            className="w-full rounded-lg border border-navy-light bg-navy-light/40 px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:border-gold focus:outline-none"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-navy placeholder-slate-400 focus:border-gold focus:outline-none"
           />
           {searchParams.error && (
-            <p className="text-sm text-red-400">Vale salasõna.</p>
+            <p className="text-sm text-red-500">Vale salasõna.</p>
           )}
           <button
             type="submit"
-            className="w-full rounded-lg bg-gold px-3 py-2 text-sm font-bold text-navy"
+            className="w-full rounded-lg bg-gold px-3 py-2 text-sm font-bold text-white"
           >
             Logi sisse
           </button>
@@ -53,7 +53,11 @@ export default async function AdminPage({
     { data: bonusAnswers },
   ] = await Promise.all([
     supabaseAdmin.from("participants").select("*").order("name", { ascending: true }),
-    supabaseAdmin.from("matches").select("*").order("id", { ascending: true }),
+    supabaseAdmin
+      .from("matches")
+      .select("*")
+      .order("match_date", { ascending: true, nullsFirst: false })
+      .order("id", { ascending: true }),
     supabaseAdmin.from("predictions").select("*"),
     supabaseAdmin.from("bonus_questions").select("*").order("id", { ascending: true }),
     supabaseAdmin.from("bonus_answers").select("*"),
@@ -62,11 +66,11 @@ export default async function AdminPage({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gold">Admin</h2>
+        <h2 className="text-xl font-bold text-navy">Admin</h2>
         <form action={logoutAction}>
           <button
             type="submit"
-            className="rounded-lg border border-navy-light px-3 py-1 text-xs text-gray-300"
+            className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 hover:bg-slate-50"
           >
             Logi välja
           </button>

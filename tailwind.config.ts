@@ -9,8 +9,9 @@ const config: Config = {
     extend: {
       colors: {
         navy: "#0D1B2A",
-        "navy-light": "#1B2D45",
-        gold: "#FFD700",
+        "navy-light": "#5C6F8A",
+        gold: "#C9A227",
+        cream: "#F7F8FA",
       },
     },
   },

@@ -8,14 +8,14 @@ export default function MatchCard({ match }: { match: Match }) {
 
   return (
     <div
-      className="flex overflow-hidden rounded-xl border border-navy-light bg-navy-light/40"
+      className="flex overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
       style={{ borderLeft: `4px solid ${groupColor(match.group_name)}` }}
     >
-      <div className="flex w-9 flex-shrink-0 items-center justify-center bg-navy text-xs font-bold text-gray-400">
+      <div className="flex w-9 flex-shrink-0 items-center justify-center bg-slate-50 text-xs font-bold text-slate-400">
         {match.id}
       </div>
       <div className="flex-1 p-3">
-        <div className="mb-1 flex items-center justify-between text-xs text-gray-400">
+        <div className="mb-1 flex items-center justify-between text-xs text-slate-400">
           <span>{formatMatchDate(match.match_date)}</span>
           <span>{formatMatchTime(match.match_date)}</span>
           {match.group_name && (
@@ -28,19 +28,23 @@ export default function MatchCard({ match }: { match: Match }) {
           )}
         </div>
         <div className="flex items-center justify-between">
-          <span className="flex-1 text-right text-sm font-medium pr-2">
+          <span className="flex-1 text-right text-sm font-semibold text-navy pr-2">
             {match.home_team}
           </span>
-          <span className="min-w-[56px] rounded-md bg-navy px-2 py-1 text-center text-sm font-bold text-gold">
+          <span
+            className={`min-w-[56px] rounded-md px-2 py-1 text-center text-sm font-bold ${
+              hasScore ? "bg-navy text-gold" : "bg-slate-100 text-slate-400"
+            }`}
+          >
             {hasScore
               ? `${match.actual_home_score} : ${match.actual_away_score}`
               : "vs"}
           </span>
-          <span className="flex-1 text-sm font-medium pl-2">
+          <span className="flex-1 text-sm font-semibold text-navy pl-2">
             {match.away_team}
           </span>
         </div>
-        <div className="mt-1 text-center text-xs text-gray-500">
+        <div className="mt-1 text-center text-xs text-slate-400">
           {match.venue ?? "Selgub"}
         </div>
       </div>
