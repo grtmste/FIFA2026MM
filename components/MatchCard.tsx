@@ -13,7 +13,7 @@ export default function MatchCard({ match }: { match: Match }) {
       className="group flex overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover"
       style={{ borderLeft: `3px solid ${groupColor(match.group_name)}` }}
     >
-      <div className="flex w-9 flex-shrink-0 items-center justify-center bg-stone-50 font-serif text-base font-semibold text-stone-400">
+      <div className="flex w-9 flex-shrink-0 items-center justify-center bg-stone-50 text-base font-bold text-stone-400">
         {match.id}
       </div>
       <div className="flex-1 p-3">

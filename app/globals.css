@@ -4,13 +4,13 @@
 
 html,
 body {
-  background-color: #fbf8f4;
-  color: #262338;
+  background-color: #f7f8fc;
+  color: #1b2447;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Soft, warm backdrop glow behind the content for a sense of depth */
+/* Soft backdrop glow behind the content for a sense of depth */
 body::before {
   content: "";
   position: fixed;
@@ -20,12 +20,12 @@ body::before {
   background:
     radial-gradient(
       60% 45% at 50% -5%,
-      rgba(201, 168, 118, 0.16),
+      rgba(61, 90, 192, 0.13),
       transparent 70%
     ),
     radial-gradient(
       50% 40% at 100% 100%,
-      rgba(246, 233, 234, 0.5),
+      rgba(147, 85, 224, 0.1),
       transparent 70%
     );
 }
@@ -39,29 +39,37 @@ body > * {
   box-sizing: border-box;
 }
 
-/* Elegant section label: serif, with a hairline gold rule */
+/* Elegant section label: bold sans, with a hairline accent rule */
 .section-title {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .eyebrow {
   font-size: 0.6875rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #6b6680;
+  color: #5c6a95;
 }
 
-/* Thin gold divider */
+/* Thin accent divider */
 .gold-rule {
   height: 1px;
   background: linear-gradient(
     to right,
-    rgba(201, 168, 118, 0),
-    rgba(201, 168, 118, 0.6),
-    rgba(201, 168, 118, 0)
+    rgba(61, 90, 192, 0),
+    rgba(61, 90, 192, 0.5),
+    rgba(147, 85, 224, 0.5),
+    rgba(147, 85, 224, 0)
   );
+}
+
+/* Blue-to-purple gradient text, matching the Jalka MM wordmark */
+.gradient-text {
+  background-image: linear-gradient(90deg, #3d5ac0, #9355e0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Remove number input spinners for a cleaner score-entry UI */
@@ -76,19 +84,19 @@ input[type="number"] {
 }
 
 ::selection {
-  background-color: rgba(201, 168, 118, 0.28);
+  background-color: rgba(61, 90, 192, 0.22);
 }
 
-/* Subtle, refined scrollbar in warm tones */
+/* Subtle, refined scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #d8cdbf;
+  background-color: #c7cee6;
   border-radius: 9999px;
-  border: 2px solid #fbf8f4;
+  border: 2px solid #f7f8fc;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #b9aa97;
+  background-color: #a4b0d6;
 }
