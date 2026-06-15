@@ -1,19 +1,19 @@
 export const GROUP_COLORS: Record<string, string> = {
-  A: "#D62828",
-  B: "#1D4ED8",
-  C: "#16A34A",
-  D: "#F77F00",
-  E: "#7C3AED",
-  F: "#0D9488",
-  G: "#EA580C",
-  H: "#312E81",
-  I: "#059669",
-  J: "#DB2777",
-  K: "#92400E",
-  L: "#475569",
+  A: "#D98C9A",
+  B: "#8FB6D9",
+  C: "#8FC6A9",
+  D: "#E0A97A",
+  E: "#A99BD4",
+  F: "#7FC2BC",
+  G: "#D99A7A",
+  H: "#9A99C9",
+  I: "#A6C285",
+  J: "#D98FAE",
+  K: "#C2A572",
+  L: "#9CACBE",
 };
 
 export function groupColor(groupName: string | null): string {
-  if (!groupName) return "#475569";
-  return GROUP_COLORS[groupName] ?? "#475569";
+  if (!groupName) return "#9CACBE";
+  return GROUP_COLORS[groupName] ?? "#9CACBE";
 }

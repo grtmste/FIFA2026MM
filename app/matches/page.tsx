@@ -28,7 +28,7 @@ export default async function MatchesPage() {
       )}
 
       <section className="space-y-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-500">
           Alagrupi mängud
         </h3>
         <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
@@ -44,7 +44,7 @@ export default async function MatchesPage() {
 
         return (
           <section key={stage} className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-500">
               {STAGE_LABELS[stage]}
             </h3>
             <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">

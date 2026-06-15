@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="et" className={inter.variable}>
       <body className="min-h-screen bg-cream font-sans text-navy">
         <div className="mx-auto min-h-screen w-full max-w-[480px] bg-cream pb-24 md:max-w-2xl md:pb-8 lg:max-w-4xl">
-          <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur-lg md:px-8">
+          <header className="sticky top-0 z-40 border-b border-stone-200 bg-white/80 px-4 py-3 backdrop-blur-lg md:px-8">
             <div className="flex items-center justify-between md:py-1">
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-gold to-gold-dark text-lg shadow-sm">
@@ -34,7 +34,7 @@ export default function RootLayout({
                   <h1 className="text-lg font-extrabold leading-none tracking-tight text-navy md:text-xl">
                     JALKA <span className="text-gold">MM 2026</span>
                   </h1>
-                  <p className="mt-0.5 text-xs text-slate-500">Ennustusmäng</p>
+                  <p className="mt-0.5 text-xs text-stone-500">Ennustusmäng</p>
                 </div>
               </div>
               <TopNav />

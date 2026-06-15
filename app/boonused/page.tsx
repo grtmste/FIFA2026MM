@@ -30,7 +30,7 @@ export default async function BonusPage() {
       )}
 
       {allParticipants.length === 0 && (
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-stone-400">
           Osalejaid ei ole veel lisatud.
         </p>
       )}
@@ -39,12 +39,12 @@ export default async function BonusPage() {
         {bonusQuestions.map((question, idx) => (
           <section
             key={question.id}
-            className="space-y-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
+            className="space-y-2 rounded-2xl border border-stone-200 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
           >
             <h3 className="text-sm font-semibold text-navy">
               {idx + 1}. {question.question_text}
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-stone-500">
               Maksimum: {question.max_points} punkti
               {question.correct_answer && (
                 <>
@@ -56,10 +56,10 @@ export default async function BonusPage() {
             </p>
 
             {allParticipants.length > 0 && (
-              <div className="overflow-hidden rounded-lg border border-slate-200">
+              <div className="overflow-hidden rounded-lg border border-stone-200">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+                    <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">
                       <th className="px-2 py-1">Nimi</th>
                       <th className="px-2 py-1">Vastus</th>
                       <th className="px-2 py-1 text-center">Punktid</th>
@@ -76,15 +76,15 @@ export default async function BonusPage() {
                       return (
                         <tr
                           key={participant.id}
-                          className="border-t border-slate-100"
+                          className="border-t border-stone-100"
                         >
                           <td className="px-2 py-1 font-medium text-navy">
                             {participant.name}
                           </td>
-                          <td className="px-2 py-1 text-slate-600">
+                          <td className="px-2 py-1 text-stone-600">
                             {answer?.answer_text || "–"}
                           </td>
-                          <td className="px-2 py-1 text-center text-slate-600">
+                          <td className="px-2 py-1 text-center text-stone-600">
                             {answer?.points_awarded !== null &&
                             answer?.points_awarded !== undefined
                               ? `${answer.points_awarded} p`

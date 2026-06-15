@@ -11,10 +11,10 @@ const BASE =
 const VARIANTS: Record<Variant, string> = {
   primary: "bg-gold text-white shadow-sm hover:bg-gold-dark",
   outline: "border border-gold text-gold hover:bg-gold/10",
-  danger: "border border-red-300 text-red-500 hover:bg-red-50",
+  danger: "border border-rose-200 text-rose-500 hover:bg-rose-50",
 };
 
-const SUCCESS = "border border-green-500 bg-green-500 text-white shadow-sm";
+const SUCCESS = "border border-emerald-200 bg-emerald-50 text-emerald-600 shadow-sm";
 
 function Spinner() {
   return (

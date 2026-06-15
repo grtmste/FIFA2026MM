@@ -21,7 +21,7 @@ export default function TopNav() {
                 className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-150 active:scale-95 ${
                   isActive
                     ? "bg-navy text-white shadow-sm"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-navy"
+                    : "text-stone-600 hover:bg-stone-100 hover:text-navy"
                 }`}
               >
                 <span className="mr-1">{link.icon}</span>

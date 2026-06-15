@@ -39,17 +39,17 @@ export default async function MatchDetailPage({
     <div className="space-y-4">
       <Link
         href="/matches"
-        className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-navy"
+        className="inline-flex items-center gap-1 text-sm font-medium text-stone-500 hover:text-navy"
       >
         ← Tagasi mängude juurde
       </Link>
 
       <div
-        className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card"
+        className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card"
         style={{ borderLeft: `4px solid ${groupColor(typedMatch.group_name)}` }}
       >
         <div className="p-4">
-          <div className="mb-2 flex items-center justify-between text-xs text-slate-400">
+          <div className="mb-2 flex items-center justify-between text-xs text-stone-400">
             <span>
               {formatMatchDate(typedMatch.match_date)} ·{" "}
               {formatMatchTime(typedMatch.match_date)}
@@ -69,7 +69,7 @@ export default async function MatchDetailPage({
             </span>
             <span
               className={`min-w-[72px] rounded-md px-3 py-1.5 text-center text-lg font-bold ${
-                hasScore ? "bg-navy text-gold" : "bg-slate-100 text-slate-400"
+                hasScore ? "bg-navy text-gold" : "bg-stone-100 text-stone-400"
               }`}
             >
               {hasScore
@@ -80,26 +80,26 @@ export default async function MatchDetailPage({
               {typedMatch.away_team}
             </span>
           </div>
-          <div className="mt-2 text-center text-xs text-slate-400">
+          <div className="mt-2 text-center text-xs text-stone-400">
             {typedMatch.venue ?? "Selgub"}
           </div>
         </div>
       </div>
 
       <section className="space-y-2">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-500">
           Ennustused
         </h3>
 
         {allParticipants.length === 0 && (
-          <p className="text-sm text-slate-400">Osalejaid ei ole veel lisatud.</p>
+          <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
         )}
 
         {allParticipants.length > 0 && (
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
+          <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+                <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">
                   <th className="px-3 py-2">Nimi</th>
                   <th className="px-3 py-2 text-center">Ennustus</th>
                   {hasScore && <th className="px-3 py-2 text-center">Punktid</th>}
@@ -116,11 +116,11 @@ export default async function MatchDetailPage({
                       : null;
 
                   return (
-                    <tr key={participant.id} className="border-t border-slate-100">
+                    <tr key={participant.id} className="border-t border-stone-100">
                       <td className="px-3 py-2 font-medium text-navy">
                         {participant.name}
                       </td>
-                      <td className="px-3 py-2 text-center text-slate-600">
+                      <td className="px-3 py-2 text-center text-stone-600">
                         {prediction
                           ? `${prediction.predicted_home_score} : ${prediction.predicted_away_score}`
                           : "–"}

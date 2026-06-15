@@ -28,13 +28,13 @@ export default async function AdminPage({
             🔒
           </span>
           <h2 className="text-xl font-bold text-navy">Admin sisselogimine</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-stone-500">
             Sisesta salasõna jätkamiseks
           </p>
         </div>
         <form
           action={loginAction}
-          className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-card"
+          className="space-y-3 rounded-2xl border border-stone-200 bg-white p-5 shadow-card"
         >
           <input
             type="password"
@@ -42,7 +42,7 @@ export default async function AdminPage({
             placeholder="Salasõna"
             required
             autoFocus
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-navy placeholder-slate-400 transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+            className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-sm text-navy placeholder-stone-400 transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
           />
           {searchParams.error && (
             <p className="text-sm text-red-500">Vale salasõna.</p>
@@ -80,7 +80,7 @@ export default async function AdminPage({
         <form action={logoutAction}>
           <button
             type="submit"
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 active:scale-95"
+            className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-50 active:scale-95"
           >
             Logi välja
           </button>
