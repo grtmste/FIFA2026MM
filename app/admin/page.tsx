@@ -2,6 +2,7 @@ import { isAdminAuthenticated } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { loginAction, logoutAction } from "./actions";
 import AdminDashboard from "./AdminDashboard";
+import SubmitButton from "@/components/SubmitButton";
 import {
   BonusAnswer,
   BonusQuestion,
@@ -21,25 +22,34 @@ export default async function AdminPage({
 
   if (!authenticated) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold text-navy">Admin sisselogimine</h2>
-        <form action={loginAction} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="mx-auto max-w-sm space-y-4">
+        <div className="text-center">
+          <span className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-gold to-gold-dark text-2xl shadow-card">
+            🔒
+          </span>
+          <h2 className="text-xl font-bold text-navy">Admin sisselogimine</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Sisesta salasõna jätkamiseks
+          </p>
+        </div>
+        <form
+          action={loginAction}
+          className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-card"
+        >
           <input
             type="password"
             name="password"
             placeholder="Salasõna"
             required
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-navy placeholder-slate-400 focus:border-gold focus:outline-none"
+            autoFocus
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-navy placeholder-slate-400 transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
           />
           {searchParams.error && (
             <p className="text-sm text-red-500">Vale salasõna.</p>
           )}
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-gold px-3 py-2 text-sm font-bold text-white"
-          >
+          <SubmitButton variant="primary" className="w-full py-2.5 text-sm">
             Logi sisse
-          </button>
+          </SubmitButton>
         </form>
       </div>
     );
@@ -70,7 +80,7 @@ export default async function AdminPage({
         <form action={logoutAction}>
           <button
             type="submit"
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 hover:bg-slate-50"
+            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 active:scale-95"
           >
             Logi välja
           </button>

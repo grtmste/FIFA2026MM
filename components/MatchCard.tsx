@@ -10,7 +10,7 @@ export default function MatchCard({ match }: { match: Match }) {
   return (
     <Link
       href={`/matches/${match.id}`}
-      className="flex overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-colors hover:border-gold"
+      className="group flex overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-gold hover:shadow-card-hover"
       style={{ borderLeft: `4px solid ${groupColor(match.group_name)}` }}
     >
       <div className="flex w-9 flex-shrink-0 items-center justify-center bg-slate-50 text-xs font-bold text-slate-400">

@@ -150,7 +150,7 @@ export default function LeaderboardPage() {
             return (
               <div
                 key={stage}
-                className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card"
               >
                 <table className="w-full text-sm">
                   <thead>

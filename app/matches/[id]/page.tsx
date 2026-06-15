@@ -45,7 +45,7 @@ export default async function MatchDetailPage({
       </Link>
 
       <div
-        className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+        className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card"
         style={{ borderLeft: `4px solid ${groupColor(typedMatch.group_name)}` }}
       >
         <div className="p-4">
@@ -96,7 +96,7 @@ export default async function MatchDetailPage({
         )}
 
         {allParticipants.length > 0 && (
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-slate-50 text-left text-xs uppercase text-slate-500">

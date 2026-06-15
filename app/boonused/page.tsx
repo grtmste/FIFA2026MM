@@ -39,7 +39,7 @@ export default async function BonusPage() {
         {bonusQuestions.map((question, idx) => (
           <section
             key={question.id}
-            className="space-y-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+            className="space-y-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
           >
             <h3 className="text-sm font-semibold text-navy">
               {idx + 1}. {question.question_text}

@@ -18,13 +18,14 @@ export default function TopNav() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-150 active:scale-95 ${
                   isActive
-                    ? "bg-navy text-white"
+                    ? "bg-navy text-white shadow-sm"
                     : "text-slate-600 hover:bg-slate-100 hover:text-navy"
                 }`}
               >
-                {link.icon} {link.label}
+                <span className="mr-1">{link.icon}</span>
+                {link.label}
               </Link>
             </li>
           );
