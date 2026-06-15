@@ -61,20 +61,22 @@ export default async function MatchDetailPage({
               </span>
             )}
           </div>
-          <div className="flex items-center justify-between gap-3">
-            <span className="flex-1 text-right text-base font-semibold text-navy">
+          <div className="flex items-center justify-between gap-2">
+            <span className="min-w-0 flex-1 break-words text-right text-base font-semibold leading-tight text-navy">
               {typedMatch.home_team}
             </span>
             <span
-              className={`section-title min-w-[84px] rounded-sm px-3 py-1.5 text-center text-2xl ${
-                hasScore ? "bg-navy text-gold" : "bg-stone-100 text-stone-400"
+              className={`min-w-[88px] flex-shrink-0 rounded-sm px-3 py-1.5 text-center text-2xl font-bold tabular-nums tracking-tight ${
+                hasScore
+                  ? "bg-gradient-to-br from-navy to-gold text-white shadow-sm"
+                  : "bg-stone-100 text-stone-400"
               }`}
             >
               {hasScore
                 ? `${typedMatch.actual_home_score} : ${typedMatch.actual_away_score}`
                 : "vs"}
             </span>
-            <span className="flex-1 text-left text-base font-semibold text-navy">
+            <span className="min-w-0 flex-1 break-words text-left text-base font-semibold leading-tight text-navy">
               {typedMatch.away_team}
             </span>
           </div>
