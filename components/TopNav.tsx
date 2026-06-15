@@ -18,7 +18,7 @@ export default function TopNav() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-150 active:scale-95 ${
+                className={`rounded-sm px-3 py-2 text-sm font-semibold transition-all duration-150 active:scale-95 ${
                   isActive
                     ? "bg-navy text-white shadow-sm"
                     : "text-stone-600 hover:bg-stone-100 hover:text-navy"

@@ -18,11 +18,16 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        serif: ["var(--font-cormorant)", "Georgia", "serif"],
+      },
+      borderRadius: {
+        sm: "3px",
       },
       boxShadow: {
-        card: "0 1px 2px rgba(80, 64, 48, 0.04), 0 4px 18px rgba(80, 64, 48, 0.06)",
+        card: "0 1px 2px rgba(80, 64, 48, 0.04), 0 6px 20px rgba(80, 64, 48, 0.06)",
         "card-hover":
-          "0 2px 4px rgba(80, 64, 48, 0.06), 0 14px 30px rgba(80, 64, 48, 0.12)",
+          "0 2px 4px rgba(80, 64, 48, 0.06), 0 18px 40px rgba(80, 64, 48, 0.13)",
+        luxe: "0 30px 60px -25px rgba(80, 64, 48, 0.28)",
       },
       keyframes: {
         "fade-in-up": {

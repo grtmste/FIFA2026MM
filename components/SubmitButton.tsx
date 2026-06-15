@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom";
 type Variant = "primary" | "outline" | "danger";
 
 const BASE =
-  "relative inline-flex items-center justify-center gap-1.5 rounded-lg font-semibold transition-all duration-150 active:scale-95 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";
+  "relative inline-flex items-center justify-center gap-1.5 rounded-sm font-semibold transition-all duration-150 active:scale-95 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";
 
 const VARIANTS: Record<Variant, string> = {
   primary: "bg-gold text-white shadow-sm hover:bg-gold-dark",

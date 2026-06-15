@@ -31,7 +31,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 ];
 
 const INPUT =
-  "rounded-lg border border-stone-200 bg-white text-navy transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20";
+  "rounded-sm border border-stone-200 bg-white text-navy transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20";
 
 const SCORE_INPUT = `w-12 px-1 py-1.5 text-center text-sm font-semibold ${INPUT}`;
 
@@ -60,12 +60,12 @@ export default function AdminDashboard({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 rounded-xl border border-stone-200 bg-stone-100 p-1">
+      <div className="flex gap-1 rounded-sm border border-stone-200 bg-stone-100 p-1">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-150 active:scale-95 ${
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-150 active:scale-95 ${
               tab === t.id
                 ? "bg-white text-navy shadow-sm"
                 : "text-stone-500 hover:text-navy"
@@ -113,7 +113,7 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
     <div className="space-y-3">
       <form
         action={addParticipant}
-        className="flex gap-2 rounded-2xl border border-stone-200 bg-white p-3 shadow-card"
+        className="flex gap-2 rounded-sm border border-stone-200 bg-white p-3 shadow-card"
       >
         <input
           type="text"
@@ -131,7 +131,7 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
         {participants.map((p) => (
           <div
             key={p.id}
-            className="flex items-center gap-2 rounded-2xl border border-stone-200 bg-white p-2 shadow-card transition-shadow hover:shadow-card-hover"
+            className="flex items-center gap-2 rounded-sm border border-stone-200 bg-white p-2 shadow-card transition-shadow hover:shadow-card-hover"
           >
             <form action={updateParticipant} className="flex flex-1 gap-2">
               <input type="hidden" name="id" value={p.id} />
@@ -200,7 +200,7 @@ function MatchLabel({ match }: { match: Match }) {
     <div className="flex flex-1 items-center gap-2 text-xs">
       {match.group_name && (
         <span
-          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-[11px] font-bold text-white"
+          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-sm text-[11px] font-bold text-navy/80"
           style={{ backgroundColor: groupColor(match.group_name) }}
         >
           {match.group_name}
@@ -255,7 +255,7 @@ function PredictionsTab({
               <form
                 key={`${selectedParticipantId}-${match.id}`}
                 action={savePrediction}
-                className="flex items-center gap-2 rounded-2xl border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
+                className="flex items-center gap-2 rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
               >
                 <input type="hidden" name="participant_id" value={selectedParticipantId} />
                 <input type="hidden" name="match_id" value={match.id} />
@@ -294,7 +294,7 @@ function ResultsTab({ groupMatches }: { groupMatches: Match[] }) {
         <form
           key={match.id}
           action={saveMatchResult}
-          className="flex items-center gap-2 rounded-2xl border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
+          className="flex items-center gap-2 rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
         >
           <input type="hidden" name="match_id" value={match.id} />
           <MatchLabel match={match} />
@@ -345,7 +345,7 @@ function BonusTab({
 
   return (
     <div className="space-y-4">
-      <div className="space-y-2.5 rounded-2xl border border-stone-200 bg-white p-4 shadow-card">
+      <div className="space-y-2.5 rounded-sm border border-stone-200 bg-white p-4 shadow-card">
         <h4 className="flex items-center gap-1.5 text-sm font-bold text-navy">
           ⭐ Õiged vastused
         </h4>
@@ -387,7 +387,7 @@ function BonusTab({
               <form
                 key={`${selectedParticipantId}-${q.id}`}
                 action={saveBonusAnswer}
-                className="space-y-2.5 rounded-2xl border border-stone-200 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
+                className="space-y-2.5 rounded-sm border border-stone-200 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
               >
                 <input type="hidden" name="participant_id" value={selectedParticipantId} />
                 <input type="hidden" name="question_id" value={q.id} />

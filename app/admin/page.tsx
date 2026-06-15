@@ -24,17 +24,15 @@ export default async function AdminPage({
     return (
       <div className="mx-auto max-w-sm space-y-4">
         <div className="text-center">
-          <span className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-gold to-gold-dark text-2xl shadow-card">
+          <span className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-sm bg-gradient-to-br from-gold to-gold-dark text-2xl shadow-card">
             🔒
           </span>
-          <h2 className="text-xl font-bold text-navy">Admin sisselogimine</h2>
-          <p className="mt-1 text-sm text-stone-500">
-            Sisesta salasõna jätkamiseks
-          </p>
+          <h2 className="section-title text-3xl text-navy">Admin sisselogimine</h2>
+          <p className="eyebrow mt-1">Sisesta salasõna jätkamiseks</p>
         </div>
         <form
           action={loginAction}
-          className="space-y-3 rounded-2xl border border-stone-200 bg-white p-5 shadow-card"
+          className="space-y-3 rounded-sm border border-stone-200 bg-white p-5 shadow-card"
         >
           <input
             type="password"
@@ -42,7 +40,7 @@ export default async function AdminPage({
             placeholder="Salasõna"
             required
             autoFocus
-            className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-sm text-navy placeholder-stone-400 transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+            className="w-full rounded-sm border border-stone-200 bg-white px-3 py-2.5 text-sm text-navy placeholder-stone-400 transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
           />
           {searchParams.error && (
             <p className="text-sm text-red-500">Vale salasõna.</p>
@@ -76,11 +74,11 @@ export default async function AdminPage({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-navy">Admin</h2>
+        <h2 className="section-title text-3xl text-navy">Admin</h2>
         <form action={logoutAction}>
           <button
             type="submit"
-            className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-50 active:scale-95"
+            className="rounded-sm border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-50 active:scale-95"
           >
             Logi välja
           </button>

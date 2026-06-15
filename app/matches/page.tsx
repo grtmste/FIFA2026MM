@@ -1,6 +1,18 @@
 import { supabase } from "@/lib/supabase";
 import { Match, Stage, STAGE_LABELS } from "@/lib/types";
 import MatchCard from "@/components/MatchCard";
+import SectionHeading from "@/components/SectionHeading";
+
+function StageHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3">
+      <h3 className="section-title whitespace-nowrap text-lg text-navy">
+        {children}
+      </h3>
+      <div className="gold-rule flex-1" />
+    </div>
+  );
+}
 
 export const revalidate = 0;
 
@@ -17,8 +29,8 @@ export default async function MatchesPage() {
   const groupMatches = allMatches.filter((m) => m.stage === "group");
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-bold text-navy">Mängud</h2>
+    <div className="space-y-7">
+      <SectionHeading eyebrow="Kava" title="Mängud" />
 
       {(error || allMatches.length === 0) && (
         <p className="text-sm text-red-500">
@@ -27,11 +39,9 @@ export default async function MatchesPage() {
         </p>
       )}
 
-      <section className="space-y-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-500">
-          Alagrupi mängud
-        </h3>
-        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+      <section className="space-y-3.5">
+        <StageHeading>Alagrupi mängud</StageHeading>
+        <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
           {groupMatches.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
@@ -43,11 +53,9 @@ export default async function MatchesPage() {
         if (stageMatches.length === 0) return null;
 
         return (
-          <section key={stage} className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-500">
-              {STAGE_LABELS[stage]}
-            </h3>
-            <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+          <section key={stage} className="space-y-3.5">
+            <StageHeading>{STAGE_LABELS[stage]}</StageHeading>
+            <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
               {stageMatches.map((match) => (
                 <MatchCard key={match.id} match={match} />
               ))}

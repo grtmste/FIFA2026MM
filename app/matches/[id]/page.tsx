@@ -45,30 +45,28 @@ export default async function MatchDetailPage({
       </Link>
 
       <div
-        className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card"
-        style={{ borderLeft: `4px solid ${groupColor(typedMatch.group_name)}` }}
+        className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
       >
-        <div className="p-4">
-          <div className="mb-2 flex items-center justify-between text-xs text-stone-400">
-            <span>
-              {formatMatchDate(typedMatch.match_date)} ·{" "}
-              {formatMatchTime(typedMatch.match_date)}
-            </span>
+        <div className="p-5">
+          <div className="mb-3 flex items-center justify-center gap-2 text-xs text-stone-400">
+            <span>{formatMatchDate(typedMatch.match_date)}</span>
+            <span className="text-gold/60">·</span>
+            <span>{formatMatchTime(typedMatch.match_date)}</span>
             {typedMatch.group_name && (
               <span
-                className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+                className="ml-1 flex h-5 items-center rounded-sm px-1.5 text-[10px] font-bold text-navy/80"
                 style={{ backgroundColor: groupColor(typedMatch.group_name) }}
               >
                 {typedMatch.group_name}
               </span>
             )}
           </div>
-          <div className="flex items-center justify-between">
-            <span className="flex-1 text-right text-lg font-bold text-navy pr-3">
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex-1 text-right text-base font-semibold text-navy">
               {typedMatch.home_team}
             </span>
             <span
-              className={`min-w-[72px] rounded-md px-3 py-1.5 text-center text-lg font-bold ${
+              className={`section-title min-w-[84px] rounded-sm px-3 py-1.5 text-center text-2xl ${
                 hasScore ? "bg-navy text-gold" : "bg-stone-100 text-stone-400"
               }`}
             >
@@ -76,27 +74,30 @@ export default async function MatchDetailPage({
                 ? `${typedMatch.actual_home_score} : ${typedMatch.actual_away_score}`
                 : "vs"}
             </span>
-            <span className="flex-1 text-lg font-bold text-navy pl-3">
+            <span className="flex-1 text-left text-base font-semibold text-navy">
               {typedMatch.away_team}
             </span>
           </div>
-          <div className="mt-2 text-center text-xs text-stone-400">
+          <div className="mt-3 text-center text-xs text-stone-400">
             {typedMatch.venue ?? "Selgub"}
           </div>
         </div>
       </div>
 
-      <section className="space-y-2">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-stone-500">
-          Ennustused
-        </h3>
+      <section className="space-y-3">
+        <div className="flex items-center gap-3">
+          <h3 className="section-title whitespace-nowrap text-lg text-navy">
+            Ennustused
+          </h3>
+          <div className="gold-rule flex-1" />
+        </div>
 
         {allParticipants.length === 0 && (
           <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
         )}
 
         {allParticipants.length > 0 && (
-          <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
+          <div className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">

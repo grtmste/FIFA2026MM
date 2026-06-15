@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { calcMatchPoints } from "@/lib/scoring";
 import { Participant, Match, Prediction, BonusAnswer, Stage } from "@/lib/types";
+import SectionHeading from "@/components/SectionHeading";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
 
@@ -127,8 +128,8 @@ export default function LeaderboardPage() {
   }, [loadData]);
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold text-navy">Edetabel</h2>
+    <div className="space-y-5">
+      <SectionHeading eyebrow="Üldine seis" title="Edetabel" />
 
       {loading && <p className="text-sm text-stone-400">Laadimine...</p>}
 
@@ -150,18 +151,24 @@ export default function LeaderboardPage() {
             return (
               <div
                 key={stage}
-                className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card"
+                className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
               >
+                <div className="flex items-baseline justify-between px-4 pt-3 pb-1">
+                  <h3 className="section-title text-xl text-navy">
+                    {STAGE_TABLE_LABELS[stage]}
+                  </h3>
+                  {isLast && <span className="eyebrow">Punktide kokkuvõte</span>}
+                </div>
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">
-                      <th className="px-2 py-2 text-center">#</th>
-                      <th className="px-2 py-2">Nimi</th>
-                      <th className="px-2 py-2 text-center">{STAGE_TABLE_LABELS[stage]}</th>
+                    <tr className="border-b border-stone-100 text-left text-[10px] uppercase tracking-wider text-stone-400">
+                      <th className="px-3 py-2 text-center font-medium">#</th>
+                      <th className="px-3 py-2 font-medium">Nimi</th>
+                      <th className="px-3 py-2 text-center font-medium">Punktid</th>
                       {isLast && (
                         <>
-                          <th className="px-2 py-2 text-center">Boonus</th>
-                          <th className="px-2 py-2 text-center">Kokku</th>
+                          <th className="px-3 py-2 text-center font-medium">Boonus</th>
+                          <th className="px-3 py-2 text-center font-medium">Kokku</th>
                         </>
                       )}
                     </tr>
@@ -170,23 +177,23 @@ export default function LeaderboardPage() {
                     {rows.map((row, rowIdx) => (
                       <tr
                         key={row.id}
-                        className={`border-t border-stone-100 ${
-                          rowIdx === 0 ? "bg-champagne" : ""
+                        className={`border-t border-stone-100 transition-colors ${
+                          rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
                         }`}
                       >
-                        <td className="px-2 py-2 text-center font-semibold text-navy">
+                        <td className="px-3 py-2.5 text-center font-semibold text-gold">
                           {rowIdx + 1}
                         </td>
-                        <td className="px-2 py-2 font-medium text-navy">{row.name}</td>
-                        <td className="px-2 py-2 text-center text-stone-600">
+                        <td className="px-3 py-2.5 font-medium text-navy">{row.name}</td>
+                        <td className="px-3 py-2.5 text-center text-stone-600">
                           {row.stagePoints[stage]}
                         </td>
                         {isLast && (
                           <>
-                            <td className="px-2 py-2 text-center text-stone-600">
+                            <td className="px-3 py-2.5 text-center text-stone-600">
                               {row.bonusPoints}
                             </td>
-                            <td className="px-2 py-2 text-center font-bold text-gold">
+                            <td className="px-3 py-2.5 text-center font-bold text-navy">
                               {row.total}
                             </td>
                           </>

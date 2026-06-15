@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { BonusAnswer, BonusQuestion, Participant } from "@/lib/types";
+import SectionHeading from "@/components/SectionHeading";
 
 export const revalidate = 0;
 
@@ -20,7 +21,7 @@ export default async function BonusPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-navy">Boonusküsimused</h2>
+      <SectionHeading eyebrow="Lisapunktid" title="Boonusküsimused" />
 
       {(questionsError || bonusQuestions.length === 0) && (
         <p className="text-sm text-red-500">
@@ -39,10 +40,13 @@ export default async function BonusPage() {
         {bonusQuestions.map((question, idx) => (
           <section
             key={question.id}
-            className="space-y-2 rounded-2xl border border-stone-200 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
+            className="space-y-2 rounded-sm border border-stone-200 border-t-2 border-t-gold/40 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
           >
-            <h3 className="text-sm font-semibold text-navy">
-              {idx + 1}. {question.question_text}
+            <h3 className="flex items-baseline gap-2 text-sm font-semibold text-navy">
+              <span className="section-title text-2xl leading-none text-gold">
+                {idx + 1}
+              </span>
+              {question.question_text}
             </h3>
             <p className="text-xs text-stone-500">
               Maksimum: {question.max_points} punkti
@@ -56,7 +60,7 @@ export default async function BonusPage() {
             </p>
 
             {allParticipants.length > 0 && (
-              <div className="overflow-hidden rounded-lg border border-stone-200">
+              <div className="overflow-hidden rounded-sm border border-stone-200">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">
