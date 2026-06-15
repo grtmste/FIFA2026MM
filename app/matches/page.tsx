@@ -41,7 +41,7 @@ export default async function MatchesPage() {
 
       <section className="space-y-3.5">
         <StageHeading>Alagrupi mängud</StageHeading>
-        <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {groupMatches.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
@@ -55,7 +55,7 @@ export default async function MatchesPage() {
         return (
           <section key={stage} className="space-y-3.5">
             <StageHeading>{STAGE_LABELS[stage]}</StageHeading>
-            <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {stageMatches.map((match) => (
                 <MatchCard key={match.id} match={match} />
               ))}

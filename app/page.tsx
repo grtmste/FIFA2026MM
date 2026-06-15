@@ -144,14 +144,16 @@ export default function LeaderboardPage() {
       )}
 
       {!loading && !error && rows.length > 0 && (
-        <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {(stages.length > 0 ? stages : (["group"] as Stage[])).map((stage, idx) => {
             const isLast = idx === (stages.length > 0 ? stages.length : 1) - 1;
 
             return (
               <div
                 key={stage}
-                className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
+                className={`overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card ${
+                  isLast ? "md:col-span-2 xl:col-span-3" : ""
+                }`}
               >
                 <div className="flex items-baseline justify-between px-4 pt-3 pb-1">
                   <h3 className="section-title text-xl text-navy">
