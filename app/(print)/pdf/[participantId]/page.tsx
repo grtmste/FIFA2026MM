@@ -23,239 +23,196 @@ export default async function PdfPage({
     { data: bonusQuestions },
     { data: bonusAnswers },
   ] = await Promise.all([
-    supabaseAdmin
-      .from("participants")
-      .select("*")
-      .eq("id", params.participantId)
-      .single(),
+    supabaseAdmin.from("participants").select("*").eq("id", params.participantId).single(),
     supabaseAdmin
       .from("matches")
       .select("*")
       .eq("stage", "group")
       .order("match_date", { ascending: true, nullsFirst: false })
       .order("id", { ascending: true }),
-    supabaseAdmin
-      .from("predictions")
-      .select("*")
-      .eq("participant_id", params.participantId),
-    supabaseAdmin
-      .from("participants")
-      .select("*")
-      .order("name", { ascending: true }),
+    supabaseAdmin.from("predictions").select("*").eq("participant_id", params.participantId),
+    supabaseAdmin.from("participants").select("*").order("name", { ascending: true }),
     supabaseAdmin.from("bonus_questions").select("*").order("id", { ascending: true }),
-    supabaseAdmin
-      .from("bonus_answers")
-      .select("*")
-      .eq("participant_id", params.participantId),
+    supabaseAdmin.from("bonus_answers").select("*").eq("participant_id", params.participantId),
   ]);
 
   if (!participant) notFound();
 
-  const typedMatches = (matches ?? []) as Match[];
-  const typedPredictions = (predictions ?? []) as Prediction[];
-  const typedParticipants = (allParticipants ?? []) as Participant[];
-  const predMap = new Map<number, Prediction>();
-  typedPredictions.forEach((p) => predMap.set(p.match_id, p));
+  const allMatches = (matches ?? []) as Match[];
+  const preds = (predictions ?? []) as Prediction[];
+  const participants = (allParticipants ?? []) as Participant[];
+  const predMap = new Map<number, Prediction>(preds.map((p) => [p.match_id, p]));
 
-  // Split matches into two pages (~24 per page for clean layout)
-  const PAGE_SIZE = 24;
-  const page1 = typedMatches.slice(0, PAGE_SIZE);
-  const page2 = typedMatches.slice(PAGE_SIZE);
-
-  const otherParticipants = typedParticipants.filter(
-    (p) => p.id !== params.participantId
-  );
+  // Split 72 matches evenly across 2 pages (36 each)
+  const half = Math.ceil(allMatches.length / 2);
+  const page1Matches = allMatches.slice(0, half);
+  const page2Matches = allMatches.slice(half);
 
   return (
     <>
       <PrintTrigger />
       <style>{`
-        @page { size: A4; margin: 14mm 12mm; }
-        @media print { .page-break { page-break-before: always; } }
-        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        @page {
+          size: A4 portrait;
+          margin: 8mm 7mm;
+        }
+        * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        body { margin: 0; font-family: system-ui, sans-serif; font-size: 9pt; color: #1b2447; background: white; }
+        .page { page-break-after: always; padding: 0; }
+        .page:last-child { page-break-after: auto; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1b2447; padding-bottom: 4pt; margin-bottom: 5pt; }
+        .logo { height: 28pt; width: auto; }
+        .participant-name { font-size: 13pt; font-weight: 800; color: #1b2447; }
+        .sheet-label { font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase; color: #999; }
+        .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 3pt; }
+        .match-row { display: flex; align-items: center; gap: 3pt; padding: 2pt 3pt; border: 0.5pt solid #e5e7eb; border-radius: 2pt; background: white; }
+        .group-badge { width: 12pt; height: 12pt; flex-shrink: 0; border-radius: 2pt; display: flex; align-items: center; justify-content: center; font-size: 7pt; font-weight: 700; color: rgba(27,36,71,0.8); }
+        .match-info { flex: 1; min-width: 0; }
+        .match-teams { font-size: 8pt; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+        .match-date { font-size: 6.5pt; color: #9ca3af; line-height: 1; }
+        .scores { display: flex; align-items: center; gap: 2pt; flex-shrink: 0; }
+        .score-box { width: 14pt; height: 14pt; border: 0.5pt solid; border-radius: 2pt; display: flex; align-items: center; justify-content: center; font-size: 8pt; font-weight: 700; }
+        .score-box.filled { border-color: #1b2447; background: #1b2447; color: white; }
+        .score-box.empty { border-color: #d1d5db; background: white; color: transparent; }
+        .score-sep { font-size: 7pt; font-weight: 700; color: #d1d5db; }
+        .section-label { font-size: 6.5pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9ca3af; margin: 6pt 0 3pt; }
+        .bonus-row { display: flex; gap: 4pt; padding: 2pt 0; border-bottom: 0.5pt solid #f3f4f6; align-items: flex-start; }
+        .bonus-num { font-size: 7pt; font-weight: 700; color: #9ca3af; flex-shrink: 0; margin-top: 0.5pt; }
+        .bonus-q { font-size: 8pt; font-weight: 600; flex: 1; }
+        .bonus-a { font-size: 8pt; color: #6b7280; }
+        .participants-row { display: flex; flex-wrap: wrap; gap: 3pt; margin-top: 4pt; }
+        .participant-chip { padding: 1pt 5pt; border-radius: 2pt; font-size: 7.5pt; font-weight: 600; }
+        .participant-chip.self { background: #1b2447; color: white; }
+        .participant-chip.other { background: #f1f5f9; color: #475569; }
+        .divider { border: none; border-top: 0.5pt solid #e5e7eb; margin: 5pt 0 4pt; }
       `}</style>
 
-      {/* ───── PAGE 1 ───── */}
-      <div className="px-2 py-4">
-        <Header participantName={participant.name} />
-        <MatchList matches={page1} predMap={predMap} />
+      {/* ── PAGE 1 ── */}
+      <div className="page">
+        <div className="page-header">
+          <img src="/Football-header.svg" alt="Jalka MM" className="logo" />
+          <div style={{ textAlign: "right" }}>
+            <div className="sheet-label">Ennustusleht</div>
+            <div className="participant-name">{participant.name}</div>
+          </div>
+        </div>
+        <MatchGrid matches={page1Matches} predMap={predMap} />
       </div>
 
-      {/* ───── PAGE 2 ───── */}
-      {(page2.length > 0 || bonusQuestions?.length) && (
-        <div className="page-break px-2 py-4">
-          <Header participantName={participant.name} compact />
-          {page2.length > 0 && <MatchList matches={page2} predMap={predMap} />}
-
-          {/* Bonus questions */}
-          {bonusQuestions && bonusQuestions.length > 0 && (
-            <div className="mt-4">
-              <SectionTitle>Boonusküsimused</SectionTitle>
-              {bonusQuestions.map((q, i) => {
-                const ans = bonusAnswers?.find((a) => a.question_id === q.id);
-                return (
-                  <div
-                    key={q.id}
-                    className="mb-2 flex items-start gap-2 border-b border-stone-100 pb-2"
-                  >
-                    <span className="mt-0.5 text-xs font-bold text-stone-400">
-                      {i + 1}.
-                    </span>
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold text-navy">
-                        {q.question_text}
-                        <span className="ml-1 font-normal text-stone-400">
-                          ({q.max_points} p)
-                        </span>
-                      </p>
-                      <p className="mt-0.5 text-xs text-stone-600">
-                        {ans?.answer_text ?? "–"}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Participants list */}
-          {otherParticipants.length > 0 && (
-            <div className="mt-6 border-t border-stone-200 pt-4">
-              <SectionTitle>Osalejad</SectionTitle>
-              <div className="flex flex-wrap gap-2">
-                {typedParticipants.map((p) => (
-                  <span
-                    key={p.id}
-                    className={`rounded px-2 py-0.5 text-xs font-semibold ${
-                      p.id === params.participantId
-                        ? "bg-navy text-white"
-                        : "bg-stone-100 text-stone-600"
-                    }`}
-                  >
-                    {p.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+      {/* ── PAGE 2 ── */}
+      <div className="page">
+        <div className="page-header">
+          <img src="/Football-header.svg" alt="Jalka MM" className="logo" />
+          <div style={{ textAlign: "right" }}>
+            <div className="sheet-label">Ennustusleht · leht 2</div>
+            <div className="participant-name">{participant.name}</div>
+          </div>
         </div>
-      )}
+        <MatchGrid matches={page2Matches} predMap={predMap} />
 
-      {/* If only 1 page: show participants at the bottom */}
-      {page2.length === 0 && !(bonusQuestions?.length) && otherParticipants.length > 0 && (
-        <div className="px-2 pb-6">
-          <div className="mt-6 border-t border-stone-200 pt-4">
-            <SectionTitle>Osalejad</SectionTitle>
-            <div className="flex flex-wrap gap-2">
-              {typedParticipants.map((p) => (
+        {/* Bonus questions */}
+        {bonusQuestions && bonusQuestions.length > 0 && (
+          <>
+            <hr className="divider" />
+            <div className="section-label">Boonusküsimused</div>
+            {bonusQuestions.map((q, i) => {
+              const ans = bonusAnswers?.find((a) => a.question_id === q.id);
+              return (
+                <div key={q.id} className="bonus-row">
+                  <span className="bonus-num">{i + 1}.</span>
+                  <div style={{ flex: 1 }}>
+                    <span className="bonus-q">{q.question_text}</span>
+                    <span style={{ fontSize: "7pt", color: "#9ca3af" }}> ({q.max_points}p)</span>
+                    {ans?.answer_text && (
+                      <span className="bonus-a"> — {ans.answer_text}</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        )}
+
+        {/* Participants */}
+        {participants.length > 0 && (
+          <>
+            <hr className="divider" />
+            <div className="section-label">Osalejad</div>
+            <div className="participants-row">
+              {participants.map((p) => (
                 <span
                   key={p.id}
-                  className={`rounded px-2 py-0.5 text-xs font-semibold ${
-                    p.id === params.participantId
-                      ? "bg-navy text-white"
-                      : "bg-stone-100 text-stone-600"
-                  }`}
+                  className={`participant-chip ${p.id === params.participantId ? "self" : "other"}`}
                 >
                   {p.name}
                 </span>
               ))}
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </>
   );
 }
 
-function Header({
-  participantName,
-  compact,
-}: {
-  participantName: string;
-  compact?: boolean;
-}) {
-  return (
-    <div className={`mb-4 flex items-center justify-between border-b-2 border-navy pb-3 ${compact ? "mb-3" : ""}`}>
-      <div className="flex items-center gap-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/Football-header.svg" alt="Jalka MM" className="h-12 w-auto" />
-      </div>
-      <div className="text-right">
-        <p className="text-xs uppercase tracking-widest text-stone-400">
-          Ennustusleht
-        </p>
-        <p className="text-lg font-extrabold text-navy">{participantName}</p>
-      </div>
-    </div>
-  );
-}
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h3 className="mb-2 text-[10px] font-bold uppercase tracking-widest text-stone-400">
-      {children}
-    </h3>
-  );
-}
-
-function MatchList({
+function MatchGrid({
   matches,
   predMap,
 }: {
   matches: Match[];
   predMap: Map<number, Prediction>;
 }) {
+  // Split into 2 columns
+  const half = Math.ceil(matches.length / 2);
+  const col1 = matches.slice(0, half);
+  const col2 = matches.slice(half);
+
   return (
-    <div className="space-y-1">
-      {matches.map((match) => {
-        const pred = predMap.get(match.id);
-        const bg = match.group_name ? groupColor(match.group_name) : "#9CACBE";
-        return (
-          <div
-            key={match.id}
-            className="flex items-center gap-2 rounded border border-stone-100 bg-white px-2 py-1.5"
-            style={{ borderLeft: `3px solid ${bg}` }}
-          >
-            {match.group_name && (
-              <span
-                className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-[10px] font-bold text-navy/80"
-                style={{ backgroundColor: bg }}
-              >
-                {match.group_name}
-              </span>
-            )}
-            <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate text-xs font-semibold text-navy">
-                {match.home_team} – {match.away_team}
-              </span>
-              <span className="text-[9px] text-stone-400">
-                {formatMatchDate(match.match_date)} · {formatMatchTime(match.match_date)}
-              </span>
-            </div>
-            {/* Score boxes */}
-            <div className="flex flex-shrink-0 items-center gap-1">
-              <ScoreBox value={pred?.predicted_home_score} />
-              <span className="text-[10px] font-bold text-stone-300">:</span>
-              <ScoreBox value={pred?.predicted_away_score} />
-            </div>
-          </div>
-        );
-      })}
+    <div className="cols">
+      <div>
+        {col1.map((m) => <MatchRow key={m.id} match={m} pred={predMap.get(m.id)} />)}
+      </div>
+      <div>
+        {col2.map((m) => <MatchRow key={m.id} match={m} pred={predMap.get(m.id)} />)}
+      </div>
     </div>
   );
 }
 
-function ScoreBox({ value }: { value?: number }) {
-  const hasValue = value !== undefined && value !== null;
+function MatchRow({ match, pred }: { match: Match; pred?: Prediction }) {
+  const bg = match.group_name ? groupColor(match.group_name) : "#9CACBE";
   return (
-    <span
-      className={`flex h-6 w-6 items-center justify-center rounded border text-xs font-bold ${
-        hasValue
-          ? "border-navy bg-navy text-white"
-          : "border-stone-200 bg-white text-transparent"
-      }`}
+    <div
+      className="match-row"
+      style={{ borderLeft: `2.5pt solid ${bg}`, marginBottom: "2pt" }}
     >
-      {hasValue ? value : "0"}
+      {match.group_name && (
+        <span className="group-badge" style={{ backgroundColor: bg }}>
+          {match.group_name}
+        </span>
+      )}
+      <div className="match-info">
+        <div className="match-teams">
+          {match.home_team} – {match.away_team}
+        </div>
+        <div className="match-date">
+          {formatMatchDate(match.match_date)} · {formatMatchTime(match.match_date)}
+        </div>
+      </div>
+      <div className="scores">
+        <ScoreBox value={pred?.predicted_home_score} />
+        <span className="score-sep">:</span>
+        <ScoreBox value={pred?.predicted_away_score} />
+      </div>
+    </div>
+  );
+}
+
+function ScoreBox({ value }: { value?: number | null }) {
+  const has = value !== undefined && value !== null;
+  return (
+    <span className={`score-box ${has ? "filled" : "empty"}`}>
+      {has ? value : "0"}
     </span>
   );
 }
