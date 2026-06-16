@@ -49,7 +49,13 @@ export default function MatchCard({ match }: { match: Match }) {
           </span>
         </div>
         <div className="mt-1.5 text-center text-[11px] text-stone-400">
-          {match.venue ?? "Selgub"}
+          {hasScore
+            ? match.actual_home_score! > match.actual_away_score!
+              ? "Koduvõit"
+              : match.actual_home_score! < match.actual_away_score!
+              ? "Võõrsvõit"
+              : "Viik"
+            : match.venue ?? "Selgub"}
         </div>
       </div>
     </Link>

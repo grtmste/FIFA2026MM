@@ -10,6 +10,8 @@ import {
   getAdminPassword,
   isAdminAuthenticated,
 } from "@/lib/auth";
+import { resolveBracketTeams } from "@/lib/bracket";
+import { Match } from "@/lib/types";
 
 function revalidateAll() {
   revalidatePath("/");
@@ -156,6 +158,22 @@ export async function saveBonusAnswer(formData: FormData) {
     { onConflict: "participant_id,question_id" }
   );
 
+  revalidateAll();
+}
+
+export async function advanceBracket() {
+  requireAuth();
+  const { data } = await supabaseAdmin.from("matches").select("*");
+  const allMatches = (data ?? []) as Match[];
+  const updates = resolveBracketTeams(allMatches);
+  await Promise.all(
+    updates.map((u) =>
+      supabaseAdmin
+        .from("matches")
+        .update({ home_team: u.home_team, away_team: u.away_team })
+        .eq("id", u.id)
+    )
+  );
   revalidateAll();
 }
 

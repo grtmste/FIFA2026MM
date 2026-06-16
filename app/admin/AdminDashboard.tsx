@@ -13,6 +13,7 @@ import { formatMatchDate, formatMatchTime } from "@/lib/format";
 import SubmitButton from "@/components/SubmitButton";
 import {
   addParticipant,
+  advanceBracket,
   deleteParticipant,
   saveBonusAnswer,
   saveBonusCorrectAnswer,
@@ -92,7 +93,7 @@ export default function AdminDashboard({
           />
         )}
 
-        {tab === "results" && <ResultsTab groupMatches={groupMatches} />}
+        {tab === "results" && <ResultsTab allMatches={matches} />}
 
         {tab === "bonus" && (
           <BonusTab
@@ -303,39 +304,68 @@ function PredictionsTab({
   );
 }
 
-function ResultsTab({ groupMatches }: { groupMatches: Match[] }) {
+const STAGE_ORDER = ["group", "r32", "r16", "qf", "sf", "final"] as const;
+const STAGE_LABEL: Record<string, string> = {
+  group: "Alagrupi mängud",
+  r32: "1/32 finaali mängud",
+  r16: "1/16 finaali mängud",
+  qf: "Veerandfinaali mängud",
+  sf: "Poolfinaali mängud",
+  final: "Finaalmäng",
+};
+
+function ResultsTab({ allMatches }: { allMatches: Match[] }) {
   return (
-    <div className="space-y-2">
-      {groupMatches.map((match) => (
-        <form
-          key={match.id}
-          action={saveMatchResult}
-          className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
-        >
-          <input type="hidden" name="match_id" value={match.id} />
-          <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
-            <MatchLabel match={match} />
-            <div className="flex flex-shrink-0 items-center justify-end gap-2 md:justify-start">
-              <input
-                type="number"
-                name="actual_home_score"
-                min={0}
-                defaultValue={match.actual_home_score ?? ""}
-                className={SCORE_INPUT}
-              />
-              <span className="text-xs font-bold text-stone-300">:</span>
-              <input
-                type="number"
-                name="actual_away_score"
-                min={0}
-                defaultValue={match.actual_away_score ?? ""}
-                className={SCORE_INPUT}
-              />
-              <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">OK</SubmitButton>
-            </div>
+    <div className="space-y-5">
+      {/* Advance bracket button */}
+      <form action={advanceBracket}>
+        <SubmitButton variant="primary" className="px-4 py-2 text-sm" successLabel="Uuendatud!">
+          ⚡ Uuenda järgmine voor
+        </SubmitButton>
+        <p className="mt-1 text-[11px] text-stone-400">
+          Arvutab alagrupi seisud ja täidab järgmised voorud automaatselt.
+        </p>
+      </form>
+
+      {STAGE_ORDER.map((stage) => {
+        const stageMatches = allMatches.filter((m) => m.stage === stage);
+        if (stageMatches.length === 0) return null;
+        return (
+          <div key={stage} className="space-y-2">
+            <h3 className="text-sm font-bold text-navy">{STAGE_LABEL[stage]}</h3>
+            {stageMatches.map((match) => (
+              <form
+                key={match.id}
+                action={saveMatchResult}
+                className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
+              >
+                <input type="hidden" name="match_id" value={match.id} />
+                <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
+                  <MatchLabel match={match} />
+                  <div className="flex flex-shrink-0 items-center justify-end gap-2 md:justify-start">
+                    <input
+                      type="number"
+                      name="actual_home_score"
+                      min={0}
+                      defaultValue={match.actual_home_score ?? ""}
+                      className={SCORE_INPUT}
+                    />
+                    <span className="text-xs font-bold text-stone-300">:</span>
+                    <input
+                      type="number"
+                      name="actual_away_score"
+                      min={0}
+                      defaultValue={match.actual_away_score ?? ""}
+                      className={SCORE_INPUT}
+                    />
+                    <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">OK</SubmitButton>
+                  </div>
+                </div>
+              </form>
+            ))}
           </div>
-        </form>
-      ))}
+        );
+      })}
     </div>
   );
 }
