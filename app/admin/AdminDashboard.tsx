@@ -241,11 +241,25 @@ function PredictionsTab({
 
   return (
     <div className="space-y-3">
-      <ParticipantSelect
-        participants={participants}
-        selectedParticipantId={selectedParticipantId}
-        onSelectParticipant={onSelectParticipant}
-      />
+      <div className="flex items-end gap-2">
+        <div className="flex-1">
+          <ParticipantSelect
+            participants={participants}
+            selectedParticipantId={selectedParticipantId}
+            onSelectParticipant={onSelectParticipant}
+          />
+        </div>
+        {selectedParticipantId && (
+          <a
+            href={`/pdf/${selectedParticipantId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-sm border border-gold bg-gold px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-gold-dark"
+          >
+            🖨️ PDF
+          </a>
+        )}
+      </div>
 
       {selectedParticipantId && (
         <div className="space-y-2">
@@ -259,25 +273,27 @@ function PredictionsTab({
               >
                 <input type="hidden" name="participant_id" value={selectedParticipantId} />
                 <input type="hidden" name="match_id" value={match.id} />
-                <MatchLabel match={match} />
-                <input
-                  type="number"
-                  name="predicted_home_score"
-                  min={0}
-                  defaultValue={existing?.predicted_home_score ?? ""}
-                  className={SCORE_INPUT}
-                />
-                <span className="text-xs font-bold text-stone-300">:</span>
-                <input
-                  type="number"
-                  name="predicted_away_score"
-                  min={0}
-                  defaultValue={existing?.predicted_away_score ?? ""}
-                  className={SCORE_INPUT}
-                />
-                <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">
-                  OK
-                </SubmitButton>
+                <div className="flex flex-col gap-2">
+                  <MatchLabel match={match} />
+                  <div className="flex items-center justify-end gap-2">
+                    <input
+                      type="number"
+                      name="predicted_home_score"
+                      min={0}
+                      defaultValue={existing?.predicted_home_score ?? ""}
+                      className={SCORE_INPUT}
+                    />
+                    <span className="text-xs font-bold text-stone-300">:</span>
+                    <input
+                      type="number"
+                      name="predicted_away_score"
+                      min={0}
+                      defaultValue={existing?.predicted_away_score ?? ""}
+                      className={SCORE_INPUT}
+                    />
+                    <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">OK</SubmitButton>
+                  </div>
+                </div>
               </form>
             );
           })}
@@ -297,25 +313,27 @@ function ResultsTab({ groupMatches }: { groupMatches: Match[] }) {
           className="flex items-center gap-2 rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
         >
           <input type="hidden" name="match_id" value={match.id} />
-          <MatchLabel match={match} />
-          <input
-            type="number"
-            name="actual_home_score"
-            min={0}
-            defaultValue={match.actual_home_score ?? ""}
-            className={SCORE_INPUT}
-          />
-          <span className="text-xs font-bold text-stone-300">:</span>
-          <input
-            type="number"
-            name="actual_away_score"
-            min={0}
-            defaultValue={match.actual_away_score ?? ""}
-            className={SCORE_INPUT}
-          />
-          <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">
-            OK
-          </SubmitButton>
+          <div className="flex flex-col gap-2">
+            <MatchLabel match={match} />
+            <div className="flex items-center justify-end gap-2">
+              <input
+                type="number"
+                name="actual_home_score"
+                min={0}
+                defaultValue={match.actual_home_score ?? ""}
+                className={SCORE_INPUT}
+              />
+              <span className="text-xs font-bold text-stone-300">:</span>
+              <input
+                type="number"
+                name="actual_away_score"
+                min={0}
+                defaultValue={match.actual_away_score ?? ""}
+                className={SCORE_INPUT}
+              />
+              <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">OK</SubmitButton>
+            </div>
+          </div>
         </form>
       ))}
     </div>
