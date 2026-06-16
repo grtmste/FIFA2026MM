@@ -8,6 +8,22 @@ import PrintTrigger from "./PrintTrigger";
 
 export const revalidate = 0;
 
+/* Derive unique teams per group from match data */
+function buildGroups(matches: Match[]): Record<string, string[]> {
+  const groups: Record<string, Set<string>> = {};
+  for (const m of matches) {
+    if (!m.group_name) continue;
+    if (!groups[m.group_name]) groups[m.group_name] = new Set();
+    groups[m.group_name].add(m.home_team);
+    groups[m.group_name].add(m.away_team);
+  }
+  return Object.fromEntries(
+    Object.entries(groups)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => [k, Array.from(v).sort()])
+  );
+}
+
 export default async function PdfPage({
   params,
 }: {
@@ -42,52 +58,69 @@ export default async function PdfPage({
   const preds = (predictions ?? []) as Prediction[];
   const participants = (allParticipants ?? []) as Participant[];
   const predMap = new Map<number, Prediction>(preds.map((p) => [p.match_id, p]));
+  const groups = buildGroups(allMatches);
+  const groupKeys = Object.keys(groups); // A–L sorted
 
-  // Split 72 matches evenly across 2 pages (36 each)
-  const half = Math.ceil(allMatches.length / 2);
-  const page1Matches = allMatches.slice(0, half);
-  const page2Matches = allMatches.slice(half);
+  // 3 columns on page 1: divide 72 matches into thirds
+  const third = Math.ceil(allMatches.length / 3);
+  const col1 = allMatches.slice(0, third);
+  const col2 = allMatches.slice(third, third * 2);
+  const col3 = allMatches.slice(third * 2);
 
   return (
     <>
       <PrintTrigger />
       <style>{`
-        @page {
-          size: A4 portrait;
-          margin: 8mm 7mm;
-        }
+        @page { size: A4 portrait; margin: 7mm 6mm; }
         * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        body { margin: 0; font-family: system-ui, sans-serif; font-size: 9pt; color: #1b2447; background: white; }
-        .page { page-break-after: always; padding: 0; }
+        body { margin: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 8.5pt; color: #1b2447; background: white; }
+        .page { page-break-after: always; }
         .page:last-child { page-break-after: auto; }
-        .page-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1b2447; padding-bottom: 4pt; margin-bottom: 5pt; }
-        .logo { height: 28pt; width: auto; }
-        .participant-name { font-size: 13pt; font-weight: 800; color: #1b2447; }
-        .sheet-label { font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase; color: #999; }
-        .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 3pt; }
-        .match-row { display: flex; align-items: center; gap: 3pt; padding: 2pt 3pt; border: 0.5pt solid #e5e7eb; border-radius: 2pt; background: white; }
-        .group-badge { width: 12pt; height: 12pt; flex-shrink: 0; border-radius: 2pt; display: flex; align-items: center; justify-content: center; font-size: 7pt; font-weight: 700; color: rgba(27,36,71,0.8); }
+
+        /* Header */
+        .page-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1b2447; padding-bottom: 3pt; margin-bottom: 4pt; }
+        .logo { height: 26pt; width: auto; }
+        .participant-name { font-size: 12pt; font-weight: 800; color: #1b2447; line-height: 1; }
+        .sheet-label { font-size: 6.5pt; letter-spacing: 0.1em; text-transform: uppercase; color: #9ca3af; }
+
+        /* 3-column match grid */
+        .match-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2pt; }
+        .match-col { display: flex; flex-direction: column; gap: 1.5pt; }
+
+        /* Match row */
+        .match-row { display: flex; align-items: center; gap: 2pt; padding: 1.5pt 2.5pt; border: 0.5pt solid #e5e7eb; border-radius: 2pt; }
+        .group-badge { width: 11pt; height: 11pt; flex-shrink: 0; border-radius: 1.5pt; display: flex; align-items: center; justify-content: center; font-size: 6.5pt; font-weight: 800; color: rgba(27,36,71,0.85); }
         .match-info { flex: 1; min-width: 0; }
-        .match-teams { font-size: 8pt; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-        .match-date { font-size: 6.5pt; color: #9ca3af; line-height: 1; }
-        .scores { display: flex; align-items: center; gap: 2pt; flex-shrink: 0; }
-        .score-box { width: 14pt; height: 14pt; border: 0.5pt solid; border-radius: 2pt; display: flex; align-items: center; justify-content: center; font-size: 8pt; font-weight: 700; }
+        .match-teams { font-size: 7.5pt; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.25; }
+        .match-date { font-size: 6pt; color: #9ca3af; line-height: 1; }
+        .scores { display: flex; align-items: center; gap: 1.5pt; flex-shrink: 0; }
+        .score-box { width: 13pt; height: 13pt; border: 0.5pt solid; border-radius: 1.5pt; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; font-weight: 700; }
         .score-box.filled { border-color: #1b2447; background: #1b2447; color: white; }
         .score-box.empty { border-color: #d1d5db; background: white; color: transparent; }
-        .score-sep { font-size: 7pt; font-weight: 700; color: #d1d5db; }
-        .section-label { font-size: 6.5pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9ca3af; margin: 6pt 0 3pt; }
-        .bonus-row { display: flex; gap: 4pt; padding: 2pt 0; border-bottom: 0.5pt solid #f3f4f6; align-items: flex-start; }
-        .bonus-num { font-size: 7pt; font-weight: 700; color: #9ca3af; flex-shrink: 0; margin-top: 0.5pt; }
-        .bonus-q { font-size: 8pt; font-weight: 600; flex: 1; }
-        .bonus-a { font-size: 8pt; color: #6b7280; }
-        .participants-row { display: flex; flex-wrap: wrap; gap: 3pt; margin-top: 4pt; }
-        .participant-chip { padding: 1pt 5pt; border-radius: 2pt; font-size: 7.5pt; font-weight: 600; }
-        .participant-chip.self { background: #1b2447; color: white; }
-        .participant-chip.other { background: #f1f5f9; color: #475569; }
-        .divider { border: none; border-top: 0.5pt solid #e5e7eb; margin: 5pt 0 4pt; }
+        .score-sep { font-size: 6.5pt; font-weight: 700; color: #d1d5db; }
+
+        /* Group summary table */
+        .section-label { font-size: 6.5pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9ca3af; margin: 5pt 0 3pt; }
+        .groups-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2pt; }
+        .group-card { border: 0.5pt solid #e5e7eb; border-radius: 2pt; overflow: hidden; }
+        .group-header { padding: 2pt 4pt; font-size: 8pt; font-weight: 800; color: rgba(27,36,71,0.85); }
+        .group-team { padding: 1.5pt 4pt; font-size: 7pt; color: #374151; border-top: 0.5pt solid #f3f4f6; background: white; }
+
+        /* Bonus */
+        .bonus-row { display: flex; gap: 3pt; padding: 2pt 0; border-bottom: 0.5pt solid #f3f4f6; }
+        .bonus-num { font-size: 7pt; font-weight: 700; color: #9ca3af; flex-shrink: 0; }
+        .bonus-q { font-size: 7.5pt; font-weight: 600; color: #1b2447; }
+        .bonus-a { font-size: 7.5pt; color: #6b7280; }
+
+        /* Participants */
+        .participants-row { display: flex; flex-wrap: wrap; gap: 2.5pt; margin-top: 3pt; }
+        .chip { padding: 1pt 5pt; border-radius: 2pt; font-size: 7pt; font-weight: 600; }
+        .chip.self { background: #1b2447; color: white; }
+        .chip.other { background: #f1f5f9; color: #475569; }
+        .divider { border: none; border-top: 0.5pt solid #e5e7eb; margin: 4pt 0; }
       `}</style>
 
-      {/* ── PAGE 1 ── */}
+      {/* ──── PAGE 1 : all match predictions in 3 columns ──── */}
       <div className="page">
         <div className="page-header">
           <img src="/Football-header.svg" alt="Jalka MM" className="logo" />
@@ -96,19 +129,47 @@ export default async function PdfPage({
             <div className="participant-name">{participant.name}</div>
           </div>
         </div>
-        <MatchGrid matches={page1Matches} predMap={predMap} />
+
+        <div className="match-cols">
+          <div className="match-col">
+            {col1.map((m) => <MatchRow key={m.id} match={m} pred={predMap.get(m.id)} />)}
+          </div>
+          <div className="match-col">
+            {col2.map((m) => <MatchRow key={m.id} match={m} pred={predMap.get(m.id)} />)}
+          </div>
+          <div className="match-col">
+            {col3.map((m) => <MatchRow key={m.id} match={m} pred={predMap.get(m.id)} />)}
+          </div>
+        </div>
       </div>
 
-      {/* ── PAGE 2 ── */}
+      {/* ──── PAGE 2 : group summary + bonus + participants ──── */}
       <div className="page">
         <div className="page-header">
           <img src="/Football-header.svg" alt="Jalka MM" className="logo" />
           <div style={{ textAlign: "right" }}>
-            <div className="sheet-label">Ennustusleht · leht 2</div>
+            <div className="sheet-label">Ennustusmäng 2026 · leht 2</div>
             <div className="participant-name">{participant.name}</div>
           </div>
         </div>
-        <MatchGrid matches={page2Matches} predMap={predMap} />
+
+        {/* Group summary */}
+        <div className="section-label">Alagruppide koosseis</div>
+        <div className="groups-grid">
+          {groupKeys.map((g) => {
+            const bg = groupColor(g);
+            return (
+              <div key={g} className="group-card">
+                <div className="group-header" style={{ backgroundColor: bg }}>
+                  Grupp {g}
+                </div>
+                {groups[g].map((team) => (
+                  <div key={team} className="group-team">{team}</div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
 
         {/* Bonus questions */}
         {bonusQuestions && bonusQuestions.length > 0 && (
@@ -120,9 +181,9 @@ export default async function PdfPage({
               return (
                 <div key={q.id} className="bonus-row">
                   <span className="bonus-num">{i + 1}.</span>
-                  <div style={{ flex: 1 }}>
+                  <div>
                     <span className="bonus-q">{q.question_text}</span>
-                    <span style={{ fontSize: "7pt", color: "#9ca3af" }}> ({q.max_points}p)</span>
+                    <span style={{ fontSize: "6.5pt", color: "#9ca3af" }}> ({q.max_points}p)</span>
                     {ans?.answer_text && (
                       <span className="bonus-a"> — {ans.answer_text}</span>
                     )}
@@ -133,17 +194,14 @@ export default async function PdfPage({
           </>
         )}
 
-        {/* Participants */}
+        {/* Participants pool */}
         {participants.length > 0 && (
           <>
             <hr className="divider" />
             <div className="section-label">Osalejad</div>
             <div className="participants-row">
               {participants.map((p) => (
-                <span
-                  key={p.id}
-                  className={`participant-chip ${p.id === params.participantId ? "self" : "other"}`}
-                >
+                <span key={p.id} className={`chip ${p.id === params.participantId ? "self" : "other"}`}>
                   {p.name}
                 </span>
               ))}
@@ -155,46 +213,17 @@ export default async function PdfPage({
   );
 }
 
-function MatchGrid({
-  matches,
-  predMap,
-}: {
-  matches: Match[];
-  predMap: Map<number, Prediction>;
-}) {
-  // Split into 2 columns
-  const half = Math.ceil(matches.length / 2);
-  const col1 = matches.slice(0, half);
-  const col2 = matches.slice(half);
-
-  return (
-    <div className="cols">
-      <div>
-        {col1.map((m) => <MatchRow key={m.id} match={m} pred={predMap.get(m.id)} />)}
-      </div>
-      <div>
-        {col2.map((m) => <MatchRow key={m.id} match={m} pred={predMap.get(m.id)} />)}
-      </div>
-    </div>
-  );
-}
-
 function MatchRow({ match, pred }: { match: Match; pred?: Prediction }) {
   const bg = match.group_name ? groupColor(match.group_name) : "#9CACBE";
   return (
-    <div
-      className="match-row"
-      style={{ borderLeft: `2.5pt solid ${bg}`, marginBottom: "2pt" }}
-    >
+    <div className="match-row" style={{ borderLeft: `2.5pt solid ${bg}` }}>
       {match.group_name && (
         <span className="group-badge" style={{ backgroundColor: bg }}>
           {match.group_name}
         </span>
       )}
       <div className="match-info">
-        <div className="match-teams">
-          {match.home_team} – {match.away_team}
-        </div>
+        <div className="match-teams">{match.home_team} – {match.away_team}</div>
         <div className="match-date">
           {formatMatchDate(match.match_date)} · {formatMatchTime(match.match_date)}
         </div>
