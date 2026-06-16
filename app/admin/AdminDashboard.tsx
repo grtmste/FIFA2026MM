@@ -273,10 +273,9 @@ function PredictionsTab({
               >
                 <input type="hidden" name="participant_id" value={selectedParticipantId} />
                 <input type="hidden" name="match_id" value={match.id} />
-                <div className="flex w-full flex-col gap-1.5">
+                <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
                   <MatchLabel match={match} />
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1" />
+                  <div className="flex flex-shrink-0 items-center justify-end gap-2 md:justify-start">
                     <input
                       type="number"
                       name="predicted_home_score"
@@ -314,10 +313,9 @@ function ResultsTab({ groupMatches }: { groupMatches: Match[] }) {
           className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
         >
           <input type="hidden" name="match_id" value={match.id} />
-          <div className="flex w-full flex-col gap-1.5">
+          <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
             <MatchLabel match={match} />
-            <div className="flex items-center gap-2">
-              <div className="flex-1" />
+            <div className="flex flex-shrink-0 items-center justify-end gap-2 md:justify-start">
               <input
                 type="number"
                 name="actual_home_score"
