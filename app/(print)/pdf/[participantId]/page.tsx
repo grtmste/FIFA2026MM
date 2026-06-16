@@ -74,8 +74,14 @@ export default async function PdfPage({
         @page { size: A4 portrait; margin: 7mm 6mm; }
         * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         body { margin: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 8.5pt; color: #1b2447; background: white; }
-        .page { page-break-after: always; }
-        .page:last-child { page-break-after: auto; }
+        .page { page-break-after: always; break-after: page; }
+        .page:last-child { page-break-after: avoid; break-after: avoid; }
+        @media print {
+          header, nav, footer { display: none !important; }
+          body > div > header { display: none !important; }
+          main { padding: 0 !important; margin: 0 !important; animation: none !important; }
+          body > div { padding: 0 !important; max-width: 100% !important; }
+        }
 
         /* Header */
         .page-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1b2447; padding-bottom: 3pt; margin-bottom: 4pt; }
@@ -125,7 +131,7 @@ export default async function PdfPage({
         <div className="page-header">
           <img src="/Football-header.svg" alt="Jalka MM" className="logo" />
           <div style={{ textAlign: "right" }}>
-            <div className="sheet-label">Ennustusleht</div>
+            <div className="sheet-label">Ennustusmäng 2026 · Leht 1</div>
             <div className="participant-name">{participant.name}</div>
           </div>
         </div>
