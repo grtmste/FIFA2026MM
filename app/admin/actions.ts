@@ -135,7 +135,7 @@ export async function saveAllPredictions(
     return { ok: false, error: "Skooride vorming on vigane." };
   }
 
-  const toUpsert = scores
+  const toSave = scores
     .filter(
       (s) =>
         s.home !== "" &&
@@ -152,25 +152,51 @@ export async function saveAllPredictions(
       predicted_away_score: Number(s.away),
     }));
 
-  // Upsert in chunks so a single oversized statement can't fail silently,
-  // and capture any DB error instead of swallowing it.
-  const CHUNK = 50;
-  for (let i = 0; i < toUpsert.length; i += CHUNK) {
-    const batch = toUpsert.slice(i, i + CHUNK);
+  // Determine which rows already exist so we can INSERT new ones and UPDATE
+  // existing ones explicitly. This avoids depending on the
+  // (participant_id, match_id) unique constraint that .upsert() needs — if
+  // that constraint is missing from the database, upsert silently fails.
+  const { data: existingRows, error: fetchErr } = await supabaseAdmin
+    .from("predictions")
+    .select("match_id")
+    .eq("participant_id", participantId);
+  if (fetchErr) {
+    return { ok: false, error: `Andmete lugemine ebaõnnestus: ${fetchErr.message}` };
+  }
+  const existingIds = new Set(
+    (existingRows ?? []).map((r) => (r as { match_id: number }).match_id)
+  );
+
+  const toInsert = toSave.filter((r) => !existingIds.has(r.match_id));
+  const toUpdate = toSave.filter((r) => existingIds.has(r.match_id));
+
+  if (toInsert.length > 0) {
+    const { error } = await supabaseAdmin.from("predictions").insert(toInsert);
+    if (error) {
+      return { ok: false, error: `Lisamine ebaõnnestus: ${error.message}` };
+    }
+  }
+
+  for (const r of toUpdate) {
     const { error } = await supabaseAdmin
       .from("predictions")
-      .upsert(batch, { onConflict: "participant_id,match_id" });
+      .update({
+        predicted_home_score: r.predicted_home_score,
+        predicted_away_score: r.predicted_away_score,
+      })
+      .eq("participant_id", participantId)
+      .eq("match_id", r.match_id);
     if (error) {
       return {
         ok: false,
-        error: `Salvestamine ebaõnnestus (rida ${i + 1}): ${error.message}`,
+        error: `Uuendamine ebaõnnestus (mäng ${r.match_id}): ${error.message}`,
       };
     }
   }
 
-  // Only clear scores when the caller explicitly asks for it (e.g. an admin
-  // deliberately empties a field). Bulk save never deletes by default, so an
-  // accidental save on a not-yet-loaded form can no longer wipe predictions.
+  // Only clear scores when the caller explicitly asks for it. Bulk save never
+  // deletes by default, so an accidental save on a not-yet-loaded form can not
+  // wipe predictions.
   let cleared = 0;
   if (clearEmpty) {
     const toDelete = scores
@@ -189,8 +215,15 @@ export async function saveAllPredictions(
     }
   }
 
+  // Verify the real saved count so the success message reflects the database,
+  // not just what we attempted to write.
+  const { count } = await supabaseAdmin
+    .from("predictions")
+    .select("*", { count: "exact", head: true })
+    .eq("participant_id", participantId);
+
   revalidateAll();
-  return { ok: true, saved: toUpsert.length, cleared };
+  return { ok: true, saved: count ?? toSave.length, cleared };
 }
 
 export type ImportResult =
