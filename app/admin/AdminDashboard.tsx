@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   BonusAnswer,
   BonusQuestion,
@@ -15,10 +15,11 @@ import {
   addParticipant,
   advanceBracket,
   deleteParticipant,
+  importPredictionPdf,
+  saveAllPredictions,
   saveBonusAnswer,
   saveBonusCorrectAnswer,
   saveMatchResult,
-  savePrediction,
   updateParticipant,
 } from "./actions";
 
@@ -263,43 +264,142 @@ function PredictionsTab({
       </div>
 
       {selectedParticipantId && (
-        <div className="space-y-2">
-          {groupMatches.map((match) => {
-            const existing = predictionByMatch.get(match.id);
-            return (
-              <form
-                key={`${selectedParticipantId}-${match.id}`}
-                action={savePrediction}
-                className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
-              >
-                <input type="hidden" name="participant_id" value={selectedParticipantId} />
-                <input type="hidden" name="match_id" value={match.id} />
-                <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
-                  <MatchLabel match={match} />
-                  <div className="flex flex-shrink-0 items-center justify-end gap-2 md:justify-start">
-                    <input
-                      type="number"
-                      name="predicted_home_score"
-                      min={0}
-                      defaultValue={existing?.predicted_home_score ?? ""}
-                      className={SCORE_INPUT}
-                    />
-                    <span className="text-xs font-bold text-stone-300">:</span>
-                    <input
-                      type="number"
-                      name="predicted_away_score"
-                      min={0}
-                      defaultValue={existing?.predicted_away_score ?? ""}
-                      className={SCORE_INPUT}
-                    />
-                    <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">OK</SubmitButton>
-                  </div>
-                </div>
-              </form>
-            );
-          })}
-        </div>
+        <PredictionsForm
+          key={selectedParticipantId}
+          participantId={selectedParticipantId}
+          groupMatches={groupMatches}
+          predictionByMatch={predictionByMatch}
+        />
       )}
+    </div>
+  );
+}
+
+function PredictionsForm({
+  participantId,
+  groupMatches,
+  predictionByMatch,
+}: {
+  participantId: string;
+  groupMatches: Match[];
+  predictionByMatch: Map<number, Prediction>;
+}) {
+  const [scores, setScores] = useState<Record<number, { home: string; away: string }>>(
+    () => {
+      const init: Record<number, { home: string; away: string }> = {};
+      groupMatches.forEach((m) => {
+        const existing = predictionByMatch.get(m.id);
+        init[m.id] = {
+          home: existing?.predicted_home_score?.toString() ?? "",
+          away: existing?.predicted_away_score?.toString() ?? "",
+        };
+      });
+      return init;
+    }
+  );
+  const [isImporting, setIsImporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function updateScore(matchId: number, field: "home" | "away", value: string) {
+    setScores((prev) => ({
+      ...prev,
+      [matchId]: { ...prev[matchId], [field]: value },
+    }));
+  }
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsImporting(true);
+    try {
+      const imported = await importPredictionPdf(file);
+      setScores((prev) => {
+        const next = { ...prev };
+        imported.forEach(({ match_id, home, away }) => {
+          next[match_id] = { home: String(home), away: String(away) };
+        });
+        return next;
+      });
+    } finally {
+      setIsImporting(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleSaveAll() {
+    setIsSaving(true);
+    try {
+      const formData = new FormData();
+      formData.set("participant_id", participantId);
+      formData.set(
+        "scores",
+        JSON.stringify(
+          Object.entries(scores).map(([matchId, v]) => ({
+            match_id: Number(matchId),
+            ...v,
+          }))
+        )
+      );
+      await saveAllPredictions(formData);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <label className="flex w-fit cursor-pointer items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-navy shadow-sm transition-colors hover:bg-stone-50">
+        {isImporting ? "Laen..." : "📥 Impordi PDF"}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf"
+          onChange={handleImport}
+          disabled={isImporting}
+          className="hidden"
+        />
+      </label>
+
+      {groupMatches.map((match) => (
+        <div
+          key={match.id}
+          className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
+        >
+          <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
+            <MatchLabel match={match} />
+            <div className="flex flex-shrink-0 items-center justify-end gap-2 md:justify-start">
+              <input
+                type="number"
+                min={0}
+                value={scores[match.id]?.home ?? ""}
+                onChange={(e) => updateScore(match.id, "home", e.target.value)}
+                className={SCORE_INPUT}
+              />
+              <span className="text-xs font-bold text-stone-300">:</span>
+              <input
+                type="number"
+                min={0}
+                value={scores[match.id]?.away ?? ""}
+                onChange={(e) => updateScore(match.id, "away", e.target.value)}
+                className={SCORE_INPUT}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={handleSaveAll}
+        disabled={isSaving}
+        className="sticky bottom-2 w-full rounded-sm bg-navy px-4 py-3 text-sm font-bold text-white shadow-card-hover transition-colors hover:bg-navy/90 disabled:opacity-60"
+      >
+        {saved ? "✓ Salvestatud!" : isSaving ? "Salvestamine..." : "💾 Salvesta kõik"}
+      </button>
     </div>
   );
 }

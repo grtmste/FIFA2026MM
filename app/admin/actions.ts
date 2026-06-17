@@ -11,6 +11,7 @@ import {
   isAdminAuthenticated,
 } from "@/lib/auth";
 import { resolveBracketTeams } from "@/lib/bracket";
+import { extractPredictionScores } from "@/lib/pdfImport";
 import { Match } from "@/lib/types";
 
 function revalidateAll() {
@@ -110,6 +111,71 @@ export async function savePrediction(formData: FormData) {
   );
 
   revalidateAll();
+}
+
+export async function saveAllPredictions(formData: FormData) {
+  requireAuth();
+  const participantId = String(formData.get("participant_id") ?? "");
+  const scoresRaw = String(formData.get("scores") ?? "");
+  if (!participantId || !scoresRaw) return;
+
+  const scores = JSON.parse(scoresRaw) as Array<{
+    match_id: number;
+    home: string;
+    away: string;
+  }>;
+
+  const toUpsert = scores
+    .filter((s) => s.home !== "" && s.away !== "")
+    .map((s) => ({
+      participant_id: participantId,
+      match_id: s.match_id,
+      predicted_home_score: Number(s.home),
+      predicted_away_score: Number(s.away),
+    }));
+
+  const toDelete = scores
+    .filter((s) => s.home === "" || s.away === "")
+    .map((s) => s.match_id);
+
+  if (toUpsert.length > 0) {
+    await supabaseAdmin
+      .from("predictions")
+      .upsert(toUpsert, { onConflict: "participant_id,match_id" });
+  }
+
+  if (toDelete.length > 0) {
+    await supabaseAdmin
+      .from("predictions")
+      .delete()
+      .eq("participant_id", participantId)
+      .in("match_id", toDelete);
+  }
+
+  revalidateAll();
+}
+
+export async function importPredictionPdf(
+  file: File
+): Promise<Array<{ match_id: number; home: number; away: number }>> {
+  requireAuth();
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const scores = await extractPredictionScores(buffer);
+
+  const { data } = await supabaseAdmin
+    .from("matches")
+    .select("*")
+    .eq("stage", "group")
+    .order("match_date", { ascending: true, nullsFirst: false })
+    .order("id", { ascending: true });
+  const groupMatches = (data ?? []) as Match[];
+
+  return scores
+    .map((s) => {
+      const match = groupMatches[s.position - 1];
+      return match ? { match_id: match.id, home: s.home, away: s.away } : null;
+    })
+    .filter((x): x is { match_id: number; home: number; away: number } => x !== null);
 }
 
 export async function saveMatchResult(formData: FormData) {
