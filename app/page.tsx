@@ -4,8 +4,16 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { fetchAllRows } from "@/lib/fetchAll";
 import { calcMatchPoints } from "@/lib/scoring";
-import { Participant, Match, Prediction, BonusAnswer, Stage } from "@/lib/types";
+import {
+  Participant,
+  Match,
+  Prediction,
+  BonusAnswer,
+  BonusQuestion,
+  Stage,
+} from "@/lib/types";
 import SectionHeading from "@/components/SectionHeading";
+import ParticipantDetail from "@/components/ParticipantDetail";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
 
@@ -32,6 +40,12 @@ export default function LeaderboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [allMatches, setAllMatches] = useState<Match[]>([]);
+  const [allPredictions, setAllPredictions] = useState<Prediction[]>([]);
+  const [allBonusAnswers, setAllBonusAnswers] = useState<BonusAnswer[]>([]);
+  const [allBonusQuestions, setAllBonusQuestions] = useState<BonusQuestion[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const loadData = useCallback(async () => {
     try {
       const [
@@ -39,14 +53,16 @@ export default function LeaderboardPage() {
         { data: matches, error: matchesError },
         predictions,
         bonusAnswers,
+        { data: bonusQuestions, error: bonusQuestionsError },
       ] = await Promise.all([
         supabase.from("participants").select("*"),
         supabase.from("matches").select("*"),
         fetchAllRows<Prediction>(supabase, "predictions"),
         fetchAllRows<BonusAnswer>(supabase, "bonus_answers"),
+        supabase.from("bonus_questions").select("*").order("id", { ascending: true }),
       ]);
 
-      const firstError = participantsError || matchesError;
+      const firstError = participantsError || matchesError || bonusQuestionsError;
       if (firstError) throw firstError;
 
       const matchById = new Map<number, Match>(
@@ -100,6 +116,10 @@ export default function LeaderboardPage() {
 
       setRows(computedRows);
       setStages(stagesWithMatches);
+      setAllMatches((matches ?? []) as Match[]);
+      setAllPredictions(predictions as Prediction[]);
+      setAllBonusAnswers(bonusAnswers as BonusAnswer[]);
+      setAllBonusQuestions((bonusQuestions ?? []) as BonusQuestion[]);
       setError(null);
     } catch (err) {
       console.error(err);
@@ -186,7 +206,15 @@ export default function LeaderboardPage() {
                         <td className="px-3 py-2.5 text-center font-semibold text-gold">
                           {rowIdx + 1}
                         </td>
-                        <td className="px-3 py-2.5 font-medium text-navy">{row.name}</td>
+                        <td className="px-3 py-2.5 font-medium text-navy">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedId(row.id)}
+                            className="text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
+                          >
+                            {row.name}
+                          </button>
+                        </td>
                         <td className="px-3 py-2.5 text-center text-stone-600">
                           {row.stagePoints[stage]}
                         </td>
@@ -208,6 +236,21 @@ export default function LeaderboardPage() {
             );
           })}
         </div>
+      )}
+
+      {selectedId && (
+        <ParticipantDetail
+          participant={
+            rows.find((r) => r.id === selectedId)
+              ? { id: selectedId, name: rows.find((r) => r.id === selectedId)!.name }
+              : null
+          }
+          matches={allMatches}
+          predictions={allPredictions}
+          bonusAnswers={allBonusAnswers}
+          bonusQuestions={allBonusQuestions}
+          onClose={() => setSelectedId(null)}
+        />
       )}
     </div>
   );
