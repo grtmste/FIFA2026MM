@@ -155,27 +155,56 @@ export async function saveAllPredictions(formData: FormData) {
   revalidateAll();
 }
 
+export type ImportResult =
+  | {
+      ok: true;
+      scores: Array<{ match_id: number; home: number; away: number }>;
+    }
+  | { ok: false; error: string };
+
 export async function importPredictionPdf(
-  file: File
-): Promise<Array<{ match_id: number; home: number; away: number }>> {
+  formData: FormData
+): Promise<ImportResult> {
   requireAuth();
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const scores = await extractPredictionScores(buffer);
+  try {
+    const file = formData.get("file");
+    if (!file || typeof file === "string") {
+      return { ok: false, error: "Faili ei leitud." };
+    }
 
-  const { data } = await supabaseAdmin
-    .from("matches")
-    .select("*")
-    .eq("stage", "group")
-    .order("match_date", { ascending: true, nullsFirst: false })
-    .order("id", { ascending: true });
-  const groupMatches = (data ?? []) as Match[];
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const scores = await extractPredictionScores(buffer);
 
-  return scores
-    .map((s) => {
-      const match = groupMatches[s.position - 1];
-      return match ? { match_id: match.id, home: s.home, away: s.away } : null;
-    })
-    .filter((x): x is { match_id: number; home: number; away: number } => x !== null);
+    if (scores.length === 0) {
+      return {
+        ok: false,
+        error:
+          "PDF-ist ei leitud ühtegi skoori. Veendu, et tegemist on täidetud ennustuslehega.",
+      };
+    }
+
+    const { data } = await supabaseAdmin
+      .from("matches")
+      .select("*")
+      .eq("stage", "group")
+      .order("match_date", { ascending: true, nullsFirst: false })
+      .order("id", { ascending: true });
+    const groupMatches = (data ?? []) as Match[];
+
+    const mapped = scores
+      .map((s) => {
+        const match = groupMatches[s.position - 1];
+        return match ? { match_id: match.id, home: s.home, away: s.away } : null;
+      })
+      .filter((x): x is { match_id: number; home: number; away: number } => x !== null);
+
+    return { ok: true, scores: mapped };
+  } catch (e) {
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : "PDF-i lugemine ebaõnnestus.",
+    };
+  }
 }
 
 export async function saveMatchResult(formData: FormData) {

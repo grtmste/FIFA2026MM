@@ -89,8 +89,6 @@ export default function AdminDashboard({
             participants={participants}
             groupMatches={groupMatches}
             predictions={predictions}
-            selectedParticipantId={selectedParticipantId}
-            onSelectParticipant={setSelectedParticipantId}
           />
         )}
 
@@ -224,53 +222,95 @@ function PredictionsTab({
   participants,
   groupMatches,
   predictions,
-  selectedParticipantId,
-  onSelectParticipant,
 }: {
   participants: Participant[];
   groupMatches: Match[];
   predictions: Prediction[];
-  selectedParticipantId: string;
-  onSelectParticipant: (id: string) => void;
 }) {
+  const [viewingId, setViewingId] = useState<string | null>(null);
+
   const predictionByMatch = useMemo(() => {
     const map = new Map<number, Prediction>();
+    if (!viewingId) return map;
     predictions
-      .filter((p) => p.participant_id === selectedParticipantId)
+      .filter((p) => p.participant_id === viewingId)
       .forEach((p) => map.set(p.match_id, p));
     return map;
-  }, [predictions, selectedParticipantId]);
+  }, [predictions, viewingId]);
 
+  const predictionCount = useMemo(() => {
+    const counts = new Map<string, number>();
+    predictions.forEach((p) => {
+      counts.set(p.participant_id, (counts.get(p.participant_id) ?? 0) + 1);
+    });
+    return counts;
+  }, [predictions]);
+
+  const viewingParticipant = participants.find((p) => p.id === viewingId);
+
+  // ── Participant list view ──
+  if (!viewingId || !viewingParticipant) {
+    if (participants.length === 0) {
+      return <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>;
+    }
+    return (
+      <div className="space-y-2">
+        <p className="eyebrow">Vali osaleja ennustuste sisestamiseks</p>
+        {participants.map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => setViewingId(p.id)}
+            className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99]"
+          >
+            <span className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
+                {p.name.charAt(0).toUpperCase()}
+              </span>
+              <span className="text-sm font-semibold text-navy">{p.name}</span>
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="text-xs text-stone-400">
+                {predictionCount.get(p.id) ?? 0}/{groupMatches.length}
+              </span>
+              <span className="text-stone-300">›</span>
+            </span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // ── Single participant prediction-entry view ──
   return (
     <div className="space-y-3">
-      <div className="flex items-end gap-2">
-        <div className="flex-1">
-          <ParticipantSelect
-            participants={participants}
-            selectedParticipantId={selectedParticipantId}
-            onSelectParticipant={onSelectParticipant}
-          />
-        </div>
-        {selectedParticipantId && (
-          <a
-            href={`/pdf/${selectedParticipantId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-sm border border-gold bg-gold px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-gold-dark"
-          >
-            🖨️ PDF
-          </a>
-        )}
+      <div className="flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => setViewingId(null)}
+          className="flex items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:bg-stone-50"
+        >
+          ‹ Tagasi
+        </button>
+        <h3 className="flex-1 truncate text-base font-bold text-navy">
+          {viewingParticipant.name}
+        </h3>
+        <a
+          href={`/pdf/${viewingId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 rounded-sm border border-gold bg-gold px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-gold-dark"
+        >
+          🖨️ PDF
+        </a>
       </div>
 
-      {selectedParticipantId && (
-        <PredictionsForm
-          key={selectedParticipantId}
-          participantId={selectedParticipantId}
-          groupMatches={groupMatches}
-          predictionByMatch={predictionByMatch}
-        />
-      )}
+      <PredictionsForm
+        key={viewingId}
+        participantId={viewingId}
+        groupMatches={groupMatches}
+        predictionByMatch={predictionByMatch}
+      />
     </div>
   );
 }
@@ -300,6 +340,7 @@ function PredictionsForm({
   const [isImporting, setIsImporting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function updateScore(matchId: number, field: "home" | "away", value: string) {
@@ -313,14 +354,30 @@ function PredictionsForm({
     const file = e.target.files?.[0];
     if (!file) return;
     setIsImporting(true);
+    setImportMsg(null);
     try {
-      const imported = await importPredictionPdf(file);
+      const formData = new FormData();
+      formData.set("file", file);
+      const result = await importPredictionPdf(formData);
+      if (!result.ok) {
+        setImportMsg({ ok: false, text: result.error });
+        return;
+      }
       setScores((prev) => {
         const next = { ...prev };
-        imported.forEach(({ match_id, home, away }) => {
+        result.scores.forEach(({ match_id, home, away }) => {
           next[match_id] = { home: String(home), away: String(away) };
         });
         return next;
+      });
+      setImportMsg({
+        ok: true,
+        text: `Imporditud ${result.scores.length} skoori. Kontrolli ja vajuta "Salvesta kõik".`,
+      });
+    } catch (err) {
+      setImportMsg({
+        ok: false,
+        text: err instanceof Error ? err.message : "PDF-i import ebaõnnestus.",
       });
     } finally {
       setIsImporting(false);
@@ -352,17 +409,28 @@ function PredictionsForm({
 
   return (
     <div className="space-y-2">
-      <label className="flex w-fit cursor-pointer items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-navy shadow-sm transition-colors hover:bg-stone-50">
-        {isImporting ? "Laen..." : "📥 Impordi PDF"}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/pdf"
-          onChange={handleImport}
-          disabled={isImporting}
-          className="hidden"
-        />
-      </label>
+      <div className="space-y-1.5">
+        <label className="flex w-fit cursor-pointer items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-navy shadow-sm transition-colors hover:bg-stone-50">
+          {isImporting ? "Laen..." : "📥 Impordi PDF"}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            onChange={handleImport}
+            disabled={isImporting}
+            className="hidden"
+          />
+        </label>
+        {importMsg && (
+          <p
+            className={`text-xs ${
+              importMsg.ok ? "text-green-600" : "text-red-500"
+            }`}
+          >
+            {importMsg.text}
+          </p>
+        )}
+      </div>
 
       {groupMatches.map((match) => (
         <div
