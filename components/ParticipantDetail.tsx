@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   BonusAnswer,
   BonusQuestion,
@@ -30,7 +31,10 @@ export default function ParticipantDetail({
   bonusQuestions: BonusQuestion[];
   onClose: () => void;
 }) {
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -88,11 +92,11 @@ export default function ParticipantDetail({
     return { matchPts, bonusPts, total: matchPts + bonusPts };
   }, [predById, matches, bonusRows]);
 
-  if (!participant) return null;
+  if (!participant || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-navy/40 p-3 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-navy/40 p-3 backdrop-blur-sm sm:p-6"
       onClick={onClose}
     >
       <div
@@ -218,7 +222,8 @@ export default function ParticipantDetail({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
