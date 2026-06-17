@@ -1,4 +1,4 @@
-import { getDocumentProxy } from "unpdf";
+import { PDFDocument } from "pdf-lib";
 
 export interface ImportedScore {
   position: number;
@@ -7,20 +7,30 @@ export interface ImportedScore {
 }
 
 export async function extractPredictionScores(buffer: Buffer): Promise<ImportedScore[]> {
-  const doc = await getDocumentProxy(new Uint8Array(buffer));
-  const fields = (await doc.getFieldObjects()) as Record<
-    string,
-    Array<{ value?: string }>
-  > | null;
-  if (!fields) return [];
+  const doc = await PDFDocument.load(buffer, { ignoreEncryption: true });
+  const form = doc.getForm();
 
   const results: ImportedScore[] = [];
   for (let position = 1; position <= 72; position++) {
-    const home = fields[`skoor_${position}_kodu`]?.[0]?.value;
-    const away = fields[`skoor_${position}_vooras`]?.[0]?.value;
-    if (home === undefined || away === undefined) continue;
+    const home = readField(form, `skoor_${position}_kodu`);
+    const away = readField(form, `skoor_${position}_vooras`);
+    if (home === null || away === null) continue;
     if (home === "" || away === "") continue;
-    results.push({ position, home: Number(home), away: Number(away) });
+    const h = Number(home);
+    const a = Number(away);
+    if (Number.isNaN(h) || Number.isNaN(a)) continue;
+    results.push({ position, home: h, away: a });
   }
   return results;
+}
+
+function readField(
+  form: ReturnType<PDFDocument["getForm"]>,
+  name: string
+): string | null {
+  try {
+    return form.getTextField(name).getText()?.trim() ?? "";
+  } catch {
+    return null;
+  }
 }
