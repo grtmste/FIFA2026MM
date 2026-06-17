@@ -1,4 +1,4 @@
-import { PDFParse } from "pdf-parse";
+import { getDocumentProxy } from "unpdf";
 
 export interface ImportedScore {
   position: number;
@@ -6,22 +6,21 @@ export interface ImportedScore {
   away: number;
 }
 
-const ROW_RE = /^\s*(\d{1,2})\s+\d{2}\.\d{2}\s+\S\s+\d{2}:\d{2}\s+.+?\s(\d+)\s+(\d+)\s+\D/;
+export async function extractPredictionScores(buffer: Buffer): Promise<ImportedScore[]> {
+  const doc = await getDocumentProxy(new Uint8Array(buffer));
+  const fields = (await doc.getFieldObjects()) as Record<
+    string,
+    Array<{ value?: string }>
+  > | null;
+  if (!fields) return [];
 
-export function parsePredictionText(text: string): ImportedScore[] {
   const results: ImportedScore[] = [];
-  for (const line of text.split("\n")) {
-    const m = line.match(ROW_RE);
-    if (!m) continue;
-    const position = Number(m[1]);
-    if (position < 1 || position > 72) continue;
-    results.push({ position, home: Number(m[2]), away: Number(m[3]) });
+  for (let position = 1; position <= 72; position++) {
+    const home = fields[`skoor_${position}_kodu`]?.[0]?.value;
+    const away = fields[`skoor_${position}_vooras`]?.[0]?.value;
+    if (home === undefined || away === undefined) continue;
+    if (home === "" || away === "") continue;
+    results.push({ position, home: Number(home), away: Number(away) });
   }
   return results;
-}
-
-export async function extractPredictionScores(buffer: Buffer): Promise<ImportedScore[]> {
-  const parser = new PDFParse({ data: new Uint8Array(buffer) });
-  const result = await parser.getText();
-  return parsePredictionText(result.text);
 }
