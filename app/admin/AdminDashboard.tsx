@@ -341,6 +341,7 @@ function PredictionsForm({
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function updateScore(matchId: number, field: "home" | "away", value: string) {
@@ -387,6 +388,7 @@ function PredictionsForm({
 
   async function handleSaveAll() {
     setIsSaving(true);
+    setSaveMsg(null);
     try {
       const formData = new FormData();
       formData.set("participant_id", participantId);
@@ -399,9 +401,19 @@ function PredictionsForm({
           }))
         )
       );
-      await saveAllPredictions(formData);
+      const result = await saveAllPredictions(formData);
+      if (!result.ok) {
+        setSaveMsg({ ok: false, text: result.error });
+        return;
+      }
       setSaved(true);
+      setSaveMsg({ ok: true, text: `Salvestatud ${result.saved} ennustust.` });
       setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      setSaveMsg({
+        ok: false,
+        text: err instanceof Error ? err.message : "Salvestamine ebaõnnestus.",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -460,14 +472,27 @@ function PredictionsForm({
         </div>
       ))}
 
-      <button
-        type="button"
-        onClick={handleSaveAll}
-        disabled={isSaving}
-        className="sticky bottom-2 w-full rounded-sm bg-navy px-4 py-3 text-sm font-bold text-white shadow-card-hover transition-colors hover:bg-navy/90 disabled:opacity-60"
-      >
-        {saved ? "✓ Salvestatud!" : isSaving ? "Salvestamine..." : "💾 Salvesta kõik"}
-      </button>
+      <div className="sticky bottom-2 space-y-1">
+        {saveMsg && (
+          <p
+            className={`rounded-sm px-3 py-1.5 text-xs font-medium ${
+              saveMsg.ok
+                ? "bg-green-50 text-green-700"
+                : "bg-red-50 text-red-600"
+            }`}
+          >
+            {saveMsg.text}
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={handleSaveAll}
+          disabled={isSaving}
+          className="w-full rounded-sm bg-navy px-4 py-3 text-sm font-bold text-white shadow-card-hover transition-colors hover:bg-navy/90 disabled:opacity-60"
+        >
+          {saved ? "✓ Salvestatud!" : isSaving ? "Salvestamine..." : "💾 Salvesta kõik"}
+        </button>
+      </div>
     </div>
   );
 }

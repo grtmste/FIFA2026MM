@@ -113,20 +113,38 @@ export async function savePrediction(formData: FormData) {
   revalidateAll();
 }
 
-export async function saveAllPredictions(formData: FormData) {
+export type SaveAllResult =
+  | { ok: true; saved: number; cleared: number }
+  | { ok: false; error: string };
+
+export async function saveAllPredictions(
+  formData: FormData
+): Promise<SaveAllResult> {
   requireAuth();
   const participantId = String(formData.get("participant_id") ?? "");
   const scoresRaw = String(formData.get("scores") ?? "");
-  if (!participantId || !scoresRaw) return;
+  const clearEmpty = String(formData.get("clear_empty") ?? "") === "1";
+  if (!participantId || !scoresRaw) {
+    return { ok: false, error: "Puuduvad andmed." };
+  }
 
-  const scores = JSON.parse(scoresRaw) as Array<{
-    match_id: number;
-    home: string;
-    away: string;
-  }>;
+  let scores: Array<{ match_id: number; home: string; away: string }>;
+  try {
+    scores = JSON.parse(scoresRaw);
+  } catch {
+    return { ok: false, error: "Skooride vorming on vigane." };
+  }
 
   const toUpsert = scores
-    .filter((s) => s.home !== "" && s.away !== "")
+    .filter(
+      (s) =>
+        s.home !== "" &&
+        s.away !== "" &&
+        s.home != null &&
+        s.away != null &&
+        !Number.isNaN(Number(s.home)) &&
+        !Number.isNaN(Number(s.away))
+    )
     .map((s) => ({
       participant_id: participantId,
       match_id: s.match_id,
@@ -134,25 +152,45 @@ export async function saveAllPredictions(formData: FormData) {
       predicted_away_score: Number(s.away),
     }));
 
-  const toDelete = scores
-    .filter((s) => s.home === "" || s.away === "")
-    .map((s) => s.match_id);
-
-  if (toUpsert.length > 0) {
-    await supabaseAdmin
+  // Upsert in chunks so a single oversized statement can't fail silently,
+  // and capture any DB error instead of swallowing it.
+  const CHUNK = 50;
+  for (let i = 0; i < toUpsert.length; i += CHUNK) {
+    const batch = toUpsert.slice(i, i + CHUNK);
+    const { error } = await supabaseAdmin
       .from("predictions")
-      .upsert(toUpsert, { onConflict: "participant_id,match_id" });
+      .upsert(batch, { onConflict: "participant_id,match_id" });
+    if (error) {
+      return {
+        ok: false,
+        error: `Salvestamine ebaõnnestus (rida ${i + 1}): ${error.message}`,
+      };
+    }
   }
 
-  if (toDelete.length > 0) {
-    await supabaseAdmin
-      .from("predictions")
-      .delete()
-      .eq("participant_id", participantId)
-      .in("match_id", toDelete);
+  // Only clear scores when the caller explicitly asks for it (e.g. an admin
+  // deliberately empties a field). Bulk save never deletes by default, so an
+  // accidental save on a not-yet-loaded form can no longer wipe predictions.
+  let cleared = 0;
+  if (clearEmpty) {
+    const toDelete = scores
+      .filter((s) => s.home === "" || s.away === "")
+      .map((s) => s.match_id);
+    if (toDelete.length > 0) {
+      const { error } = await supabaseAdmin
+        .from("predictions")
+        .delete()
+        .eq("participant_id", participantId)
+        .in("match_id", toDelete);
+      if (error) {
+        return { ok: false, error: `Tühjendamine ebaõnnestus: ${error.message}` };
+      }
+      cleared = toDelete.length;
+    }
   }
 
   revalidateAll();
+  return { ok: true, saved: toUpsert.length, cleared };
 }
 
 export type ImportResult =
