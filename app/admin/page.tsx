@@ -1,5 +1,6 @@
 import { isAdminAuthenticated } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { fetchAllRows } from "@/lib/fetchAll";
 import { loginAction, logoutAction } from "./actions";
 import AdminDashboard from "./AdminDashboard";
 import SubmitButton from "@/components/SubmitButton";
@@ -56,9 +57,9 @@ export default async function AdminPage({
   const [
     { data: participants },
     { data: matches },
-    { data: predictions },
+    predictions,
     { data: bonusQuestions },
-    { data: bonusAnswers },
+    bonusAnswers,
   ] = await Promise.all([
     supabaseAdmin.from("participants").select("*").order("name", { ascending: true }),
     supabaseAdmin
@@ -66,9 +67,9 @@ export default async function AdminPage({
       .select("*")
       .order("match_date", { ascending: true, nullsFirst: false })
       .order("id", { ascending: true }),
-    supabaseAdmin.from("predictions").select("*"),
+    fetchAllRows<Prediction>(supabaseAdmin, "predictions"),
     supabaseAdmin.from("bonus_questions").select("*").order("id", { ascending: true }),
-    supabaseAdmin.from("bonus_answers").select("*"),
+    fetchAllRows<BonusAnswer>(supabaseAdmin, "bonus_answers"),
   ]);
 
   return (
@@ -88,9 +89,9 @@ export default async function AdminPage({
       <AdminDashboard
         participants={(participants ?? []) as Participant[]}
         matches={(matches ?? []) as Match[]}
-        predictions={(predictions ?? []) as Prediction[]}
+        predictions={predictions as Prediction[]}
         bonusQuestions={(bonusQuestions ?? []) as BonusQuestion[]}
-        bonusAnswers={(bonusAnswers ?? []) as BonusAnswer[]}
+        bonusAnswers={bonusAnswers as BonusAnswer[]}
       />
     </div>
   );

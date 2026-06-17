@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { fetchAllRows } from "@/lib/fetchAll";
 import { BonusAnswer, BonusQuestion, Participant } from "@/lib/types";
 import SectionHeading from "@/components/SectionHeading";
 
@@ -8,16 +9,16 @@ export default async function BonusPage() {
   const [
     { data: questions, error: questionsError },
     { data: participants },
-    { data: answers },
+    answers,
   ] = await Promise.all([
     supabase.from("bonus_questions").select("*").order("id", { ascending: true }),
     supabase.from("participants").select("*").order("name", { ascending: true }),
-    supabase.from("bonus_answers").select("*"),
+    fetchAllRows<BonusAnswer>(supabase, "bonus_answers"),
   ]);
 
   const bonusQuestions = (questions ?? []) as BonusQuestion[];
   const allParticipants = (participants ?? []) as Participant[];
-  const allAnswers = (answers ?? []) as BonusAnswer[];
+  const allAnswers = answers as BonusAnswer[];
 
   return (
     <div className="space-y-6">

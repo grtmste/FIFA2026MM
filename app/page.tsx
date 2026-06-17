@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
+import { fetchAllRows } from "@/lib/fetchAll";
 import { calcMatchPoints } from "@/lib/scoring";
 import { Participant, Match, Prediction, BonusAnswer, Stage } from "@/lib/types";
 import SectionHeading from "@/components/SectionHeading";
@@ -36,17 +37,16 @@ export default function LeaderboardPage() {
       const [
         { data: participants, error: participantsError },
         { data: matches, error: matchesError },
-        { data: predictions, error: predictionsError },
-        { data: bonusAnswers, error: bonusAnswersError },
+        predictions,
+        bonusAnswers,
       ] = await Promise.all([
         supabase.from("participants").select("*"),
         supabase.from("matches").select("*"),
-        supabase.from("predictions").select("*"),
-        supabase.from("bonus_answers").select("*"),
+        fetchAllRows<Prediction>(supabase, "predictions"),
+        fetchAllRows<BonusAnswer>(supabase, "bonus_answers"),
       ]);
 
-      const firstError =
-        participantsError || matchesError || predictionsError || bonusAnswersError;
+      const firstError = participantsError || matchesError;
       if (firstError) throw firstError;
 
       const matchById = new Map<number, Match>(
