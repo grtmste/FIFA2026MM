@@ -221,20 +221,25 @@ export async function importPredictionPdf(
       };
     }
 
+    // The PDF's "#" column (and its skoor_N form fields) corresponds directly
+    // to the match id, not to a date-sorted position. Map by id so the order
+    // the app happens to display matches in is irrelevant.
     const { data } = await supabaseAdmin
       .from("matches")
-      .select("*")
-      .eq("stage", "group")
-      .order("match_date", { ascending: true, nullsFirst: false })
-      .order("id", { ascending: true });
-    const groupMatches = (data ?? []) as Match[];
+      .select("id")
+      .eq("stage", "group");
+    const validIds = new Set((data ?? []).map((m) => (m as { id: number }).id));
 
     const mapped = scores
-      .map((s) => {
-        const match = groupMatches[s.position - 1];
-        return match ? { match_id: match.id, home: s.home, away: s.away } : null;
-      })
-      .filter((x): x is { match_id: number; home: number; away: number } => x !== null);
+      .filter((s) => validIds.has(s.position))
+      .map((s) => ({ match_id: s.position, home: s.home, away: s.away }));
+
+    if (mapped.length === 0) {
+      return {
+        ok: false,
+        error: "Ühtegi skoori ei õnnestunud mängudega siduda.",
+      };
+    }
 
     return { ok: true, scores: mapped };
   } catch (e) {
