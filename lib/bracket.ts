@@ -104,22 +104,37 @@ export const BRACKET_SLOTS: Array<{ id: number; home: string; away: string }> = 
   { id: 103, home: "W101", away: "W102" },
 ];
 
+function isGroupComplete(matches: Match[], group: string): boolean {
+  const groupMatches = matches.filter(
+    (m) => m.stage === "group" && m.group_name === group
+  );
+  if (groupMatches.length === 0) return false;
+  return groupMatches.every(
+    (m) => m.actual_home_score !== null && m.actual_away_score !== null
+  );
+}
+
 export function resolveBracketTeams(
   allMatches: Match[]
 ): Array<{ id: number; home_team: string; away_team: string }> {
   const standings = computeGroupStandings(allMatches);
+  const completeGroups = new Set(
+    Object.keys(standings).filter((g) => isGroupComplete(allMatches, g))
+  );
 
-  // Build team-code → team-name map
+  // Build team-code → team-name map — only from groups that are fully played
   const code: Record<string, string> = {};
   for (const [g, teams] of Object.entries(standings)) {
+    if (!completeGroups.has(g)) continue;
     if (teams[0]) code[`${g}1`] = teams[0].team;
     if (teams[1]) code[`${g}2`] = teams[1].team;
     if (teams[2]) code[`${g}3`] = teams[2].team; // raw, used below
   }
 
-  // Best 8 third-place teams ranked overall
-  const thirds = Object.values(standings)
-    .map((teams) => teams[2])
+  // Best 8 third-place teams ranked overall — only from completed groups
+  const thirds = Object.entries(standings)
+    .filter(([g]) => completeGroups.has(g))
+    .map(([, teams]) => teams[2])
     .filter(Boolean)
     .sort(compareStandings)
     .slice(0, 8);
