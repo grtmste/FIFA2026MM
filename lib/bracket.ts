@@ -158,9 +158,9 @@ export function resolveBracketTeams(
 
   const updates: Array<{ id: number; home_team: string; away_team: string }> = [];
   for (const slot of BRACKET_SLOTS) {
-    const home = resolve(slot.home);
-    const away = resolve(slot.away);
-    if (home && away) updates.push({ id: slot.id, home_team: home, away_team: away });
+    const home = resolve(slot.home) ?? "Selgub";
+    const away = resolve(slot.away) ?? "Selgub";
+    updates.push({ id: slot.id, home_team: home, away_team: away });
   }
   return updates;
 }
