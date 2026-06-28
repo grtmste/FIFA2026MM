@@ -45,6 +45,19 @@ export default function LeaderboardPage() {
   const [allBonusAnswers, setAllBonusAnswers] = useState<BonusAnswer[]>([]);
   const [allBonusQuestions, setAllBonusQuestions] = useState<BonusQuestion[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Which leaderboard sections are expanded. The overall standings start open;
+  // each stage starts collapsed.
+  const [openSections, setOpenSections] = useState<Set<string>>(
+    () => new Set(["overall"])
+  );
+
+  const toggleSection = (key: string) =>
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
 
   const loadData = useCallback(async () => {
     try {
@@ -164,77 +177,105 @@ export default function LeaderboardPage() {
       )}
 
       {!loading && !error && rows.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {(stages.length > 0 ? stages : (["group"] as Stage[])).map((stage, idx) => {
-            const isLast = idx === (stages.length > 0 ? stages.length : 1) - 1;
-
-            return (
-              <div
-                key={stage}
-                className={`overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card ${
-                  isLast ? "md:col-span-2 xl:col-span-3" : ""
-                }`}
-              >
-                <div className="flex items-baseline justify-between px-4 pt-3 pb-1">
-                  <h3 className="section-title text-xl text-navy">
-                    {STAGE_TABLE_LABELS[stage]}
-                  </h3>
-                  {isLast && <span className="eyebrow">Punktide kokkuvõte</span>}
-                </div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-stone-100 text-left text-[10px] uppercase tracking-wider text-stone-400">
-                      <th className="px-3 py-2 text-center font-medium">#</th>
-                      <th className="px-3 py-2 font-medium">Nimi</th>
-                      <th className="px-3 py-2 text-center font-medium">Punktid</th>
-                      {isLast && (
-                        <>
-                          <th className="px-3 py-2 text-center font-medium">Boonus</th>
-                          <th className="px-3 py-2 text-center font-medium">Kokku</th>
-                        </>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rows.map((row, rowIdx) => (
-                      <tr
-                        key={row.id}
-                        className={`border-t border-stone-100 transition-colors ${
-                          rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
-                        }`}
+        <div className="space-y-3">
+          {/* ── Overall standings (total) — open by default ── */}
+          <Section
+            title="Üldine edetabel"
+            eyebrow="Punktide kokkuvõte"
+            open={openSections.has("overall")}
+            onToggle={() => toggleSection("overall")}
+            accent
+          >
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-stone-100 text-left text-[10px] uppercase tracking-wider text-stone-400">
+                  <th className="px-3 py-2 text-center font-medium">#</th>
+                  <th className="px-3 py-2 font-medium">Nimi</th>
+                  <th className="px-3 py-2 text-center font-medium">Mängud</th>
+                  <th className="px-3 py-2 text-center font-medium">Boonus</th>
+                  <th className="px-3 py-2 text-center font-medium">Kokku</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, rowIdx) => (
+                  <tr
+                    key={row.id}
+                    className={`border-t border-stone-100 transition-colors ${
+                      rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
+                    }`}
+                  >
+                    <td className="px-3 py-2.5 text-center font-semibold text-gold">
+                      {rowIdx + 1}
+                    </td>
+                    <td className="px-3 py-2.5 font-medium text-navy">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedId(row.id)}
+                        className="text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
                       >
-                        <td className="px-3 py-2.5 text-center font-semibold text-gold">
-                          {rowIdx + 1}
-                        </td>
-                        <td className="px-3 py-2.5 font-medium text-navy">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedId(row.id)}
-                            className="text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
-                          >
-                            {row.name}
-                          </button>
-                        </td>
-                        <td className="px-3 py-2.5 text-center text-stone-600">
-                          {row.stagePoints[stage]}
-                        </td>
-                        {isLast && (
-                          <>
-                            <td className="px-3 py-2.5 text-center text-stone-600">
-                              {row.bonusPoints}
-                            </td>
-                            <td className="px-3 py-2.5 text-center font-bold text-navy">
-                              {row.total}
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            );
-          })}
+                        {row.name}
+                      </button>
+                    </td>
+                    <td className="px-3 py-2.5 text-center text-stone-600">
+                      {row.total - row.bonusPoints}
+                    </td>
+                    <td className="px-3 py-2.5 text-center text-stone-600">
+                      {row.bonusPoints}
+                    </td>
+                    <td className="px-3 py-2.5 text-center font-bold text-navy">
+                      {row.total}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Section>
+
+          {/* ── Per-stage breakdown — collapsed by default ── */}
+          {(stages.length > 0 ? stages : (["group"] as Stage[])).map((stage) => (
+            <Section
+              key={stage}
+              title={STAGE_TABLE_LABELS[stage]}
+              open={openSections.has(stage)}
+              onToggle={() => toggleSection(stage)}
+            >
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-stone-100 text-left text-[10px] uppercase tracking-wider text-stone-400">
+                    <th className="px-3 py-2 text-center font-medium">#</th>
+                    <th className="px-3 py-2 font-medium">Nimi</th>
+                    <th className="px-3 py-2 text-center font-medium">Punktid</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row, rowIdx) => (
+                    <tr
+                      key={row.id}
+                      className={`border-t border-stone-100 transition-colors ${
+                        rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
+                      }`}
+                    >
+                      <td className="px-3 py-2.5 text-center font-semibold text-gold">
+                        {rowIdx + 1}
+                      </td>
+                      <td className="px-3 py-2.5 font-medium text-navy">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedId(row.id)}
+                          className="text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
+                        >
+                          {row.name}
+                        </button>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-stone-600">
+                        {row.stagePoints[stage]}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Section>
+          ))}
         </div>
       )}
 
@@ -252,6 +293,50 @@ export default function LeaderboardPage() {
           onClose={() => setSelectedId(null)}
         />
       )}
+    </div>
+  );
+}
+
+function Section({
+  title,
+  eyebrow,
+  open,
+  onToggle,
+  accent,
+  children,
+}: {
+  title: string;
+  eyebrow?: string;
+  open: boolean;
+  onToggle: () => void;
+  accent?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`overflow-hidden rounded-sm border border-stone-200 border-t-2 bg-white shadow-card ${
+        accent ? "border-t-gold" : "border-t-gold/50"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+      >
+        <span className="flex items-baseline gap-2">
+          <span className="section-title text-xl text-navy">{title}</span>
+          {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+        </span>
+        <span
+          className={`text-stone-400 transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        >
+          ▾
+        </span>
+      </button>
+      {open && <div className="border-t border-stone-100">{children}</div>}
     </div>
   );
 }
