@@ -61,7 +61,7 @@ export default function BonusAccordion({
               className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
             >
               <span className="flex items-baseline gap-2">
-                <span className="section-title text-lg text-navy">{title}</span>
+                <span className="text-sm font-semibold tracking-tight text-navy">{title}</span>
                 <span className="eyebrow">{sectionQuestions.length} küsimust</span>
               </span>
               <span

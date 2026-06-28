@@ -325,7 +325,7 @@ function Section({
         className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
       >
         <span className="flex items-baseline gap-2">
-          <span className="section-title text-xl text-navy">{title}</span>
+          <span className="text-sm font-semibold tracking-tight text-navy">{title}</span>
           {eyebrow && <span className="eyebrow">{eyebrow}</span>}
         </span>
         <span
