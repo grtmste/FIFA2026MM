@@ -55,11 +55,6 @@ export default function AdminDashboard({
     participants[0]?.id ?? ""
   );
 
-  const groupMatches = useMemo(
-    () => matches.filter((m) => m.stage === "group"),
-    [matches]
-  );
-
   return (
     <div className="space-y-4">
       <div className="flex gap-1 rounded-sm border border-stone-200 bg-stone-100 p-1">
@@ -87,7 +82,7 @@ export default function AdminDashboard({
         {tab === "predictions" && (
           <PredictionsTab
             participants={participants}
-            groupMatches={groupMatches}
+            matches={matches}
             predictions={predictions}
           />
         )}
@@ -218,16 +213,49 @@ function MatchLabel({ match }: { match: Match }) {
   );
 }
 
+const STAGE_PRED_LABEL: Record<string, string> = {
+  group: "Alagrupi ennustused",
+  r32: "1/32 ennustused",
+  r16: "1/16 ennustused",
+  qf: "Veerandfinaali ennustused",
+  sf: "Poolfinaali ennustused",
+  final: "Finaali ennustused",
+};
+
 function PredictionsTab({
   participants,
-  groupMatches,
+  matches,
   predictions,
 }: {
   participants: Participant[];
-  groupMatches: Match[];
+  matches: Match[];
   predictions: Prediction[];
 }) {
+  const [stage, setStage] = useState<string | null>(null);
   const [viewingId, setViewingId] = useState<string | null>(null);
+
+  const matchesByStage = useMemo(() => {
+    const map = new Map<string, Match[]>();
+    matches.forEach((m) => {
+      if (!map.has(m.stage)) map.set(m.stage, []);
+      map.get(m.stage)!.push(m);
+    });
+    for (const list of map.values()) {
+      list.sort((a, b) => {
+        const da = a.match_date ?? "";
+        const db = b.match_date ?? "";
+        if (da !== db) return da < db ? -1 : 1;
+        return a.id - b.id;
+      });
+    }
+    return map;
+  }, [matches]);
+
+  const stageMatches = stage ? matchesByStage.get(stage) ?? [] : [];
+  const stageMatchIds = useMemo(
+    () => new Set(stageMatches.map((m) => m.id)),
+    [stageMatches]
+  );
 
   const predictionByMatch = useMemo(() => {
     const map = new Map<number, Prediction>();
@@ -238,50 +266,93 @@ function PredictionsTab({
     return map;
   }, [predictions, viewingId]);
 
+  // Predictions filled per participant, scoped to the selected stage.
   const predictionCount = useMemo(() => {
     const counts = new Map<string, number>();
     predictions.forEach((p) => {
+      if (!stageMatchIds.has(p.match_id)) return;
       counts.set(p.participant_id, (counts.get(p.participant_id) ?? 0) + 1);
     });
     return counts;
-  }, [predictions]);
+  }, [predictions, stageMatchIds]);
 
   const viewingParticipant = participants.find((p) => p.id === viewingId);
 
-  // ── Participant list view ──
-  if (!viewingId || !viewingParticipant) {
-    if (participants.length === 0) {
-      return <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>;
-    }
+  // ── Step 0: stage selection ──
+  if (!stage) {
     return (
       <div className="space-y-2">
-        <p className="eyebrow">Vali osaleja ennustuste sisestamiseks</p>
-        {participants.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setViewingId(p.id)}
-            className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99]"
-          >
-            <span className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
-                {p.name.charAt(0).toUpperCase()}
+        <p className="eyebrow">Vali voor ennustuste sisestamiseks</p>
+        {STAGE_ORDER.map((s) => {
+          const count = matchesByStage.get(s)?.length ?? 0;
+          return (
+            <button
+              key={s}
+              type="button"
+              disabled={count === 0}
+              onClick={() => setStage(s)}
+              className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+            >
+              <span className="text-sm font-semibold text-navy">
+                {STAGE_PRED_LABEL[s]}
               </span>
-              <span className="text-sm font-semibold text-navy">{p.name}</span>
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="text-xs text-stone-400">
-                {predictionCount.get(p.id) ?? 0}/{groupMatches.length}
+              <span className="flex items-center gap-2">
+                <span className="text-xs text-stone-400">{count} mängu</span>
+                <span className="text-stone-300">›</span>
               </span>
-              <span className="text-stone-300">›</span>
-            </span>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
     );
   }
 
-  // ── Single participant prediction-entry view ──
+  // ── Step 1: participant selection (within a stage) ──
+  if (!viewingId || !viewingParticipant) {
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setStage(null)}
+            className="flex items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:bg-stone-50"
+          >
+            ‹ Voorud
+          </button>
+          <h3 className="flex-1 truncate text-base font-bold text-navy">
+            {STAGE_PRED_LABEL[stage]}
+          </h3>
+        </div>
+        {participants.length === 0 ? (
+          <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+        ) : (
+          participants.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => setViewingId(p.id)}
+              className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99]"
+            >
+              <span className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
+                  {p.name.charAt(0).toUpperCase()}
+                </span>
+                <span className="text-sm font-semibold text-navy">{p.name}</span>
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-xs text-stone-400">
+                  {predictionCount.get(p.id) ?? 0}/{stageMatches.length}
+                </span>
+                <span className="text-stone-300">›</span>
+              </span>
+            </button>
+          ))
+        )}
+      </div>
+    );
+  }
+
+  // ── Step 2: single participant prediction-entry view ──
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2">
@@ -294,6 +365,9 @@ function PredictionsTab({
         </button>
         <h3 className="flex-1 truncate text-base font-bold text-navy">
           {viewingParticipant.name}
+          <span className="ml-1.5 text-xs font-normal text-stone-400">
+            · {STAGE_PRED_LABEL[stage]}
+          </span>
         </h3>
         <a
           href={`/pdf/${viewingId}`}
@@ -306,9 +380,10 @@ function PredictionsTab({
       </div>
 
       <PredictionsForm
-        key={viewingId}
+        key={`${stage}-${viewingId}`}
         participantId={viewingId}
-        groupMatches={groupMatches}
+        stageMatches={stageMatches}
+        stageMatchIds={stageMatchIds}
         predictionByMatch={predictionByMatch}
       />
     </div>
@@ -317,17 +392,19 @@ function PredictionsTab({
 
 function PredictionsForm({
   participantId,
-  groupMatches,
+  stageMatches,
+  stageMatchIds,
   predictionByMatch,
 }: {
   participantId: string;
-  groupMatches: Match[];
+  stageMatches: Match[];
+  stageMatchIds: Set<number>;
   predictionByMatch: Map<number, Prediction>;
 }) {
   const [scores, setScores] = useState<Record<number, { home: string; away: string }>>(
     () => {
       const init: Record<number, { home: string; away: string }> = {};
-      groupMatches.forEach((m) => {
+      stageMatches.forEach((m) => {
         const existing = predictionByMatch.get(m.id);
         init[m.id] = {
           home: existing?.predicted_home_score?.toString() ?? "",
@@ -364,16 +441,26 @@ function PredictionsForm({
         setImportMsg({ ok: false, text: result.error });
         return;
       }
+      // Only merge scores that belong to this stage's matches, so importing a
+      // sheet while a different round is open can't inject stray predictions.
+      const relevant = result.scores.filter((s) => stageMatchIds.has(s.match_id));
       setScores((prev) => {
         const next = { ...prev };
-        result.scores.forEach(({ match_id, home, away }) => {
+        relevant.forEach(({ match_id, home, away }) => {
           next[match_id] = { home: String(home), away: String(away) };
         });
         return next;
       });
+      if (relevant.length === 0) {
+        setImportMsg({
+          ok: false,
+          text: "Selle vooru mänge PDF-ist ei leitud. Kontrolli, et tegu on õige vooru lehega.",
+        });
+        return;
+      }
       setImportMsg({
         ok: true,
-        text: `Imporditud ${result.scores.length} skoori. Kontrolli ja vajuta "Salvesta kõik".`,
+        text: `Imporditud ${relevant.length} skoori. Kontrolli ja vajuta "Salvesta kõik".`,
       });
     } catch (err) {
       setImportMsg({
@@ -444,7 +531,7 @@ function PredictionsForm({
         )}
       </div>
 
-      {groupMatches.map((match) => (
+      {stageMatches.map((match) => (
         <div
           key={match.id}
           className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"

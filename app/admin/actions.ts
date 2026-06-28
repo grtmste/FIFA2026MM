@@ -216,11 +216,15 @@ export async function saveAllPredictions(
   }
 
   // Verify the real saved count so the success message reflects the database,
-  // not just what we attempted to write.
+  // not just what we attempted to write. Scope it to the match ids that were
+  // submitted, so the count reflects this stage rather than every prediction
+  // the participant has across all rounds.
+  const submittedIds = scores.map((s) => s.match_id);
   const { count } = await supabaseAdmin
     .from("predictions")
     .select("*", { count: "exact", head: true })
-    .eq("participant_id", participantId);
+    .eq("participant_id", participantId)
+    .in("match_id", submittedIds);
 
   revalidateAll();
   return { ok: true, saved: count ?? toSave.length, cleared };
@@ -256,11 +260,9 @@ export async function importPredictionPdf(
 
     // The PDF's "#" column (and its skoor_N form fields) corresponds directly
     // to the match id, not to a date-sorted position. Map by id so the order
-    // the app happens to display matches in is irrelevant.
-    const { data } = await supabaseAdmin
-      .from("matches")
-      .select("id")
-      .eq("stage", "group");
+    // the app happens to display matches in is irrelevant. Every stage's sheet
+    // uses the same field naming, so we validate against all match ids.
+    const { data } = await supabaseAdmin.from("matches").select("id");
     const validIds = new Set((data ?? []).map((m) => (m as { id: number }).id));
 
     const mapped = scores

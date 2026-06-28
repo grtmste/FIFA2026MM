@@ -11,7 +11,10 @@ export async function extractPredictionScores(buffer: Buffer): Promise<ImportedS
   const form = doc.getForm();
 
   const results: ImportedScore[] = [];
-  for (let position = 1; position <= 72; position++) {
+  // Group stage is ids 1-72; knockout matches continue 73-103. The score field
+  // suffix always equals the match id, so scanning the full range lets every
+  // stage's sheet import through the same code path.
+  for (let position = 1; position <= 103; position++) {
     const home = readField(form, `skoor_${position}_kodu`);
     const away = readField(form, `skoor_${position}_vooras`);
     if (home === null || away === null) continue;
