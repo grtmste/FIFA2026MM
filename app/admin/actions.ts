@@ -336,9 +336,19 @@ export async function advanceBracket() {
   requireAuth();
   const { data } = await supabaseAdmin.from("matches").select("*");
   const allMatches = (data ?? []) as Match[];
+  const byId = new Map(allMatches.map((m) => [m.id, m]));
   const updates = resolveBracketTeams(allMatches);
+  // Never overwrite a knockout slot that already holds a real (manually
+  // entered) fixture — only fill slots that are still placeholders. The
+  // auto-resolver's pairing table does not match FIFA's actual bracket, so
+  // confirmed fixtures are entered by hand (see scripts/r32_fixtures.sql).
+  const toApply = updates.filter((u) => {
+    const cur = byId.get(u.id);
+    if (!cur) return false;
+    return cur.home_team === "Selgub" || cur.away_team === "Selgub";
+  });
   await Promise.all(
-    updates.map((u) =>
+    toApply.map((u) =>
       supabaseAdmin
         .from("matches")
         .update({ home_team: u.home_team, away_team: u.away_team })
