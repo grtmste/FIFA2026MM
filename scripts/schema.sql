@@ -38,7 +38,9 @@ create table if not exists bonus_questions (
   id integer primary key,
   question_text text not null,
   max_points integer not null,
-  correct_answer text
+  correct_answer text,
+  category text not null default 'alagrupp',
+  description text
 );
 
 create table if not exists bonus_answers (

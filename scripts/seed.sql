@@ -125,11 +125,27 @@ insert into matches (id, stage, group_name, home_team, away_team, match_date, ve
 -- Bonus questions
 -- ---------------------------------------------------------------------------
 
-insert into bonus_questions (id, question_text, max_points, correct_answer) values
-(1, 'Milline meeskond võidab turniiri?', 10, null),
-(2, 'Kes on turniiri suurim väravakütt?', 5, null),
-(3, 'Millised 4 meeskonda jõuavad poolfinaali?', 7, null),
-(4, 'Mitu mängu lõppevad viigiga alagrupi faasis?', 4, null),
-(5, 'Millisele meeskonnale lüüakse alagrupi faasis kõige rohkem väravaid?', 5, null),
-(6, 'Milline on edukaim Aafrika võistkond?', 6, null),
-(7, 'Kas Marju laseb seekord kellelgi teisel võita?', 3, null);
+insert into bonus_questions (id, question_text, max_points, correct_answer, category, description) values
+(1, 'Milline meeskond võidab turniiri?', 10, null, 'alagrupp', null),
+(2, 'Kes on turniiri suurim väravakütt?', 5, null, 'alagrupp', null),
+(3, 'Millised 4 meeskonda jõuavad poolfinaali?', 7, null, 'alagrupp', null),
+(4, 'Mitu mängu lõppevad viigiga alagrupi faasis?', 4, null, 'alagrupp', null),
+(5, 'Millisele meeskonnale lüüakse alagrupi faasis kõige rohkem väravaid?', 5, null, 'alagrupp', null),
+(6, 'Milline on edukaim Aafrika võistkond?', 6, null, 'alagrupp', null),
+(7, 'Kas Marju laseb seekord kellelgi teisel võita?', 3, null, 'alagrupp', null),
+-- 1/32 bonus round
+(8,  'Mitu suluseisu fikseeritakse mängude peale kokku?', 5, null, '1/32', null),
+(9,  'Mitu nurgalööki teenib Prantsusmaa Rootsi vastu?', 3, null, '1/32', null),
+(10, 'Mitu söötu teeb Inglismaa (+/- 20)?',               4, null, '1/32', null),
+(11, 'Kas mõni mäng läheb penaltiseeriasse?',             2, null, '1/32', null),
+-- Jokker combo (optional, all-or-nothing)
+(12, 'Jokker combo (valikuline)', 25, null, 'jokker',
+'Kui valid selle jokker combo, siis nende mängude ennustused (täidetud üleval) eraldi arvesse ei lähe. Selleks, et võita Jokker comboga, peavad kõik etteantud 6 küsimust täppi minema:
+1. Norra võidab Elevandiluurannikut
+2. Ecuador võidab Mehhikot
+3. Portugal võidab Horvaatiat
+4. Egiptus võidab Austraaliat
+5. Maroko võidab Hollandit
+6. Belgia ja Senegal mängivad viiki
+
+Kehtib endiselt reegel, et tulemusi arvestatakse normaalaja kohta.');

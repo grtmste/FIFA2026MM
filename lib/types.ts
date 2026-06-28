@@ -40,6 +40,8 @@ export interface BonusQuestion {
   question_text: string;
   max_points: number;
   correct_answer: string | null;
+  category?: string | null;
+  description?: string | null;
 }
 
 export interface BonusAnswer {
