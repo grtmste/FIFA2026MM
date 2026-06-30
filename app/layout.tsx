@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import BottomNav from "@/components/BottomNav";
 import TopNav from "@/components/TopNav";
 import Logo from "@/components/Logo";
+import IntroOverlay from "@/components/IntroOverlay";
 import "./globals.css";
 
 const inter = Inter({
@@ -36,6 +37,7 @@ export default function RootLayout({
           </main>
         </div>
         <BottomNav />
+        <IntroOverlay />
       </body>
     </html>
   );
