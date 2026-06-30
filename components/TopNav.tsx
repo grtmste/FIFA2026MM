@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/lib/nav";
+import NavIcon from "@/components/NavIcon";
 
 export default function TopNav() {
   const pathname = usePathname();
@@ -18,13 +19,18 @@ export default function TopNav() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className={`rounded-sm px-3 py-2 text-sm font-semibold transition-all duration-150 active:scale-95 ${
+                className={`group flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95 ${
                   isActive
-                    ? "bg-navy text-white shadow-sm"
-                    : "text-stone-600 hover:bg-stone-100 hover:text-navy"
+                    ? "bg-gradient-to-br from-navy to-blue-700 text-white shadow-card"
+                    : "text-stone-600 hover:-translate-y-0.5 hover:bg-white/70 hover:text-navy hover:shadow-card"
                 }`}
               >
-                <span className="mr-1">{link.icon}</span>
+                <NavIcon
+                  name={link.icon}
+                  className={`h-[18px] w-[18px] transition-transform duration-200 group-hover:scale-110 ${
+                    isActive ? "text-white" : "text-gold"
+                  }`}
+                />
                 {link.label}
               </Link>
             </li>

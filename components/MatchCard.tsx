@@ -10,13 +10,22 @@ export default function MatchCard({ match }: { match: Match }) {
   return (
     <Link
       href={`/matches/${match.id}`}
-      className="group flex overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover"
+      className="group relative flex transform-gpu overflow-hidden rounded-lg border border-stone-200 bg-white shadow-card transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] will-change-transform hover:-translate-y-1.5 hover:border-gold/60 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       style={{ borderLeft: `3px solid ${groupColor(match.group_name)}` }}
     >
-      <div className="flex w-9 flex-shrink-0 items-center justify-center bg-stone-50 text-base font-bold text-stone-400">
+      {/* Gravity glow that blooms in on hover */}
+      <span
+        className="pointer-events-none absolute -inset-px z-0 scale-90 rounded-lg opacity-0 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(120% 90% at 50% 120%, ${groupColor(
+            match.group_name
+          )}22, transparent 70%)`,
+        }}
+      />
+      <div className="relative z-10 flex w-9 flex-shrink-0 items-center justify-center bg-stone-50/80 text-base font-bold text-stone-400">
         {match.id}
       </div>
-      <div className="min-w-0 flex-1 p-3">
+      <div className="relative z-10 min-w-0 flex-1 p-3">
         <div className="mb-1.5 flex items-center justify-between text-[11px] text-stone-400">
           <span>{formatMatchDate(match.match_date)}</span>
           <span>{formatMatchTime(match.match_date)}</span>

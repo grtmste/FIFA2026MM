@@ -39,7 +39,7 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
         return (
           <div
             key={stage}
-            className="overflow-hidden rounded-sm border border-white/60 border-t-2 border-t-gold/50 bg-white/85 shadow-card backdrop-blur-sm transition-shadow hover:shadow-card-hover"
+            className="overflow-hidden rounded-lg border border-stone-200/70 border-t-2 border-t-gold/50 bg-white shadow-card transition-shadow hover:shadow-card-hover"
           >
             <button
               type="button"
@@ -64,8 +64,14 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
             {isOpen && (
               <div className="border-t border-stone-100 p-3">
                 <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {items.map((match) => (
-                    <MatchCard key={match.id} match={match} />
+                  {items.map((match, i) => (
+                    <div
+                      key={match.id}
+                      className="animate-fade-in-up motion-reduce:animate-none"
+                      style={{ animationDelay: `${Math.min(i, 12) * 35}ms` }}
+                    >
+                      <MatchCard match={match} />
+                    </div>
                   ))}
                 </div>
               </div>
