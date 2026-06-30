@@ -33,11 +33,11 @@ body::after {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  /* Original, crisp confetti-of-triangles motif in the brand palette —
-     evokes the vibrant 2026 tournament look (not FIFA's trademarked art).
-     Pure vector + a fixed background-size keeps it sharp on hi-DPI mobile. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg%3E%3Cpolygon points='14,20 40,14 26,44' fill='%231B2447' fill-opacity='0.06'/%3E%3Cpolygon points='66,16 92,28 70,46' fill='%239355E0' fill-opacity='0.07'/%3E%3Cpolygon points='92,64 110,92 84,86' fill='%237FC2BC' fill-opacity='0.08'/%3E%3Cpolygon points='20,74 46,72 30,100' fill='%23E9A8C9' fill-opacity='0.08'/%3E%3Cpolygon points='54,52 80,60 58,84' fill='%23F4C7A1' fill-opacity='0.08'/%3E%3Cpolygon points='100,18 112,40 90,36' fill='%233D5AC0' fill-opacity='0.07'/%3E%3Ccircle cx='50' cy='30' r='2.5' fill='%233D5AC0' fill-opacity='0.07'/%3E%3Ccircle cx='86' cy='108' r='2.5' fill='%239355E0' fill-opacity='0.07'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 150px 150px;
+  /* Abstract low-poly mesh "net" — irregular triangulated lines with node
+     dots, lightly tinted in the brand palette. Pure vector + fixed
+     background-size keeps it crisp on hi-DPI mobile. (Original art.) */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke-width='1'%3E%3Cpath d='M0 40 L70 60' stroke='%231B2447' stroke-opacity='0.07'/%3E%3Cpath d='M70 60 L150 0' stroke='%239355E0' stroke-opacity='0.07'/%3E%3Cpath d='M70 60 L135 95' stroke='%237FC2BC' stroke-opacity='0.08'/%3E%3Cpath d='M135 95 L200 40' stroke='%233D5AC0' stroke-opacity='0.07'/%3E%3Cpath d='M135 95 L165 150' stroke='%23E9A8C9' stroke-opacity='0.08'/%3E%3Cpath d='M135 95 L95 150' stroke='%231B2447' stroke-opacity='0.06'/%3E%3Cpath d='M95 150 L60 200' stroke='%239355E0' stroke-opacity='0.07'/%3E%3Cpath d='M95 150 L40 110' stroke='%237FC2BC' stroke-opacity='0.07'/%3E%3Cpath d='M40 110 L0 40' stroke='%23F4C7A1' stroke-opacity='0.08'/%3E%3Cpath d='M40 110 L0 140' stroke='%233D5AC0' stroke-opacity='0.07'/%3E%3Cpath d='M95 150 L165 150' stroke='%231B2447' stroke-opacity='0.06'/%3E%3Cpath d='M165 150 L150 200' stroke='%239355E0' stroke-opacity='0.07'/%3E%3Cpath d='M60 0 L70 60' stroke='%23E9A8C9' stroke-opacity='0.07'/%3E%3Cpath d='M0 140 L95 150' stroke='%237FC2BC' stroke-opacity='0.06'/%3E%3Cpath d='M200 140 L165 150' stroke='%233D5AC0' stroke-opacity='0.07'/%3E%3Cpath d='M70 60 L40 110' stroke='%231B2447' stroke-opacity='0.06'/%3E%3C/g%3E%3Cg%3E%3Ccircle cx='70' cy='60' r='2' fill='%239355E0' fill-opacity='0.10'/%3E%3Ccircle cx='135' cy='95' r='2' fill='%237FC2BC' fill-opacity='0.10'/%3E%3Ccircle cx='95' cy='150' r='2' fill='%233D5AC0' fill-opacity='0.10'/%3E%3Ccircle cx='40' cy='110' r='2' fill='%23E9A8C9' fill-opacity='0.10'/%3E%3Ccircle cx='165' cy='150' r='2' fill='%231B2447' fill-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 240px 240px;
 }
 
 @media (prefers-reduced-motion: reduce) {
