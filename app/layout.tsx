@@ -31,7 +31,7 @@ export default function RootLayout({
               <TopNav />
             </div>
           </header>
-          <main className="animate-fade-in-up mx-auto w-full max-w-screen-2xl px-4 py-6 md:px-8 md:py-8 lg:px-12">
+          <main className="mx-auto w-full max-w-screen-2xl px-4 py-6 md:px-8 md:py-8 lg:px-12">
             {children}
           </main>
         </div>

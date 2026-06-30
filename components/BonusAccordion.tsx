@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BonusAnswer, BonusQuestion, Participant } from "@/lib/types";
+import Reveal from "@/components/Reveal";
 
 // Section order + headings for the bonus categories.
 const CATEGORIES: { key: string; title: string }[] = [
@@ -50,7 +51,7 @@ export default function BonusAccordion({
         const isOpen = open.has(key);
 
         return (
-          <div
+          <Reveal
             key={key}
             className="overflow-hidden rounded-lg border border-stone-200/70 border-t-2 border-t-gold/50 bg-white shadow-card transition-shadow hover:shadow-card-hover"
           >
@@ -88,7 +89,7 @@ export default function BonusAccordion({
                 </div>
               </div>
             )}
-          </div>
+          </Reveal>
         );
       })}
     </div>

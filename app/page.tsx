@@ -14,6 +14,7 @@ import {
 } from "@/lib/types";
 import SectionHeading from "@/components/SectionHeading";
 import ParticipantDetail from "@/components/ParticipantDetail";
+import Reveal from "@/components/Reveal";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
 
@@ -326,7 +327,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div
+    <Reveal
       className={`overflow-hidden rounded-lg border border-stone-200/70 border-t-2 bg-white shadow-card transition-shadow hover:shadow-card-hover ${
         accent ? "border-t-gold" : "border-t-gold/50"
       }`}
@@ -350,6 +351,6 @@ function Section({
         </span>
       </button>
       {open && <div className="border-t border-stone-100">{children}</div>}
-    </div>
+    </Reveal>
   );
 }

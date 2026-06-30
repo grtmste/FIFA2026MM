@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 import {
   BonusAnswer,
   BonusQuestion,
@@ -100,13 +101,19 @@ export default function ParticipantDetail({
   if (!participant || !mounted) return null;
 
   return createPortal(
-    <div
+    <motion.div
       className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-navy/40 p-3 backdrop-blur-sm sm:p-6"
       onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
     >
-      <div
-        className="my-4 w-full max-w-2xl overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card-hover"
+      <motion.div
+        className="my-4 w-full max-w-2xl overflow-hidden rounded-lg border border-stone-200 bg-white shadow-card-hover"
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 320, damping: 26 }}
       >
         {/* Header */}
         <div className="sticky top-0 flex items-center justify-between gap-3 border-b border-stone-200 bg-gradient-to-r from-navy to-blue-700 px-4 py-3">
@@ -241,8 +248,8 @@ export default function ParticipantDetail({
             </div>
           )}
         </div>
-      </div>
-    </div>,
+      </motion.div>
+    </motion.div>,
     document.body
   );
 }

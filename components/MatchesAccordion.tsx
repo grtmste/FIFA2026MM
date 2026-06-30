@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Match, Stage, STAGE_LABELS } from "@/lib/types";
 import MatchCard from "@/components/MatchCard";
+import Reveal from "@/components/Reveal";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
 
@@ -34,11 +35,12 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
 
   return (
     <div className="space-y-3">
-      {stages.map(({ stage, items }) => {
+      {stages.map(({ stage, items }, idx) => {
         const isOpen = open.has(stage);
         return (
-          <div
+          <Reveal
             key={stage}
+            delay={Math.min(idx, 6) * 0.05}
             className="overflow-hidden rounded-lg border border-stone-200/70 border-t-2 border-t-gold/50 bg-white shadow-card transition-shadow hover:shadow-card-hover"
           >
             <button
@@ -76,7 +78,7 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
                 </div>
               </div>
             )}
-          </div>
+          </Reveal>
         );
       })}
     </div>
