@@ -302,12 +302,21 @@ export async function saveMatchResult(formData: FormData) {
   const penaltyWinner =
     penaltyRaw === "home" || penaltyRaw === "away" ? penaltyRaw : null;
 
+  const penHomeRaw = formData.get("penalty_home_score");
+  const penAwayRaw = formData.get("penalty_away_score");
+  const penaltyHome =
+    penHomeRaw === "" || penHomeRaw === null ? null : Number(penHomeRaw);
+  const penaltyAway =
+    penAwayRaw === "" || penAwayRaw === null ? null : Number(penAwayRaw);
+
   await supabaseAdmin
     .from("matches")
     .update({
       actual_home_score: actualHome,
       actual_away_score: actualAway,
       penalty_winner: penaltyWinner,
+      penalty_home_score: penaltyHome,
+      penalty_away_score: penaltyAway,
     })
     .eq("id", matchId);
 

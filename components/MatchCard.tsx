@@ -59,7 +59,10 @@ export default function MatchCard({ match }: { match: Match }) {
         </div>
         {hasScore && match.penalty_winner && (
           <div className="mt-0.5 text-center text-[10px] font-semibold text-gold">
-            ⚽ pen.{" "}
+            ⚽ Penaltid{" "}
+            {match.penalty_home_score != null && match.penalty_away_score != null
+              ? `${match.penalty_home_score}–${match.penalty_away_score} · `
+              : ""}
             {match.penalty_winner === "home" ? match.home_team : match.away_team}
           </div>
         )}

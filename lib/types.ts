@@ -26,6 +26,8 @@ export interface Match {
   actual_home_score: number | null;
   actual_away_score: number | null;
   penalty_winner?: "home" | "away" | null;
+  penalty_home_score?: number | null;
+  penalty_away_score?: number | null;
 }
 
 export interface Prediction {

@@ -642,19 +642,36 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                   </div>
                 </div>
                 {stage !== "group" && (
-                  <div className="mt-1.5 flex items-center gap-2 border-t border-stone-100 pt-1.5">
-                    <span className="text-[11px] font-medium text-stone-400">
-                      Penaltid:
-                    </span>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2 border-t border-stone-100 pt-1.5">
                     <select
                       name="penalty_winner"
                       defaultValue={match.penalty_winner ?? ""}
-                      className={`flex-1 px-2 py-1 text-xs ${INPUT}`}
+                      className={`min-w-[180px] flex-1 px-2 py-1 text-xs ${INPUT}`}
                     >
                       <option value="">Otsustati normaalajal</option>
                       <option value="home">Penaltitega võitis {match.home_team}</option>
                       <option value="away">Penaltitega võitis {match.away_team}</option>
                     </select>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] font-medium text-stone-400">
+                        Penaltid:
+                      </span>
+                      <input
+                        type="number"
+                        name="penalty_home_score"
+                        min={0}
+                        defaultValue={match.penalty_home_score ?? ""}
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                      />
+                      <span className="text-xs font-bold text-stone-300">:</span>
+                      <input
+                        type="number"
+                        name="penalty_away_score"
+                        min={0}
+                        defaultValue={match.penalty_away_score ?? ""}
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                      />
+                    </div>
                   </div>
                 )}
               </form>

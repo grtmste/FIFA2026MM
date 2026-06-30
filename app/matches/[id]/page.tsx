@@ -82,7 +82,10 @@ export default async function MatchDetailPage({
           </div>
           {hasScore && typedMatch.penalty_winner && (
             <div className="mt-2 text-center text-xs font-semibold text-gold">
-              ⚽ Penaltitega võitis{" "}
+              {typedMatch.penalty_home_score != null &&
+              typedMatch.penalty_away_score != null
+                ? `⚽ Penaltid ${typedMatch.penalty_home_score}–${typedMatch.penalty_away_score} · `
+                : "⚽ Penaltitega võitis "}
               {typedMatch.penalty_winner === "home"
                 ? typedMatch.home_team
                 : typedMatch.away_team}
