@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import BottomNav from "@/components/BottomNav";
 import TopNav from "@/components/TopNav";
 import Logo from "@/components/Logo";
-import NetBall from "@/components/NetBall";
 import "./globals.css";
 
 const inter = Inter({
@@ -37,7 +36,6 @@ export default function RootLayout({
           </main>
         </div>
         <BottomNav />
-        <NetBall />
       </body>
     </html>
   );
