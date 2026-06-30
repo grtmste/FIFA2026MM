@@ -39,7 +39,7 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
         return (
           <div
             key={stage}
-            className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
+            className="overflow-hidden rounded-sm border border-white/60 border-t-2 border-t-gold/50 bg-white/85 shadow-card backdrop-blur-sm transition-shadow hover:shadow-card-hover"
           >
             <button
               type="button"

@@ -327,7 +327,7 @@ function Section({
 }) {
   return (
     <div
-      className={`overflow-hidden rounded-sm border border-stone-200 border-t-2 bg-white shadow-card ${
+      className={`overflow-hidden rounded-sm border border-white/60 border-t-2 bg-white/85 shadow-card backdrop-blur-sm transition-shadow hover:shadow-card-hover ${
         accent ? "border-t-gold" : "border-t-gold/50"
       }`}
     >

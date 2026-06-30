@@ -16,6 +16,10 @@ const config: Config = {
         cream: "#F7F8FC",
         champagne: "#EBEFFB",
         blush: "#F0EAFB",
+        mint: "#D6F0E4",
+        aqua: "#CFE9F2",
+        peach: "#FBE6D6",
+        pink: "#F6DCEC",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
@@ -39,10 +43,25 @@ const config: Config = {
           "60%": { opacity: "1", transform: "scale(1.1)" },
           "100%": { transform: "scale(1)" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-4px)" },
+        },
+        "bg-drift": {
+          "0%, 100%": { transform: "translate3d(0, 0, 0) scale(1)" },
+          "50%": { transform: "translate3d(0, -2%, 0) scale(1.05)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "0% 50%" },
+          "100%": { backgroundPosition: "200% 50%" },
+        },
       },
       animation: {
-        "fade-in-up": "fade-in-up 0.4s ease-out both",
+        "fade-in-up": "fade-in-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both",
         "pop-in": "pop-in 0.3s ease-out both",
+        float: "float 5s ease-in-out infinite",
+        "bg-drift": "bg-drift 18s ease-in-out infinite",
+        shimmer: "shimmer 6s linear infinite",
       },
     },
   },

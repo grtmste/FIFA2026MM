@@ -10,24 +10,36 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Soft backdrop glow behind the content for a sense of depth */
+/* Soft, drifting pastel backdrop for a sense of depth and colour */
 body::before {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 32% at 12% 4%, rgba(61, 90, 192, 0.16), transparent 70%),
+    radial-gradient(38% 30% at 88% 0%, rgba(147, 85, 224, 0.14), transparent 70%),
+    radial-gradient(45% 38% at 100% 75%, rgba(127, 194, 188, 0.16), transparent 72%),
+    radial-gradient(46% 40% at 0% 100%, rgba(233, 168, 201, 0.15), transparent 72%),
+    radial-gradient(40% 34% at 50% 120%, rgba(244, 199, 161, 0.13), transparent 72%);
+  animation: bg-drift 18s ease-in-out infinite;
+}
+
+/* Faint football-style honeycomb pattern woven into the background */
+body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(
-      60% 45% at 50% -5%,
-      rgba(61, 90, 192, 0.13),
-      transparent 70%
-    ),
-    radial-gradient(
-      50% 40% at 100% 100%,
-      rgba(147, 85, 224, 0.1),
-      transparent 70%
-    );
+  background-image: url("data:image/svg+xml,%3Csvg width='28' height='49' viewBox='0 0 28 49' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231b2447' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
 }
 
 body > * {
@@ -37,6 +49,16 @@ body > * {
 
 * {
   box-sizing: border-box;
+}
+
+@keyframes bg-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -2%, 0) scale(1.05);
+  }
 }
 
 /* Elegant section label: bold sans, with a hairline accent rule */
@@ -52,24 +74,49 @@ body > * {
   color: #5c6a95;
 }
 
-/* Thin accent divider */
+/* Thin accent divider with a soft multi-colour wash */
 .gold-rule {
-  height: 1px;
+  height: 1.5px;
+  border-radius: 9999px;
   background: linear-gradient(
     to right,
     rgba(61, 90, 192, 0),
-    rgba(61, 90, 192, 0.5),
-    rgba(147, 85, 224, 0.5),
-    rgba(147, 85, 224, 0)
+    rgba(61, 90, 192, 0.55),
+    rgba(147, 85, 224, 0.55),
+    rgba(127, 194, 188, 0.5),
+    rgba(233, 168, 201, 0)
   );
 }
 
-/* Blue-to-purple gradient text, matching the Jalka MM wordmark */
+/* Blue→purple→teal gradient text, gently shifting */
 .gradient-text {
-  background-image: linear-gradient(90deg, #3d5ac0, #9355e0);
+  background-image: linear-gradient(
+    90deg,
+    #3d5ac0,
+    #9355e0,
+    #7fc2bc,
+    #3d5ac0
+  );
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text {
+    animation: none;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 /* Remove number input spinners for a cleaner score-entry UI */
