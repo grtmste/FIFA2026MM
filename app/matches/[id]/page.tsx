@@ -91,9 +91,36 @@ export default async function MatchDetailPage({
                 : typedMatch.away_team}
             </div>
           )}
-          <div className="mt-3 text-center text-xs text-stone-400">
-            {typedMatch.venue ?? "Selgub"}
-          </div>
+          {(() => {
+            // For knockout games show who advanced (normal time, or the
+            // penalty winner on a draw) instead of the venue placeholder.
+            if (typedMatch.stage !== "group" && hasScore) {
+              const h = typedMatch.actual_home_score!;
+              const a = typedMatch.actual_away_score!;
+              const winner =
+                h > a
+                  ? typedMatch.home_team
+                  : a > h
+                  ? typedMatch.away_team
+                  : typedMatch.penalty_winner === "home"
+                  ? typedMatch.home_team
+                  : typedMatch.penalty_winner === "away"
+                  ? typedMatch.away_team
+                  : null;
+              if (winner) {
+                return (
+                  <div className="mt-3 text-center text-xs font-semibold text-navy">
+                    Edasi pääses: <span className="text-gold">{winner}</span>
+                  </div>
+                );
+              }
+            }
+            return (
+              <div className="mt-3 text-center text-xs text-stone-400">
+                {typedMatch.venue ?? "Selgub"}
+              </div>
+            );
+          })()}
         </div>
       </div>
 
