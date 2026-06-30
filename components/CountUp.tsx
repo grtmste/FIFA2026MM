@@ -8,9 +8,11 @@ import { useEffect, useRef, useState } from "react";
 export default function CountUp({
   value,
   className,
+  delay = 0,
 }: {
   value: number;
   className?: string;
+  delay?: number;
 }) {
   const reduce = useReducedMotion();
   const [display, setDisplay] = useState(reduce ? value : 0);
@@ -23,13 +25,14 @@ export default function CountUp({
       return;
     }
     const controls = animate(prev.current, value, {
-      duration: 0.7,
+      duration: 1,
+      delay,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (v) => setDisplay(Math.round(v)),
     });
     prev.current = value;
     return () => controls.stop();
-  }, [value, reduce]);
+  }, [value, reduce, delay]);
 
   return (
     <span className={className} style={{ fontVariantNumeric: "tabular-nums" }}>

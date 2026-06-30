@@ -79,7 +79,7 @@ export default function LeaderboardTable<R extends LbRow>({
                   c.bold ? "font-bold text-navy" : "text-stone-600"
                 }`}
               >
-                <CountUp value={c.get(row)} />
+                <CountUp value={c.get(row)} delay={Math.min(rowIdx, 16) * 0.05} />
               </span>
             ))}
           </motion.div>
