@@ -108,38 +108,60 @@ function BonusCard({
   participants: Participant[];
   answers: BonusAnswer[];
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <section
-      className={`space-y-2 rounded-sm border border-stone-200 border-t-2 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover ${
+      className={`overflow-hidden rounded-lg border border-stone-200 border-t-2 bg-white shadow-card transition-shadow hover:shadow-card-hover ${
         isJoker ? "border-t-gold md:col-span-2" : "border-t-gold/40"
       }`}
     >
-      <h3 className="flex items-baseline gap-2 text-sm font-semibold text-navy">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+      >
         <span className="section-title text-2xl leading-none text-gold">
           {isJoker ? "★" : index + 1}
         </span>
-        {question.question_text}
-      </h3>
-      <p className="text-xs text-stone-500">
-        Maksimum: {question.max_points} punkti
-        {question.correct_answer && (
-          <>
-            {" "}
-            · Õige vastus:{" "}
-            <span className="font-semibold text-gold">{question.correct_answer}</span>
-          </>
-        )}
-      </p>
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-semibold text-navy">
+            {question.question_text}
+          </span>
+          <span className="text-[11px] text-stone-400">
+            Maksimum: {question.max_points} punkti
+            {question.correct_answer && (
+              <>
+                {" "}
+                · Õige vastus:{" "}
+                <span className="font-semibold text-gold">
+                  {question.correct_answer}
+                </span>
+              </>
+            )}
+          </span>
+        </span>
+        <span
+          className={`text-stone-400 transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        >
+          ▾
+        </span>
+      </button>
 
-      {question.description && (
-        <div className="whitespace-pre-line rounded-sm bg-stone-50 px-3 py-2 text-xs leading-relaxed text-stone-600">
-          {question.description}
-        </div>
-      )}
+      {open && (
+        <div className="space-y-2 border-t border-stone-100 p-3">
+          {question.description && (
+            <div className="whitespace-pre-line rounded-sm bg-stone-50 px-3 py-2 text-xs leading-relaxed text-stone-600">
+              {question.description}
+            </div>
+          )}
 
-      {participants.length > 0 && (
-        <div className="overflow-hidden rounded-sm border border-stone-200">
-          <table className="w-full text-sm">
+          {participants.length > 0 && (
+            <div className="overflow-hidden rounded-sm border border-stone-200">
+              <table className="w-full text-sm">
             <thead>
               <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">
                 <th className="px-2 py-1">Nimi</th>
@@ -174,6 +196,8 @@ function BonusCard({
               })}
             </tbody>
           </table>
+            </div>
+          )}
         </div>
       )}
     </section>
