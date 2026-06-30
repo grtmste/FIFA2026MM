@@ -25,6 +25,7 @@ export interface Match {
   venue: string | null;
   actual_home_score: number | null;
   actual_away_score: number | null;
+  penalty_winner?: "home" | "away" | null;
 }
 
 export interface Prediction {

@@ -641,6 +641,22 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                     <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">OK</SubmitButton>
                   </div>
                 </div>
+                {stage !== "group" && (
+                  <div className="mt-1.5 flex items-center gap-2 border-t border-stone-100 pt-1.5">
+                    <span className="text-[11px] font-medium text-stone-400">
+                      Penaltid:
+                    </span>
+                    <select
+                      name="penalty_winner"
+                      defaultValue={match.penalty_winner ?? ""}
+                      className={`flex-1 px-2 py-1 text-xs ${INPUT}`}
+                    >
+                      <option value="">Otsustati normaalajal</option>
+                      <option value="home">Penaltitega võitis {match.home_team}</option>
+                      <option value="away">Penaltitega võitis {match.away_team}</option>
+                    </select>
+                  </div>
+                )}
               </form>
             ))}
           </div>

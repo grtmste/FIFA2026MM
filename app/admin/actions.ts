@@ -298,11 +298,16 @@ export async function saveMatchResult(formData: FormData) {
   const actualAway =
     awayRaw === "" || awayRaw === null ? null : Number(awayRaw);
 
+  const penaltyRaw = String(formData.get("penalty_winner") ?? "");
+  const penaltyWinner =
+    penaltyRaw === "home" || penaltyRaw === "away" ? penaltyRaw : null;
+
   await supabaseAdmin
     .from("matches")
     .update({
       actual_home_score: actualHome,
       actual_away_score: actualAway,
+      penalty_winner: penaltyWinner,
     })
     .eq("id", matchId);
 

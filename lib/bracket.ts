@@ -147,7 +147,10 @@ export function resolveBracketTeams(
     if (!m || m.actual_home_score === null || m.actual_away_score === null) return null;
     if (m.actual_home_score > m.actual_away_score) return m.home_team;
     if (m.actual_away_score > m.actual_home_score) return m.away_team;
-    return null; // draw — can't determine in knockout without penalty info
+    // Normal-time draw — decided by the recorded penalty shootout winner.
+    if (m.penalty_winner === "home") return m.home_team;
+    if (m.penalty_winner === "away") return m.away_team;
+    return null;
   };
 
   const resolve = (c: string): string | null => {
