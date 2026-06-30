@@ -15,6 +15,7 @@ import {
 import SectionHeading from "@/components/SectionHeading";
 import ParticipantDetail from "@/components/ParticipantDetail";
 import Reveal from "@/components/Reveal";
+import LeaderboardTable from "@/components/LeaderboardTable";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
 
@@ -191,52 +192,15 @@ export default function LeaderboardPage() {
             onToggle={() => toggleSection("overall")}
             accent
           >
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-stone-100 text-left text-[10px] uppercase tracking-wider text-stone-400">
-                  <th className="px-3 py-2 text-center font-medium">#</th>
-                  <th className="px-3 py-2 font-medium">Nimi</th>
-                  <th className="px-3 py-2 text-center font-medium">Mängud</th>
-                  <th className="px-3 py-2 text-center font-medium">Boonus</th>
-                  <th className="px-3 py-2 text-center font-medium">Kokku</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, rowIdx) => (
-                  <tr
-                    key={row.id}
-                    className={`border-t border-stone-100 transition-colors ${
-                      rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
-                    }`}
-                  >
-                    <td className="px-3 py-2.5 text-center font-semibold text-gold">
-                      {rowIdx + 1}
-                    </td>
-                    <td className="px-3 py-2.5 font-medium text-navy">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedId(row.id)}
-                        className="text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
-                      >
-                        {row.name}
-                        {row.isChampion && (
-                          <span title="Maailmameister"> 🏆</span>
-                        )}
-                      </button>
-                    </td>
-                    <td className="px-3 py-2.5 text-center text-stone-600">
-                      {row.total - row.bonusPoints}
-                    </td>
-                    <td className="px-3 py-2.5 text-center text-stone-600">
-                      {row.bonusPoints}
-                    </td>
-                    <td className="px-3 py-2.5 text-center font-bold text-navy">
-                      {row.total}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <LeaderboardTable
+              rows={rows}
+              onSelect={setSelectedId}
+              columns={[
+                { label: "Mängud", get: (r) => r.total - r.bonusPoints },
+                { label: "Boonus", get: (r) => r.bonusPoints },
+                { label: "Kokku", get: (r) => r.total, bold: true },
+              ]}
+            />
           </Section>
 
           {/* ── Per-stage breakdown — collapsed by default ── */}
@@ -247,41 +211,13 @@ export default function LeaderboardPage() {
               open={openSections.has(stage)}
               onToggle={() => toggleSection(stage)}
             >
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-stone-100 text-left text-[10px] uppercase tracking-wider text-stone-400">
-                    <th className="px-3 py-2 text-center font-medium">#</th>
-                    <th className="px-3 py-2 font-medium">Nimi</th>
-                    <th className="px-3 py-2 text-center font-medium">Punktid</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row, rowIdx) => (
-                    <tr
-                      key={row.id}
-                      className={`border-t border-stone-100 transition-colors ${
-                        rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
-                      }`}
-                    >
-                      <td className="px-3 py-2.5 text-center font-semibold text-gold">
-                        {rowIdx + 1}
-                      </td>
-                      <td className="px-3 py-2.5 font-medium text-navy">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedId(row.id)}
-                          className="text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
-                        >
-                          {row.name}
-                        </button>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-stone-600">
-                        {row.stagePoints[stage]}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <LeaderboardTable
+                rows={rows}
+                onSelect={setSelectedId}
+                columns={[
+                  { label: "Punktid", get: (r) => r.stagePoints[stage] },
+                ]}
+              />
             </Section>
           ))}
         </div>
