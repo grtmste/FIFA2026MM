@@ -10,7 +10,9 @@ create extension if not exists "pgcrypto";
 create table if not exists participants (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  is_champion boolean not null default false,
+  history text
 );
 
 create table if not exists matches (

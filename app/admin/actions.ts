@@ -65,7 +65,13 @@ export async function updateParticipant(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   if (!id || !name) return;
 
-  await supabaseAdmin.from("participants").update({ name }).eq("id", id);
+  const history = String(formData.get("history") ?? "").trim();
+  const isChampion = formData.get("is_champion") === "on";
+
+  await supabaseAdmin
+    .from("participants")
+    .update({ name, history: history || null, is_champion: isChampion })
+    .eq("id", id);
   revalidateAll();
 }
 

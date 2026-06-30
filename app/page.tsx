@@ -29,6 +29,8 @@ const STAGE_TABLE_LABELS: Record<Stage, string> = {
 interface Row {
   id: string;
   name: string;
+  isChampion: boolean;
+  history: string | null;
   stagePoints: Record<Stage, number>;
   bonusPoints: number;
   total: number;
@@ -116,6 +118,8 @@ export default function LeaderboardPage() {
           return {
             id: p.id,
             name: p.name,
+            isChampion: p.is_champion ?? false,
+            history: p.history ?? null,
             stagePoints,
             bonusPoints,
             total,
@@ -214,6 +218,9 @@ export default function LeaderboardPage() {
                         className="text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
                       >
                         {row.name}
+                        {row.isChampion && (
+                          <span title="Maailmameister"> 🏆</span>
+                        )}
                       </button>
                     </td>
                     <td className="px-3 py-2.5 text-center text-stone-600">
@@ -281,11 +288,17 @@ export default function LeaderboardPage() {
 
       {selectedId && (
         <ParticipantDetail
-          participant={
-            rows.find((r) => r.id === selectedId)
-              ? { id: selectedId, name: rows.find((r) => r.id === selectedId)!.name }
-              : null
-          }
+          participant={(() => {
+            const r = rows.find((row) => row.id === selectedId);
+            return r
+              ? {
+                  id: r.id,
+                  name: r.name,
+                  isChampion: r.isChampion,
+                  history: r.history,
+                }
+              : null;
+          })()}
           matches={allMatches}
           predictions={allPredictions}
           bonusAnswers={allBonusAnswers}

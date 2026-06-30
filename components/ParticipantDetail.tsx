@@ -24,7 +24,12 @@ export default function ParticipantDetail({
   bonusQuestions,
   onClose,
 }: {
-  participant: { id: string; name: string } | null;
+  participant: {
+    id: string;
+    name: string;
+    isChampion?: boolean;
+    history?: string | null;
+  } | null;
   matches: Match[];
   predictions: Prediction[];
   bonusAnswers: BonusAnswer[];
@@ -109,7 +114,10 @@ export default function ParticipantDetail({
             <p className="text-[10px] uppercase tracking-wider text-white/60">
               Ennustuste ülevaade
             </p>
-            <h3 className="text-lg font-bold text-white">{participant.name}</h3>
+            <h3 className="flex items-center gap-1.5 text-lg font-bold text-white">
+              {participant.name}
+              {participant.isChampion && <span title="Maailmameister">🏆</span>}
+            </h3>
           </div>
           <button
             type="button"
@@ -127,6 +135,18 @@ export default function ParticipantDetail({
           <Stat label="Boonus" value={totals.bonusPts} />
           <Stat label="Kokku" value={totals.total} highlight />
         </div>
+
+        {/* Results history */}
+        {participant.history && (
+          <div className="border-b border-stone-200 bg-champagne/30 px-4 py-2.5">
+            <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-stone-500">
+              Tulemuste ajalugu
+            </p>
+            <p className="whitespace-pre-line text-xs leading-relaxed text-stone-600">
+              {participant.history}
+            </p>
+          </div>
+        )}
 
         {/* Match predictions by stage */}
         <div className="max-h-none space-y-4 px-4 py-4">

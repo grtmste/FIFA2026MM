@@ -13,6 +13,8 @@ export interface Participant {
   id: string;
   name: string;
   created_at: string;
+  is_champion?: boolean;
+  history?: string | null;
 }
 
 export interface Match {

@@ -58,12 +58,40 @@ export default function MatchCard({ match }: { match: Match }) {
             : match.venue ?? "Selgub"}
         </div>
         {hasScore && match.penalty_winner && (
-          <div className="mt-0.5 text-center text-[10px] font-semibold text-gold">
-            ⚽ Penaltid{" "}
-            {match.penalty_home_score != null && match.penalty_away_score != null
-              ? `${match.penalty_home_score}–${match.penalty_away_score} · `
-              : ""}
-            {match.penalty_winner === "home" ? match.home_team : match.away_team}
+          <div className="mt-0.5 flex items-center justify-center gap-1.5 text-[10px] font-semibold text-stone-400">
+            {match.penalty_home_score != null &&
+            match.penalty_away_score != null ? (
+              <>
+                <span
+                  className={
+                    match.penalty_winner === "home"
+                      ? "text-gold"
+                      : "text-stone-400"
+                  }
+                >
+                  {match.penalty_home_score}
+                </span>
+                <span className="text-[8px] uppercase tracking-wider text-stone-400">
+                  ⚽ penaltid
+                </span>
+                <span
+                  className={
+                    match.penalty_winner === "away"
+                      ? "text-gold"
+                      : "text-stone-400"
+                  }
+                >
+                  {match.penalty_away_score}
+                </span>
+              </>
+            ) : (
+              <span className="text-gold">
+                ⚽ pen.{" "}
+                {match.penalty_winner === "home"
+                  ? match.home_team
+                  : match.away_team}
+              </span>
+            )}
           </div>
         )}
       </div>

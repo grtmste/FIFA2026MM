@@ -51,9 +51,7 @@ export default function AdminDashboard({
   bonusAnswers: BonusAnswer[];
 }) {
   const [tab, setTab] = useState<Tab>("participants");
-  const [selectedParticipantId, setSelectedParticipantId] = useState(
-    participants[0]?.id ?? ""
-  );
+  const [selectedParticipantId, setSelectedParticipantId] = useState("");
 
   return (
     <div className="space-y-4">
@@ -104,6 +102,8 @@ export default function AdminDashboard({
 }
 
 function ParticipantsTab({ participants }: { participants: Participant[] }) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
   return (
     <div className="space-y-3">
       <form
@@ -122,71 +122,105 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
         </SubmitButton>
       </form>
 
-      <div className="space-y-2">
-        {participants.map((p) => (
-          <div
-            key={p.id}
-            className="flex items-center gap-2 rounded-sm border border-stone-200 bg-white p-2 shadow-card transition-shadow hover:shadow-card-hover"
-          >
-            <form action={updateParticipant} className="flex flex-1 gap-2">
-              <input type="hidden" name="id" value={p.id} />
-              <input
-                type="text"
-                name="name"
-                defaultValue={p.name}
-                className={`flex-1 px-3 py-2 text-sm ${INPUT}`}
-              />
-              <SubmitButton variant="outline" className="px-3 py-2 text-xs">
-                Salvesta
-              </SubmitButton>
-            </form>
-            <form action={deleteParticipant}>
-              <input type="hidden" name="id" value={p.id} />
-              <SubmitButton variant="danger" className="px-3 py-2 text-xs">
-                Kustuta
-              </SubmitButton>
-            </form>
-          </div>
-        ))}
+      {participants.length === 0 ? (
+        <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+      ) : (
+        <div className="space-y-2">
+          {participants.map((p) => {
+            const open = expandedId === p.id;
+            return (
+              <div
+                key={p.id}
+                className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card"
+              >
+                <button
+                  type="button"
+                  onClick={() => setExpandedId(open ? null : p.id)}
+                  className="flex w-full items-center justify-between gap-2 p-3 text-left transition-colors hover:bg-stone-50/60"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
+                      {p.name.charAt(0).toUpperCase()}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-sm font-semibold text-navy">
+                      {p.name}
+                      {p.is_champion && <span title="Maailmameister">🏆</span>}
+                    </span>
+                  </span>
+                  <span
+                    className={`text-stone-400 transition-transform duration-200 ${
+                      open ? "rotate-180" : ""
+                    }`}
+                  >
+                    ▾
+                  </span>
+                </button>
 
-        {participants.length === 0 && (
-          <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
-        )}
-      </div>
+                {open && (
+                  <div className="space-y-3 border-t border-stone-100 p-3">
+                    <form action={updateParticipant} className="space-y-2.5">
+                      <input type="hidden" name="id" value={p.id} />
+                      <label className="block">
+                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+                          Nimi
+                        </span>
+                        <input
+                          type="text"
+                          name="name"
+                          defaultValue={p.name}
+                          className={`w-full px-3 py-2 text-sm ${INPUT}`}
+                        />
+                      </label>
+
+                      <label className="block">
+                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+                          Tulemuste ajalugu (MM-id, EM-id)
+                        </span>
+                        <textarea
+                          name="history"
+                          rows={3}
+                          defaultValue={p.history ?? ""}
+                          placeholder="nt 2022 MM – 3. koht, 2021 EM – võitja"
+                          className={`w-full resize-y px-3 py-2 text-sm ${INPUT}`}
+                        />
+                      </label>
+
+                      <label className="flex items-center gap-2 text-sm font-medium text-navy">
+                        <input
+                          type="checkbox"
+                          name="is_champion"
+                          defaultChecked={p.is_champion ?? false}
+                          className="h-4 w-4 accent-gold"
+                        />
+                        🏆 Võitja staatus (maailmameister)
+                      </label>
+
+                      <SubmitButton
+                        variant="primary"
+                        className="px-4 py-2 text-xs"
+                        successLabel="Salvestatud"
+                      >
+                        Salvesta
+                      </SubmitButton>
+                    </form>
+
+                    <form
+                      action={deleteParticipant}
+                      className="border-t border-stone-100 pt-2.5"
+                    >
+                      <input type="hidden" name="id" value={p.id} />
+                      <SubmitButton variant="danger" className="px-3 py-2 text-xs">
+                        Kustuta osaleja
+                      </SubmitButton>
+                    </form>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
-  );
-}
-
-function ParticipantSelect({
-  participants,
-  selectedParticipantId,
-  onSelectParticipant,
-}: {
-  participants: Participant[];
-  selectedParticipantId: string;
-  onSelectParticipant: (id: string) => void;
-}) {
-  if (participants.length === 0) {
-    return <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>;
-  }
-
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-stone-500">
-        Vali osaleja
-      </span>
-      <select
-        value={selectedParticipantId}
-        onChange={(e) => onSelectParticipant(e.target.value)}
-        className={`w-full px-3 py-2.5 text-sm font-medium ${INPUT}`}
-      >
-        {participants.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-          </option>
-        ))}
-      </select>
-    </label>
   );
 }
 
@@ -595,8 +629,17 @@ const STAGE_LABEL: Record<string, string> = {
 };
 
 function ResultsTab({ allMatches }: { allMatches: Match[] }) {
+  const [open, setOpen] = useState<Set<string>>(() => new Set());
+  const toggle = (key: string) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       {/* Advance bracket button */}
       <form action={advanceBracket}>
         <SubmitButton variant="primary" className="px-4 py-2 text-sm" successLabel="Uuendatud!">
@@ -610,10 +653,35 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
       {STAGE_ORDER.map((stage) => {
         const stageMatches = allMatches.filter((m) => m.stage === stage);
         if (stageMatches.length === 0) return null;
+        const isOpen = open.has(stage);
         return (
-          <div key={stage} className="space-y-2">
-            <h3 className="text-sm font-bold text-navy">{STAGE_LABEL[stage]}</h3>
-            {stageMatches.map((match) => (
+          <div
+            key={stage}
+            className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
+          >
+            <button
+              type="button"
+              onClick={() => toggle(stage)}
+              aria-expanded={isOpen}
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+            >
+              <span className="flex items-baseline gap-2">
+                <span className="text-sm font-semibold tracking-tight text-navy">
+                  {STAGE_LABEL[stage]}
+                </span>
+                <span className="eyebrow">{stageMatches.length} mängu</span>
+              </span>
+              <span
+                className={`text-stone-400 transition-transform duration-200 ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              >
+                ▾
+              </span>
+            </button>
+            {isOpen && (
+              <div className="space-y-2 border-t border-stone-100 p-3">
+                {stageMatches.map((match) => (
               <form
                 key={match.id}
                 action={saveMatchResult}
@@ -675,12 +743,26 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                   </div>
                 )}
               </form>
-            ))}
+                ))}
+              </div>
+            )}
           </div>
         );
       })}
     </div>
   );
+}
+
+const BONUS_CATS: { key: string; title: string }[] = [
+  { key: "alagrupp", title: "Boonusküsimused - alagrupi mängud" },
+  { key: "1/32", title: "Boonusküsimused - 1/32" },
+  { key: "jokker", title: "Jokker combo - 1/32" },
+];
+
+function bonusCategoryOf(q: BonusQuestion): string {
+  return q.category && BONUS_CATS.some((c) => c.key === q.category)
+    ? q.category
+    : "alagrupp";
 }
 
 function BonusTab({
@@ -696,6 +778,15 @@ function BonusTab({
   selectedParticipantId: string;
   onSelectParticipant: (id: string) => void;
 }) {
+  const [open, setOpen] = useState<Set<string>>(() => new Set());
+  const toggle = (key: string) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+
   const answerByQuestion = useMemo(() => {
     const map = new Map<number, BonusAnswer>();
     bonusAnswers
@@ -704,88 +795,188 @@ function BonusTab({
     return map;
   }, [bonusAnswers, selectedParticipantId]);
 
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2.5 rounded-sm border border-stone-200 bg-white p-4 shadow-card">
-        <h4 className="flex items-center gap-1.5 text-sm font-bold text-navy">
+  const grouped = useMemo(() => {
+    const map = new Map<string, BonusQuestion[]>();
+    bonusQuestions.forEach((q) => {
+      const cat = bonusCategoryOf(q);
+      if (!map.has(cat)) map.set(cat, []);
+      map.get(cat)!.push(q);
+    });
+    return map;
+  }, [bonusQuestions]);
+
+  const selectedParticipant = participants.find(
+    (p) => p.id === selectedParticipantId
+  );
+
+  // ── Correct-answers editor (collapsible, global) ──
+  const correctAnswers = (
+    <div className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card">
+      <button
+        type="button"
+        onClick={() => toggle("correct")}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+      >
+        <span className="text-sm font-semibold tracking-tight text-navy">
           ⭐ Õiged vastused
-        </h4>
-        {bonusQuestions.map((q, idx) => (
-          <form
-            key={q.id}
-            action={saveBonusCorrectAnswer}
-            className="flex items-center gap-2"
-          >
-            <input type="hidden" name="question_id" value={q.id} />
-            <span className="flex-1 text-xs text-stone-600">
-              {idx + 1}. {q.question_text}
-            </span>
-            <input
-              type="text"
-              name="correct_answer"
-              defaultValue={q.correct_answer ?? ""}
-              placeholder="Õige vastus"
-              className={`w-28 px-2 py-1.5 text-xs ${INPUT}`}
-            />
-            <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">
-              OK
-            </SubmitButton>
-          </form>
-        ))}
-      </div>
-
-      <ParticipantSelect
-        participants={participants}
-        selectedParticipantId={selectedParticipantId}
-        onSelectParticipant={onSelectParticipant}
-      />
-
-      {selectedParticipantId && (
-        <div className="space-y-2">
-          {bonusQuestions.map((q, idx) => {
-            const existing = answerByQuestion.get(q.id);
-            return (
-              <form
-                key={`${selectedParticipantId}-${q.id}`}
-                action={saveBonusAnswer}
-                className="space-y-2.5 rounded-sm border border-stone-200 bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover"
-              >
-                <input type="hidden" name="participant_id" value={selectedParticipantId} />
-                <input type="hidden" name="question_id" value={q.id} />
-                <p className="text-xs font-semibold text-navy">
-                  {idx + 1}. {q.question_text}{" "}
-                  <span className="font-normal text-stone-400">({q.max_points} p)</span>
-                </p>
-                <input
-                  type="text"
-                  name="answer_text"
-                  defaultValue={existing?.answer_text ?? ""}
-                  placeholder="Osaleja vastus"
-                  className={`w-full px-2.5 py-2 text-sm ${INPUT}`}
-                />
-                <div className="flex items-center gap-2">
-                  <label className="text-xs font-medium text-stone-500">Punktid:</label>
-                  <input
-                    type="number"
-                    name="points_awarded"
-                    min={0}
-                    max={q.max_points}
-                    defaultValue={existing?.points_awarded ?? ""}
-                    className={`w-20 px-2 py-1.5 text-center text-sm ${INPUT}`}
-                  />
-                  <SubmitButton
-                    variant="primary"
-                    className="ml-auto px-4 py-1.5 text-xs"
-                    successLabel="Salvestatud"
-                  >
-                    Salvesta
-                  </SubmitButton>
-                </div>
-              </form>
-            );
-          })}
+        </span>
+        <span
+          className={`text-stone-400 transition-transform duration-200 ${
+            open.has("correct") ? "rotate-180" : ""
+          }`}
+        >
+          ▾
+        </span>
+      </button>
+      {open.has("correct") && (
+        <div className="space-y-2.5 border-t border-stone-100 p-3">
+          {bonusQuestions.map((q, idx) => (
+            <form key={q.id} action={saveBonusCorrectAnswer} className="flex items-center gap-2">
+              <input type="hidden" name="question_id" value={q.id} />
+              <span className="flex-1 text-xs text-stone-600">
+                {idx + 1}. {q.question_text}
+              </span>
+              <input
+                type="text"
+                name="correct_answer"
+                defaultValue={q.correct_answer ?? ""}
+                placeholder="Õige vastus"
+                className={`w-28 px-2 py-1.5 text-xs ${INPUT}`}
+              />
+              <SubmitButton variant="outline" className="px-3 py-1.5 text-xs">
+                OK
+              </SubmitButton>
+            </form>
+          ))}
         </div>
       )}
+    </div>
+  );
+
+  // ── Step 0: participant list ──
+  if (!selectedParticipant) {
+    return (
+      <div className="space-y-3">
+        {correctAnswers}
+        {participants.length === 0 ? (
+          <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+        ) : (
+          <div className="space-y-2">
+            <p className="eyebrow">Vali osaleja vastuste sisestamiseks</p>
+            {participants.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => onSelectParticipant(p.id)}
+                className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99]"
+              >
+                <span className="flex items-center gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
+                    {p.name.charAt(0).toUpperCase()}
+                  </span>
+                  <span className="text-sm font-semibold text-navy">{p.name}</span>
+                </span>
+                <span className="text-stone-300">›</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Step 1: selected participant → category accordions ──
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onSelectParticipant("")}
+          className="flex items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:bg-stone-50"
+        >
+          ‹ Osalejad
+        </button>
+        <h3 className="flex-1 truncate text-base font-bold text-navy">
+          {selectedParticipant.name}
+        </h3>
+      </div>
+
+      {BONUS_CATS.map(({ key, title }) => {
+        const qs = grouped.get(key) ?? [];
+        if (qs.length === 0) return null;
+        const isOpen = open.has(key);
+        return (
+          <div
+            key={key}
+            className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
+          >
+            <button
+              type="button"
+              onClick={() => toggle(key)}
+              aria-expanded={isOpen}
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+            >
+              <span className="flex items-baseline gap-2">
+                <span className="text-sm font-semibold tracking-tight text-navy">{title}</span>
+                <span className="eyebrow">{qs.length} küsimust</span>
+              </span>
+              <span
+                className={`text-stone-400 transition-transform duration-200 ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              >
+                ▾
+              </span>
+            </button>
+            {isOpen && (
+              <div className="space-y-2 border-t border-stone-100 p-3">
+                {qs.map((q, idx) => {
+                  const existing = answerByQuestion.get(q.id);
+                  return (
+                    <form
+                      key={`${selectedParticipantId}-${q.id}`}
+                      action={saveBonusAnswer}
+                      className="space-y-2.5 rounded-sm border border-stone-200 bg-white p-3 shadow-card transition-shadow hover:shadow-card-hover"
+                    >
+                      <input type="hidden" name="participant_id" value={selectedParticipantId} />
+                      <input type="hidden" name="question_id" value={q.id} />
+                      <p className="text-xs font-semibold text-navy">
+                        {idx + 1}. {q.question_text}{" "}
+                        <span className="font-normal text-stone-400">({q.max_points} p)</span>
+                      </p>
+                      <input
+                        type="text"
+                        name="answer_text"
+                        defaultValue={existing?.answer_text ?? ""}
+                        placeholder="Osaleja vastus"
+                        className={`w-full px-2.5 py-2 text-sm ${INPUT}`}
+                      />
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-medium text-stone-500">Punktid:</label>
+                        <input
+                          type="number"
+                          name="points_awarded"
+                          min={0}
+                          max={q.max_points}
+                          defaultValue={existing?.points_awarded ?? ""}
+                          className={`w-20 px-2 py-1.5 text-center text-sm ${INPUT}`}
+                        />
+                        <SubmitButton
+                          variant="primary"
+                          className="ml-auto px-4 py-1.5 text-xs"
+                          successLabel="Salvestatud"
+                        >
+                          Salvesta
+                        </SubmitButton>
+                      </div>
+                    </form>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
