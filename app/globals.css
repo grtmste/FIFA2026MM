@@ -33,7 +33,11 @@ body::after {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='28' height='49' viewBox='0 0 28 49' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231b2447' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/svg%3E");
+  /* Original, crisp confetti-of-triangles motif in the brand palette —
+     evokes the vibrant 2026 tournament look (not FIFA's trademarked art).
+     Pure vector + a fixed background-size keeps it sharp on hi-DPI mobile. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg%3E%3Cpolygon points='14,20 40,14 26,44' fill='%231B2447' fill-opacity='0.06'/%3E%3Cpolygon points='66,16 92,28 70,46' fill='%239355E0' fill-opacity='0.07'/%3E%3Cpolygon points='92,64 110,92 84,86' fill='%237FC2BC' fill-opacity='0.08'/%3E%3Cpolygon points='20,74 46,72 30,100' fill='%23E9A8C9' fill-opacity='0.08'/%3E%3Cpolygon points='54,52 80,60 58,84' fill='%23F4C7A1' fill-opacity='0.08'/%3E%3Cpolygon points='100,18 112,40 90,36' fill='%233D5AC0' fill-opacity='0.07'/%3E%3Ccircle cx='50' cy='30' r='2.5' fill='%233D5AC0' fill-opacity='0.07'/%3E%3Ccircle cx='86' cy='108' r='2.5' fill='%239355E0' fill-opacity='0.07'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 150px 150px;
 }
 
 @media (prefers-reduced-motion: reduce) {
