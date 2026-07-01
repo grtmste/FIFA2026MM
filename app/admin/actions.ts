@@ -304,16 +304,25 @@ export async function saveMatchResult(formData: FormData) {
   const actualAway =
     awayRaw === "" || awayRaw === null ? null : Number(awayRaw);
 
-  const penaltyRaw = String(formData.get("penalty_winner") ?? "");
+  // "decision" encodes how a level knockout game was settled:
+  // "" (normal time) | "et_home" | "et_away" | "pen_home" | "pen_away".
+  const decision = String(formData.get("decision") ?? "");
   const penaltyWinner =
-    penaltyRaw === "home" || penaltyRaw === "away" ? penaltyRaw : null;
+    decision === "pen_home" ? "home" : decision === "pen_away" ? "away" : null;
+  const extraTimeWinner =
+    decision === "et_home" ? "home" : decision === "et_away" ? "away" : null;
 
   const penHomeRaw = formData.get("penalty_home_score");
   const penAwayRaw = formData.get("penalty_away_score");
+  // Shootout scores only make sense when the game actually went to penalties.
   const penaltyHome =
-    penHomeRaw === "" || penHomeRaw === null ? null : Number(penHomeRaw);
+    penaltyWinner && penHomeRaw !== "" && penHomeRaw !== null
+      ? Number(penHomeRaw)
+      : null;
   const penaltyAway =
-    penAwayRaw === "" || penAwayRaw === null ? null : Number(penAwayRaw);
+    penaltyWinner && penAwayRaw !== "" && penAwayRaw !== null
+      ? Number(penAwayRaw)
+      : null;
 
   await supabaseAdmin
     .from("matches")
@@ -323,6 +332,7 @@ export async function saveMatchResult(formData: FormData) {
       penalty_winner: penaltyWinner,
       penalty_home_score: penaltyHome,
       penalty_away_score: penaltyAway,
+      extra_time_winner: extraTimeWinner,
     })
     .eq("id", matchId);
 

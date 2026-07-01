@@ -131,6 +131,26 @@ body > * {
   }
 }
 
+/* Slow gold sheen sweeping across the leaderboard leader's row */
+.gold-shine {
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(61, 90, 192, 0.1) 45%,
+    rgba(147, 85, 224, 0.1) 55%,
+    transparent 75%
+  );
+  background-size: 250% 100%;
+  animation: shimmer 4.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-shine {
+    animation: none;
+    background: none;
+  }
+}
+
 /* Remove number input spinners for a cleaner score-entry UI */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

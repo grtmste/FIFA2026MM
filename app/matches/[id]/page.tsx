@@ -91,9 +91,18 @@ export default async function MatchDetailPage({
                 : typedMatch.away_team}
             </div>
           )}
+          {hasScore && !typedMatch.penalty_winner && typedMatch.extra_time_winner && (
+            <div className="mt-2 text-center text-xs font-semibold text-gold">
+              Lisaajaga võitis{" "}
+              {typedMatch.extra_time_winner === "home"
+                ? typedMatch.home_team
+                : typedMatch.away_team}
+            </div>
+          )}
           {(() => {
             // For knockout games show who advanced (normal time, or the
-            // penalty winner on a draw) instead of the venue placeholder.
+            // extra-time/penalty winner on a draw) instead of the venue
+            // placeholder.
             if (typedMatch.stage !== "group" && hasScore) {
               const h = typedMatch.actual_home_score!;
               const a = typedMatch.actual_away_score!;
@@ -101,6 +110,10 @@ export default async function MatchDetailPage({
                 h > a
                   ? typedMatch.home_team
                   : a > h
+                  ? typedMatch.away_team
+                  : typedMatch.extra_time_winner === "home"
+                  ? typedMatch.home_team
+                  : typedMatch.extra_time_winner === "away"
                   ? typedMatch.away_team
                   : typedMatch.penalty_winner === "home"
                   ? typedMatch.home_team

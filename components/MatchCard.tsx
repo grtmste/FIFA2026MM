@@ -103,6 +103,18 @@ export default function MatchCard({ match }: { match: Match }) {
             )}
           </div>
         )}
+        {hasScore && !match.penalty_winner && match.extra_time_winner && (
+          <div className="mt-0.5 flex items-center justify-center gap-2 text-xs font-semibold">
+            <span className="text-[10px] uppercase tracking-wider text-stone-400">
+              lisaajal
+            </span>
+            <span className="text-gold">
+              {match.extra_time_winner === "home"
+                ? match.home_team
+                : match.away_team}
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   );

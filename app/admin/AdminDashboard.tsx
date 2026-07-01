@@ -712,13 +712,21 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                 {stage !== "group" && (
                   <div className="mt-1.5 flex flex-wrap items-center gap-2 border-t border-stone-100 pt-1.5">
                     <select
-                      name="penalty_winner"
-                      defaultValue={match.penalty_winner ?? ""}
+                      name="decision"
+                      defaultValue={
+                        match.penalty_winner
+                          ? `pen_${match.penalty_winner}`
+                          : match.extra_time_winner
+                          ? `et_${match.extra_time_winner}`
+                          : ""
+                      }
                       className={`min-w-[180px] flex-1 px-2 py-1 text-xs ${INPUT}`}
                     >
                       <option value="">Otsustati normaalajal</option>
-                      <option value="home">Penaltitega võitis {match.home_team}</option>
-                      <option value="away">Penaltitega võitis {match.away_team}</option>
+                      <option value="et_home">Lisaajaga võitis {match.home_team}</option>
+                      <option value="et_away">Lisaajaga võitis {match.away_team}</option>
+                      <option value="pen_home">Penaltitega võitis {match.home_team}</option>
+                      <option value="pen_away">Penaltitega võitis {match.away_team}</option>
                     </select>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[11px] font-medium text-stone-400">

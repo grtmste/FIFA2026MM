@@ -27,7 +27,8 @@ create table if not exists matches (
   actual_away_score integer,
   penalty_winner text, -- 'home' | 'away' | null (knockout penalty shootout)
   penalty_home_score integer,
-  penalty_away_score integer
+  penalty_away_score integer,
+  extra_time_winner text -- 'home' | 'away' | null (decided in extra time)
 );
 
 create table if not exists predictions (

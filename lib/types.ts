@@ -30,6 +30,7 @@ export interface Match {
   penalty_winner?: "home" | "away" | null;
   penalty_home_score?: number | null;
   penalty_away_score?: number | null;
+  extra_time_winner?: "home" | "away" | null;
 }
 
 export interface Prediction {

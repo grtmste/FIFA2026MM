@@ -54,11 +54,14 @@ export default function LeaderboardTable<R extends LbRow>({
             key={row.id}
             layout
             transition={{ type: "spring", stiffness: 520, damping: 40 }}
-            className={`grid items-center px-3 py-2.5 transition-colors ${
+            className={`relative grid items-center px-3 py-2.5 transition-colors ${
               rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
             }`}
             style={{ gridTemplateColumns: template }}
           >
+            {rowIdx === 0 && (
+              <span className="gold-shine pointer-events-none absolute inset-0" />
+            )}
             <span className="text-center font-semibold text-gold">
               {rowIdx + 1}
             </span>

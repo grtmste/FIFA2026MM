@@ -147,7 +147,9 @@ export function resolveBracketTeams(
     if (!m || m.actual_home_score === null || m.actual_away_score === null) return null;
     if (m.actual_home_score > m.actual_away_score) return m.home_team;
     if (m.actual_away_score > m.actual_home_score) return m.away_team;
-    // Normal-time draw — decided by the recorded penalty shootout winner.
+    // Normal-time draw — decided in extra time or the penalty shootout.
+    if (m.extra_time_winner === "home") return m.home_team;
+    if (m.extra_time_winner === "away") return m.away_team;
     if (m.penalty_winner === "home") return m.home_team;
     if (m.penalty_winner === "away") return m.away_team;
     return null;
