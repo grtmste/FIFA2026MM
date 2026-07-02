@@ -5,6 +5,12 @@
 -- Run this in the Supabase SQL editor.
 --
 -- extra_time_winner: 'home' | 'away' | null (null = normal time or penalties).
+-- extra_time_home_score / extra_time_away_score: optional full-time score
+-- after extra time (e.g. 2-3).
 
 alter table matches
   add column if not exists extra_time_winner text;
+alter table matches
+  add column if not exists extra_time_home_score integer;
+alter table matches
+  add column if not exists extra_time_away_score integer;

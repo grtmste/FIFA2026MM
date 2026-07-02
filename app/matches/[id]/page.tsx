@@ -93,7 +93,10 @@ export default async function MatchDetailPage({
           )}
           {hasScore && !typedMatch.penalty_winner && typedMatch.extra_time_winner && (
             <div className="mt-2 text-center text-xs font-semibold text-gold">
-              Lisaajaga võitis{" "}
+              {typedMatch.extra_time_home_score != null &&
+              typedMatch.extra_time_away_score != null
+                ? `Lisaajal ${typedMatch.extra_time_home_score}–${typedMatch.extra_time_away_score} · `
+                : "Lisaajaga võitis "}
               {typedMatch.extra_time_winner === "home"
                 ? typedMatch.home_team
                 : typedMatch.away_team}

@@ -104,15 +104,44 @@ export default function MatchCard({ match }: { match: Match }) {
           </div>
         )}
         {hasScore && !match.penalty_winner && match.extra_time_winner && (
-          <div className="mt-0.5 flex items-center justify-center gap-2 text-xs font-semibold">
-            <span className="text-[10px] uppercase tracking-wider text-stone-400">
-              lisaajal
-            </span>
-            <span className="text-gold">
-              {match.extra_time_winner === "home"
-                ? match.home_team
-                : match.away_team}
-            </span>
+          <div className="mt-0.5 flex items-center justify-center gap-2 text-xs font-semibold text-stone-400">
+            {match.extra_time_home_score != null &&
+            match.extra_time_away_score != null ? (
+              <>
+                <span
+                  className={
+                    match.extra_time_winner === "home"
+                      ? "text-gold"
+                      : "text-stone-400"
+                  }
+                >
+                  {match.extra_time_home_score}
+                </span>
+                <span className="text-[10px] uppercase tracking-wider text-stone-400">
+                  lisaajal
+                </span>
+                <span
+                  className={
+                    match.extra_time_winner === "away"
+                      ? "text-gold"
+                      : "text-stone-400"
+                  }
+                >
+                  {match.extra_time_away_score}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-[10px] uppercase tracking-wider text-stone-400">
+                  lisaajal
+                </span>
+                <span className="text-gold">
+                  {match.extra_time_winner === "home"
+                    ? match.home_team
+                    : match.away_team}
+                </span>
+              </>
+            )}
           </div>
         )}
       </div>

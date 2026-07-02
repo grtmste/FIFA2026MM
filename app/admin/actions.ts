@@ -324,6 +324,18 @@ export async function saveMatchResult(formData: FormData) {
       ? Number(penAwayRaw)
       : null;
 
+  const etHomeRaw = formData.get("extra_time_home_score");
+  const etAwayRaw = formData.get("extra_time_away_score");
+  // Extra-time scores only make sense when the game was decided in extra time.
+  const extraTimeHome =
+    extraTimeWinner && etHomeRaw !== "" && etHomeRaw !== null
+      ? Number(etHomeRaw)
+      : null;
+  const extraTimeAway =
+    extraTimeWinner && etAwayRaw !== "" && etAwayRaw !== null
+      ? Number(etAwayRaw)
+      : null;
+
   await supabaseAdmin
     .from("matches")
     .update({
@@ -333,6 +345,8 @@ export async function saveMatchResult(formData: FormData) {
       penalty_home_score: penaltyHome,
       penalty_away_score: penaltyAway,
       extra_time_winner: extraTimeWinner,
+      extra_time_home_score: extraTimeHome,
+      extra_time_away_score: extraTimeAway,
     })
     .eq("id", matchId);
 

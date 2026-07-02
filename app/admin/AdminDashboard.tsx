@@ -730,6 +730,26 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                     </select>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[11px] font-medium text-stone-400">
+                        Lisaaeg:
+                      </span>
+                      <input
+                        type="number"
+                        name="extra_time_home_score"
+                        min={0}
+                        defaultValue={match.extra_time_home_score ?? ""}
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                      />
+                      <span className="text-xs font-bold text-stone-300">:</span>
+                      <input
+                        type="number"
+                        name="extra_time_away_score"
+                        min={0}
+                        defaultValue={match.extra_time_away_score ?? ""}
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] font-medium text-stone-400">
                         Penaltid:
                       </span>
                       <input
