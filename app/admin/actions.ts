@@ -336,19 +336,39 @@ export async function saveMatchResult(formData: FormData) {
       ? Number(etAwayRaw)
       : null;
 
-  await supabaseAdmin
+  const payload: Record<string, number | string | null> = {
+    actual_home_score: actualHome,
+    actual_away_score: actualAway,
+    penalty_winner: penaltyWinner,
+    penalty_home_score: penaltyHome,
+    penalty_away_score: penaltyAway,
+    extra_time_winner: extraTimeWinner,
+    extra_time_home_score: extraTimeHome,
+    extra_time_away_score: extraTimeAway,
+  };
+
+  let { error } = await supabaseAdmin
     .from("matches")
-    .update({
-      actual_home_score: actualHome,
-      actual_away_score: actualAway,
-      penalty_winner: penaltyWinner,
-      penalty_home_score: penaltyHome,
-      penalty_away_score: penaltyAway,
-      extra_time_winner: extraTimeWinner,
-      extra_time_home_score: extraTimeHome,
-      extra_time_away_score: extraTimeAway,
-    })
+    .update(payload)
     .eq("id", matchId);
+
+  // If the live database is missing optional columns (a migration in
+  // scripts/ hasn't been run yet), don't let that block saving the actual
+  // score: drop the missing columns from the payload and retry.
+  while (error) {
+    const missing = Object.keys(payload).find((k) => error!.message.includes(k));
+    if (!missing || missing.startsWith("actual_")) break;
+    delete payload[missing];
+    ({ error } = await supabaseAdmin
+      .from("matches")
+      .update(payload)
+      .eq("id", matchId));
+  }
+
+  if (error) {
+    // Surface the failure instead of silently showing a success state.
+    throw new Error(`Tulemuse salvestamine ebaõnnestus: ${error.message}`);
+  }
 
   revalidateAll();
 }
