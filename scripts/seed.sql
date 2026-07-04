@@ -105,14 +105,14 @@ insert into matches (id, stage, group_name, home_team, away_team, match_date, ve
 (86,  'r32', null, 'Austraalia', 'Egiptus', '2026-07-03 21:00:00+03', null, null, null),
 (87,  'r32', null, 'Argentiina', 'Roheneemesaared', '2026-07-04 01:00:00+03', null, null, null),
 (88,  'r32', null, 'Colombia', 'Ghana', '2026-07-04 04:30:00+03', null, null, null),
-(89,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
-(90,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
-(91,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
-(92,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
-(93,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
-(94,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
-(95,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
-(96,  'r16', null, 'Selgub', 'Selgub', null, null, null, null),
+(89,  'r16', null, 'Kanada', 'Maroko', '2026-07-04 20:00:00+03', null, null, null),
+(90,  'r16', null, 'Paraguay', 'Prantsusmaa', '2026-07-05 00:00:00+03', null, null, null),
+(91,  'r16', null, 'Brasiilia', 'Norra', '2026-07-05 23:00:00+03', null, null, null),
+(92,  'r16', null, 'Mehhiko', 'Inglismaa', '2026-07-06 03:00:00+03', null, null, null),
+(93,  'r16', null, 'Portugal', 'Hispaania', '2026-07-06 22:00:00+03', null, null, null),
+(94,  'r16', null, 'USA', 'Belgia', '2026-07-07 03:00:00+03', null, null, null),
+(95,  'r16', null, 'Argentiina', 'Egiptus', '2026-07-07 19:00:00+03', null, null, null),
+(96,  'r16', null, 'Šveits', 'Colombia', '2026-07-07 23:00:00+03', null, null, null),
 (97,  'qf',  null, 'Selgub', 'Selgub', null, null, null, null),
 (98,  'qf',  null, 'Selgub', 'Selgub', null, null, null, null),
 (99,  'qf',  null, 'Selgub', 'Selgub', null, null, null, null),
@@ -148,4 +148,11 @@ insert into bonus_questions (id, question_text, max_points, correct_answer, cate
 5. Maroko võidab Hollandit
 6. Belgia ja Senegal mängivad viiki
 
-Kehtib endiselt reegel, et tulemusi arvestatakse normaalaja kohta.');
+Kehtib endiselt reegel, et tulemusi arvestatakse normaalaja kohta.'),
+-- 1/16 bonus round
+(13, 'Mitu mängu läheb lisaajale?',                          3, null, '1/16', null),
+(14, 'Mitu punast kaarti jagatakse?',                        3, null, '1/16', null),
+(15, 'Mitmendal minutil lüüakse vooru avavärav?',            7, null, '1/16', null),
+(16, 'Millises mängus lüüakse kõige rohkem väravaid?',       4, null, '1/16', null),
+(17, 'Mitu kollast kaarti antakse Kanada vs Maroko mängus?', 4, null, '1/16', null),
+(18, 'Mitu väravat lüüakse vasaku jalaga?',                  5, null, '1/16', null);

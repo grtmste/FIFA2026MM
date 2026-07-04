@@ -785,6 +785,7 @@ const BONUS_CATS: { key: string; title: string }[] = [
   { key: "alagrupp", title: "Boonusküsimused - alagrupi mängud" },
   { key: "1/32", title: "Boonusküsimused - 1/32" },
   { key: "jokker", title: "Jokker combo - 1/32" },
+  { key: "1/16", title: "Boonusküsimused - 1/16" },
 ];
 
 function bonusCategoryOf(q: BonusQuestion): string {
