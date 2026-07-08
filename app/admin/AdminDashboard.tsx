@@ -9,6 +9,7 @@ import {
   Prediction,
 } from "@/lib/types";
 import { groupColor } from "@/lib/groupColors";
+import { calcMatchPoints } from "@/lib/scoring";
 import { formatMatchDate, formatMatchTime } from "@/lib/format";
 import SubmitButton from "@/components/SubmitButton";
 import {
@@ -20,6 +21,7 @@ import {
   saveBonusAnswer,
   saveBonusCorrectAnswer,
   saveMatchResult,
+  savePointsOverride,
   updateParticipant,
 } from "./actions";
 
@@ -74,7 +76,11 @@ export default function AdminDashboard({
 
       <div key={tab} className="animate-fade-in-up">
         {tab === "participants" && (
-          <ParticipantsTab participants={participants} />
+          <ParticipantsTab
+            participants={participants}
+            matches={matches}
+            predictions={predictions}
+          />
         )}
 
         {tab === "predictions" && (
@@ -101,7 +107,15 @@ export default function AdminDashboard({
   );
 }
 
-function ParticipantsTab({ participants }: { participants: Participant[] }) {
+function ParticipantsTab({
+  participants,
+  matches,
+  predictions,
+}: {
+  participants: Participant[];
+  matches: Match[];
+  predictions: Prediction[];
+}) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
@@ -220,6 +234,12 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
                         Salvesta
                       </SubmitButton>
                     </form>
+
+                    <ParticipantPoints
+                      participantId={p.id}
+                      matches={matches}
+                      predictions={predictions}
+                    />
 
                     <form
                       action={deleteParticipant}
@@ -1025,6 +1045,159 @@ function BonusTab({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// Per-match points editor inside a participant's panel: rounds as collapsible
+// groups, each game showing the prediction, result and points, with an
+// optional manual override (empty = automatic scoring).
+function ParticipantPoints({
+  participantId,
+  matches,
+  predictions,
+}: {
+  participantId: string;
+  matches: Match[];
+  predictions: Prediction[];
+}) {
+  const [openStages, setOpenStages] = useState<Set<string>>(() => new Set());
+  const toggle = (key: string) =>
+    setOpenStages((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+
+  const predByMatch = useMemo(() => {
+    const map = new Map<number, Prediction>();
+    predictions
+      .filter((pr) => pr.participant_id === participantId)
+      .forEach((pr) => map.set(pr.match_id, pr));
+    return map;
+  }, [predictions, participantId]);
+
+  const stageGroups = STAGE_ORDER.map((stage) => ({
+    stage,
+    items: matches
+      .filter((m) => m.stage === stage && predByMatch.has(m.id))
+      .sort((a, b) => {
+        const da = a.match_date ?? "";
+        const db = b.match_date ?? "";
+        if (da !== db) return da < db ? -1 : 1;
+        return a.id - b.id;
+      }),
+  })).filter((g) => g.items.length > 0);
+
+  if (stageGroups.length === 0) return null;
+
+  return (
+    <div className="border-t border-stone-100 pt-2.5">
+      <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+        Punktid mängude kaupa
+      </p>
+      <div className="space-y-1.5">
+        {stageGroups.map(({ stage, items }) => {
+          const isOpen = openStages.has(stage);
+          const stagePts = items.reduce((sum, m) => {
+            const pred = predByMatch.get(m.id)!;
+            return sum + calcMatchPoints(pred, m);
+          }, 0);
+          return (
+            <div
+              key={stage}
+              className="overflow-hidden rounded-sm border border-stone-200"
+            >
+              <button
+                type="button"
+                onClick={() => toggle(stage)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between gap-2 bg-stone-50/60 px-2.5 py-2 text-left transition-colors hover:bg-stone-100/70"
+              >
+                <span className="text-xs font-semibold text-navy">
+                  {STAGE_LABEL[stage]}
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-stone-500">
+                    {stagePts} p
+                  </span>
+                  <span
+                    className={`text-stone-400 transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  >
+                    ▾
+                  </span>
+                </span>
+              </button>
+              {isOpen && (
+                <div className="divide-y divide-stone-100">
+                  {items.map((m) => {
+                    const pred = predByMatch.get(m.id)!;
+                    const auto = calcMatchPoints(
+                      { ...pred, points_override: null },
+                      m
+                    );
+                    const hasResult =
+                      m.actual_home_score !== null &&
+                      m.actual_away_score !== null;
+                    const overridden =
+                      pred.points_override !== null &&
+                      pred.points_override !== undefined;
+                    return (
+                      <form
+                        key={`${m.id}-${pred.points_override ?? "auto"}`}
+                        action={savePointsOverride}
+                        className="flex items-center gap-2 px-2.5 py-1.5"
+                      >
+                        <input type="hidden" name="participant_id" value={participantId} />
+                        <input type="hidden" name="match_id" value={m.id} />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-xs font-medium text-navy">
+                            {m.home_team} – {m.away_team}
+                          </div>
+                          <div className="text-[10px] text-stone-400">
+                            Ennustus {pred.predicted_home_score}:{pred.predicted_away_score}
+                            {" · "}
+                            Tulemus{" "}
+                            {hasResult
+                              ? `${m.actual_home_score}:${m.actual_away_score}`
+                              : "–"}
+                            {" · "}Auto {auto} p
+                            {overridden && (
+                              <span className="font-semibold text-gold">
+                                {" "}
+                                · Muudetud
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <input
+                          type="number"
+                          name="points_override"
+                          step={1}
+                          defaultValue={pred.points_override ?? ""}
+                          placeholder={String(auto)}
+                          title="Tühi = automaatne"
+                          className={`w-14 px-1 py-1 text-center text-xs font-semibold ${INPUT}`}
+                        />
+                        <SubmitButton variant="outline" className="px-2.5 py-1 text-[11px]">
+                          OK
+                        </SubmitButton>
+                      </form>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-1 text-[10px] text-stone-400">
+        Tühi väli = punktid arvutatakse automaatselt. Sisesta number, et punktid
+        käsitsi üle kirjutada (võib olla 0).
+      </p>
     </div>
   );
 }

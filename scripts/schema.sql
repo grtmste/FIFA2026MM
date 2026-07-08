@@ -40,6 +40,7 @@ create table if not exists predictions (
   match_id integer not null references matches(id) on delete cascade,
   predicted_home_score integer not null,
   predicted_away_score integer not null,
+  points_override integer, -- manual points correction; null = automatic
   unique (participant_id, match_id)
 );
 

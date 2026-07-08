@@ -110,6 +110,30 @@ export async function deleteParticipant(formData: FormData) {
   revalidateAll();
 }
 
+export async function savePointsOverride(formData: FormData) {
+  requireAuth();
+  const participantId = String(formData.get("participant_id") ?? "");
+  const matchId = Number(formData.get("match_id"));
+  if (!participantId || !matchId) return;
+
+  const raw = String(formData.get("points_override") ?? "").trim();
+  const override =
+    raw === "" || Number.isNaN(Number(raw)) ? null : Math.trunc(Number(raw));
+
+  const { error } = await supabaseAdmin
+    .from("predictions")
+    .update({ points_override: override })
+    .eq("participant_id", participantId)
+    .eq("match_id", matchId);
+
+  if (error) {
+    throw new Error(
+      `Punktide muutmine ebaõnnestus: ${error.message}. Kontrolli, et scripts/points_override.sql on Supabase's käivitatud.`
+    );
+  }
+  revalidateAll();
+}
+
 export async function savePrediction(formData: FormData) {
   requireAuth();
   const participantId = String(formData.get("participant_id") ?? "");

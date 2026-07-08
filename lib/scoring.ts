@@ -17,6 +17,10 @@ const STAGE_POINTS: Record<Match["stage"], [number, number]> = {
  * vice versa. Scores are always compared on normal time.
  */
 export function calcMatchPoints(prediction: Prediction, match: Match): number {
+  // Admin-set manual correction wins over automatic scoring.
+  if (prediction.points_override !== null && prediction.points_override !== undefined) {
+    return prediction.points_override;
+  }
   if (match.actual_home_score === null || match.actual_away_score === null) {
     return 0;
   }

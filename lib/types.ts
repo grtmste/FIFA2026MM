@@ -42,6 +42,7 @@ export interface Prediction {
   match_id: number;
   predicted_home_score: number;
   predicted_away_score: number;
+  points_override?: number | null;
 }
 
 export interface BonusQuestion {
