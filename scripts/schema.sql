@@ -12,7 +12,8 @@ create table if not exists participants (
   name text not null,
   created_at timestamptz not null default now(),
   is_champion boolean not null default false,
-  history text
+  history text,
+  points_adjustment integer not null default 0
 );
 
 create table if not exists matches (

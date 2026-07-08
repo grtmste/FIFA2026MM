@@ -1,12 +1,18 @@
 import { Match, Prediction } from "./types";
 
-// Rounds scored with the raised 4p/2p scheme. Group stage and 1/32 keep the
-// original 3p/1p scoring.
-const RAISED_STAGES = new Set<Match["stage"]>(["r16", "qf", "sf", "final"]);
+// Per-round scoring: [exact score, correct outcome].
+const STAGE_POINTS: Record<Match["stage"], [number, number]> = {
+  group: [3, 1],
+  r32: [3, 1],
+  r16: [4, 2],
+  qf: [5, 3],
+  sf: [5, 3],
+  final: [5, 3],
+};
 
 /**
- * Group stage & 1/32: 3p exact score, 1p correct outcome.
- * From 1/16 onward:   4p exact score, 2p correct outcome.
+ * Points per round: alagrupp & 1/32 = 3p/1p, 1/16 = 4p/2p,
+ * veerandfinaal onward = 5p/3p (exact score / correct outcome).
  * A predicted draw only scores if the match actually ended in a draw, and
  * vice versa. Scores are always compared on normal time.
  */
@@ -15,9 +21,7 @@ export function calcMatchPoints(prediction: Prediction, match: Match): number {
     return 0;
   }
 
-  const raised = RAISED_STAGES.has(match.stage);
-  const exactPoints = raised ? 4 : 3;
-  const outcomePoints = raised ? 2 : 1;
+  const [exactPoints, outcomePoints] = STAGE_POINTS[match.stage] ?? [3, 1];
 
   const { predicted_home_score: ph, predicted_away_score: pa } = prediction;
   const { actual_home_score: ah, actual_away_score: aw } = match;

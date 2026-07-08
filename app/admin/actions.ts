@@ -67,11 +67,37 @@ export async function updateParticipant(formData: FormData) {
 
   const history = String(formData.get("history") ?? "").trim();
   const isChampion = formData.get("is_champion") === "on";
+  const adjustmentRaw = String(formData.get("points_adjustment") ?? "").trim();
+  const adjustment =
+    adjustmentRaw === "" || Number.isNaN(Number(adjustmentRaw))
+      ? 0
+      : Math.trunc(Number(adjustmentRaw));
 
-  await supabaseAdmin
+  const payload: Record<string, unknown> = {
+    name,
+    history: history || null,
+    is_champion: isChampion,
+    points_adjustment: adjustment,
+  };
+
+  let { error } = await supabaseAdmin
     .from("participants")
-    .update({ name, history: history || null, is_champion: isChampion })
+    .update(payload)
     .eq("id", id);
+  // Retry without columns the live database doesn't have yet, so a missing
+  // migration never blocks saving the rest.
+  while (error) {
+    const missing = Object.keys(payload).find((k) => error!.message.includes(k));
+    if (!missing || missing === "name") break;
+    delete payload[missing];
+    ({ error } = await supabaseAdmin
+      .from("participants")
+      .update(payload)
+      .eq("id", id));
+  }
+  if (error) {
+    throw new Error(`Osaleja salvestamine ebaõnnestus: ${error.message}`);
+  }
   revalidateAll();
 }
 

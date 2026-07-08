@@ -155,4 +155,19 @@ Kehtib endiselt reegel, et tulemusi arvestatakse normaalaja kohta.'),
 (15, 'Mitmendal minutil lüüakse vooru avavärav?',            7, null, '1/16', null),
 (16, 'Millises mängus lüüakse kõige rohkem väravaid?',       4, null, '1/16', null),
 (17, 'Mitu kollast kaarti antakse Kanada vs Maroko mängus?', 4, null, '1/16', null),
-(18, 'Mitu väravat lüüakse vasaku jalaga?',                  5, null, '1/16', null);
+(18, 'Mitu väravat lüüakse vasaku jalaga?',                  5, null, '1/16', null),
+-- Veerandfinaali bonus round
+(19, 'Mitu väravat lüüakse väljastpoolt karistusala?',            3, null, 'qf', null),
+(20, 'Mitu nurgalööki antakse mängude esimesel poolajal kokku?',  5, null, 'qf', null),
+(21, 'Norra vs Inglismaa pallivaldamise protsent?',               4, null, 'qf', null),
+(22, 'Kas Maroko läheb Prantsusmaa vastu juhtima?',               2, null, 'qf', null),
+(23, 'Belgia võidab Hispaaniat rohkem kui 1 väravaga?',           3, null, 'qf', null),
+-- QF Jokker (optional)
+(24, 'Jokker (valikuline)', 35, null, 'jokker-qf',
+'Kui valid Jokkeri, siis läheb arvesse ainult ühe mängu ennustus. Ükskõik milline mäng, aga skoor peab olema täpselt ennustatud.
+Jokkeri võit & ühe mängu skoor täpselt ennustatud = 35p + 5p. Jokkeri kaotus & ühe mängu skoor täpselt ennustatud = 5p.
+1. Prantsusmaa juhib Marokot esimese poolaja lõpus.
+2. Hispaania vs Belgia mäng läheb lisaajale.
+3. Norra vs Inglismaa mängus lüüakse teisel poolajal rohkem kui 2 väravat.
+4. Kaks mängu jäävad esimese poolaja lõpus 0-0.
+5. Prantsusmaa, Hispaania, Inglismaa ja Argentiina lähevad järgmisesse ringi.');

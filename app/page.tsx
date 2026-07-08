@@ -33,6 +33,7 @@ interface Row {
   name: string;
   isChampion: boolean;
   history: string | null;
+  adjustment: number;
   stagePoints: Record<Stage, number>;
   bonusPoints: number;
   total: number;
@@ -109,9 +110,13 @@ export default function LeaderboardPage() {
               stagePoints[match.stage] += calcMatchPoints(pred, match);
             });
 
-          const bonusPoints = ((bonusAnswers ?? []) as BonusAnswer[])
-            .filter((ans) => ans.participant_id === p.id)
-            .reduce((sum, ans) => sum + (ans.points_awarded ?? 0), 0);
+          // The admin's manual +/- correction (e.g. Jokker adjustments) is
+          // folded into the bonus column so the columns still sum to Kokku.
+          const bonusPoints =
+            ((bonusAnswers ?? []) as BonusAnswer[])
+              .filter((ans) => ans.participant_id === p.id)
+              .reduce((sum, ans) => sum + (ans.points_awarded ?? 0), 0) +
+            (p.points_adjustment ?? 0);
 
           const total =
             STAGE_ORDER.reduce((sum, stage) => sum + stagePoints[stage], 0) +
@@ -122,6 +127,7 @@ export default function LeaderboardPage() {
             name: p.name,
             isChampion: p.is_champion ?? false,
             history: p.history ?? null,
+            adjustment: p.points_adjustment ?? 0,
             stagePoints,
             bonusPoints,
             total,
@@ -233,6 +239,7 @@ export default function LeaderboardPage() {
                   name: r.name,
                   isChampion: r.isChampion,
                   history: r.history,
+                  adjustment: r.adjustment,
                 }
               : null;
           })()}

@@ -10,6 +10,8 @@ const CATEGORIES: { key: string; title: string }[] = [
   { key: "1/32", title: "Boonusküsimused - 1/32" },
   { key: "jokker", title: "Jokker combo - 1/32" },
   { key: "1/16", title: "Boonusküsimused - 1/16" },
+  { key: "qf", title: "Boonusküsimused - veerandfinaal" },
+  { key: "jokker-qf", title: "Jokker - veerandfinaal" },
 ];
 
 export default function BonusAccordion({
@@ -82,7 +84,7 @@ export default function BonusAccordion({
                       key={question.id}
                       question={question}
                       index={idx}
-                      isJoker={key === "jokker"}
+                      isJoker={key.startsWith("jokker")}
                       participants={participants}
                       answers={answers}
                     />

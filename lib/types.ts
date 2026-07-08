@@ -15,6 +15,7 @@ export interface Participant {
   created_at: string;
   is_champion?: boolean;
   history?: string | null;
+  points_adjustment?: number | null;
 }
 
 export interface Match {

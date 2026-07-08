@@ -30,6 +30,7 @@ export default function ParticipantDetail({
     name: string;
     isChampion?: boolean;
     history?: string | null;
+    adjustment?: number;
   } | null;
   matches: Match[];
   predictions: Prediction[];
@@ -91,12 +92,11 @@ export default function ParticipantDetail({
       const match = matches.find((m) => m.id === matchId);
       if (match) matchPts += calcMatchPoints(pred, match);
     });
-    const bonusPts = bonusRows.reduce(
-      (sum, r) => sum + (r.answer?.points_awarded ?? 0),
-      0
-    );
+    const bonusPts =
+      bonusRows.reduce((sum, r) => sum + (r.answer?.points_awarded ?? 0), 0) +
+      (participant?.adjustment ?? 0);
     return { matchPts, bonusPts, total: matchPts + bonusPts };
-  }, [predById, matches, bonusRows]);
+  }, [predById, matches, bonusRows, participant]);
 
   if (!participant || !mounted) return null;
 

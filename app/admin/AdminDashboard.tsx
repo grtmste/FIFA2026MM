@@ -185,6 +185,23 @@ function ParticipantsTab({ participants }: { participants: Participant[] }) {
                         />
                       </label>
 
+                      <label className="block">
+                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+                          Punktide korrektsioon (+/-)
+                        </span>
+                        <input
+                          type="number"
+                          name="points_adjustment"
+                          step={1}
+                          defaultValue={p.points_adjustment ?? 0}
+                          className={`w-28 px-3 py-2 text-sm ${INPUT}`}
+                        />
+                        <span className="mt-1 block text-[11px] text-stone-400">
+                          Liidetakse osaleja kogusummale edetabelis (nt Jokkeri
+                          korrektsioonid). Võib olla negatiivne.
+                        </span>
+                      </label>
+
                       <label className="flex items-center gap-2 text-sm font-medium text-navy">
                         <input
                           type="checkbox"
@@ -786,6 +803,8 @@ const BONUS_CATS: { key: string; title: string }[] = [
   { key: "1/32", title: "Boonusküsimused - 1/32" },
   { key: "jokker", title: "Jokker combo - 1/32" },
   { key: "1/16", title: "Boonusküsimused - 1/16" },
+  { key: "qf", title: "Boonusküsimused - veerandfinaal" },
+  { key: "jokker-qf", title: "Jokker - veerandfinaal" },
 ];
 
 function bonusCategoryOf(q: BonusQuestion): string {
