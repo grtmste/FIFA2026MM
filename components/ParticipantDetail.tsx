@@ -209,7 +209,16 @@ export default function ParticipantDetail({
                         </span>
                       </div>
 
-                      <PointsBadge points={pts} scored={hasResult && !!pred} />
+                      <PointsBadge
+                        points={pts}
+                        scored={hasResult && !!pred}
+                        exact={
+                          hasResult &&
+                          !!pred &&
+                          pred.predicted_home_score === match.actual_home_score &&
+                          pred.predicted_away_score === match.actual_away_score
+                        }
+                      />
                     </div>
                   );
                 })}
@@ -283,10 +292,12 @@ function PointsBadge({
   points,
   scored,
   max,
+  exact,
 }: {
   points: number;
   scored: boolean;
   max?: number;
+  exact?: boolean;
 }) {
   if (!scored) {
     return (
@@ -295,10 +306,13 @@ function PointsBadge({
       </span>
     );
   }
+  // Dark gradient = top tier (exact score, or full points on a bonus
+  // question); champagne = partial points; grey = zero.
+  const top = exact ?? (max != null && points === max);
   const color =
     points === 0
       ? "bg-stone-100 text-stone-400"
-      : points >= 3
+      : top
       ? "bg-gradient-to-br from-navy to-gold text-white"
       : "bg-champagne text-navy";
   return (
