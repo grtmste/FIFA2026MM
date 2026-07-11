@@ -404,10 +404,19 @@ export async function saveMatchResult(formData: FormData) {
 
   // If the live database is missing optional columns (a migration in
   // scripts/ hasn't been run yet), don't let that block saving the actual
-  // score: drop the missing columns from the payload and retry.
+  // score — but only drop a missing column silently when nothing was
+  // actually entered for it. Discarding a value the admin typed in must
+  // fail loudly instead.
   while (error) {
     const missing = Object.keys(payload).find((k) => error!.message.includes(k));
     if (!missing || missing.startsWith("actual_")) break;
+    if (payload[missing] !== null && payload[missing] !== undefined) {
+      throw new Error(
+        `Veerg "${missing}" puudub andmebaasist, seega sisestatud väärtus ei salvestu. ` +
+          `Käivita Supabase SQL editoris puuduv migratsioon ` +
+          `(scripts/extra_time.sql või scripts/penalties.sql) ja proovi uuesti.`
+      );
+    }
     delete payload[missing];
     ({ error } = await supabaseAdmin
       .from("matches")
