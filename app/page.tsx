@@ -17,7 +17,7 @@ import ParticipantDetail from "@/components/ParticipantDetail";
 import Reveal from "@/components/Reveal";
 import LeaderboardTable from "@/components/LeaderboardTable";
 
-const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
+const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "third", "final"];
 
 const STAGE_TABLE_LABELS: Record<Stage, string> = {
   group: "Alagrupi mängud",
@@ -25,6 +25,7 @@ const STAGE_TABLE_LABELS: Record<Stage, string> = {
   r16: "1/16 finaali mängud",
   qf: "Veerandfinaali mängud",
   sf: "Poolfinaali mängud",
+  third: "3. koha mäng",
   final: "Finaalmäng",
 };
 
@@ -99,6 +100,7 @@ export default function LeaderboardPage() {
             r16: 0,
             qf: 0,
             sf: 0,
+            third: 0,
             final: 0,
           };
 

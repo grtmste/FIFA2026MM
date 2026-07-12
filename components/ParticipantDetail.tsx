@@ -15,7 +15,7 @@ import { calcMatchPoints } from "@/lib/scoring";
 import { formatMatchDate, formatMatchTime } from "@/lib/format";
 import { groupColor } from "@/lib/groupColors";
 
-const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
+const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "third", "final"];
 
 export default function ParticipantDetail({
   participant,

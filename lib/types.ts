@@ -1,4 +1,4 @@
-export type Stage = "group" | "r32" | "r16" | "qf" | "sf" | "final";
+export type Stage = "group" | "r32" | "r16" | "qf" | "sf" | "third" | "final";
 
 export const STAGE_LABELS: Record<Stage, string> = {
   group: "Alagrupp",
@@ -6,6 +6,7 @@ export const STAGE_LABELS: Record<Stage, string> = {
   r16: "1/16 finaali",
   qf: "Veerandfinaal",
   sf: "Poolfinaal",
+  third: "3. koha mäng",
   final: "Finaal",
 };
 

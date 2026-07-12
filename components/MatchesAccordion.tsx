@@ -5,7 +5,7 @@ import { Match, Stage, STAGE_LABELS } from "@/lib/types";
 import MatchCard from "@/components/MatchCard";
 import Reveal from "@/components/Reveal";
 
-const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "final"];
+const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "third", "final"];
 
 const STAGE_TITLES: Record<Stage, string> = {
   group: "Alagrupi mängud",
@@ -13,6 +13,7 @@ const STAGE_TITLES: Record<Stage, string> = {
   r16: STAGE_LABELS.r16 + " mängud",
   qf: "Veerandfinaali mängud",
   sf: "Poolfinaali mängud",
+  third: STAGE_LABELS.third,
   final: "Finaalmäng",
 };
 

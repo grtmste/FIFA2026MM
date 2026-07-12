@@ -290,6 +290,7 @@ const STAGE_PRED_LABEL: Record<string, string> = {
   r16: "1/16 ennustused",
   qf: "Veerandfinaali ennustused",
   sf: "Poolfinaali ennustused",
+  third: "3. koha mängu ennustused",
   final: "Finaali ennustused",
 };
 
@@ -655,13 +656,14 @@ function PredictionsForm({
   );
 }
 
-const STAGE_ORDER = ["group", "r32", "r16", "qf", "sf", "final"] as const;
+const STAGE_ORDER = ["group", "r32", "r16", "qf", "sf", "third", "final"] as const;
 const STAGE_LABEL: Record<string, string> = {
   group: "Alagrupi mängud",
   r32: "1/32 finaali mängud",
   r16: "1/16 finaali mängud",
   qf: "Veerandfinaali mängud",
   sf: "Poolfinaali mängud",
+  third: "3. koha mäng",
   final: "Finaalmäng",
 };
 

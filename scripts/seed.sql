@@ -119,7 +119,8 @@ insert into matches (id, stage, group_name, home_team, away_team, match_date, ve
 (100, 'qf',  null, 'Argentiina', 'Šveits', '2026-07-12 04:00:00+03', null, null, null),
 (101, 'sf',  null, 'Prantsusmaa', 'Hispaania', '2026-07-14 22:00:00+03', null, null, null),
 (102, 'sf',  null, 'Inglismaa', 'Argentiina', '2026-07-15 22:00:00+03', null, null, null),
-(103, 'final', null, 'Selgub', 'Selgub', null, null, null, null);
+(103, 'final', null, 'Selgub', 'Selgub', null, null, null, null),
+(104, 'third', null, 'Selgub', 'Selgub', '2026-07-19 00:00:00+03', null, null, null);
 
 -- ---------------------------------------------------------------------------
 -- Bonus questions

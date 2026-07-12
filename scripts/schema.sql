@@ -18,7 +18,7 @@ create table if not exists participants (
 
 create table if not exists matches (
   id integer primary key,
-  stage text not null check (stage in ('group', 'r32', 'r16', 'qf', 'sf', 'final')),
+  stage text not null check (stage in ('group', 'r32', 'r16', 'qf', 'sf', 'third', 'final')),
   group_name text,
   home_team text not null,
   away_team text not null,
