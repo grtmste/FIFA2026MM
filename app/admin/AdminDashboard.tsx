@@ -827,6 +827,7 @@ const BONUS_CATS: { key: string; title: string }[] = [
   { key: "1/16", title: "Boonusküsimused - 1/16" },
   { key: "qf", title: "Boonusküsimused - veerandfinaal" },
   { key: "jokker-qf", title: "Jokker - veerandfinaal" },
+  { key: "sf", title: "Boonusküsimused - poolfinaal" },
 ];
 
 function bonusCategoryOf(q: BonusQuestion): string {

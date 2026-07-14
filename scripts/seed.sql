@@ -171,4 +171,11 @@ Jokkeri võit & ühe mängu skoor täpselt ennustatud = 35p + 5p. Jokkeri kaotus
 2. Hispaania vs Belgia mäng läheb lisaajale.
 3. Norra vs Inglismaa mängus lüüakse teisel poolajal rohkem kui 2 väravat.
 4. Kaks mängu jäävad esimese poolaja lõpus 0-0.
-5. Prantsusmaa, Hispaania, Inglismaa ja Argentiina lähevad järgmisesse ringi.');
+5. Prantsusmaa, Hispaania, Inglismaa ja Argentiina lähevad järgmisesse ringi.'),
+-- Poolfinaali bonus round
+(25, 'Kummas mängus lüüakse avapoolajal rohkem nurgalööke?',                              2, null, 'sf', null),
+(26, 'Mitmendal minutil teeb Prantsusmaa väravavaht esimese pallipuute?',                 4, null, 'sf', null),
+(27, 'Kes (mängija) lööb Inglismaa vs Argentiina mängus esimese värava?',                 7, null, 'sf', null),
+(28, 'Mitu kollast kaarti antakse Inglismaa ja Prantsusmaa võistkondade peale kokku?',    4, null, 'sf', null),
+(29, 'Millised võistkonnad jõuavad finaali?',                                             3, null, 'sf', null),
+(30, 'Kes võidab meie ennustusvõistluse?',                                                4, null, 'sf', null);

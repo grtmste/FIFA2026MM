@@ -6,7 +6,7 @@ const STAGE_POINTS: Record<Match["stage"], [number, number]> = {
   r32: [3, 1],
   r16: [4, 2],
   qf: [5, 3],
-  sf: [5, 3],
+  sf: [6, 4],
   third: [5, 3],
   final: [5, 3],
 };

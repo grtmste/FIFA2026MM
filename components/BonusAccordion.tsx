@@ -12,6 +12,7 @@ const CATEGORIES: { key: string; title: string }[] = [
   { key: "1/16", title: "Boonusküsimused - 1/16" },
   { key: "qf", title: "Boonusküsimused - veerandfinaal" },
   { key: "jokker-qf", title: "Jokker - veerandfinaal" },
+  { key: "sf", title: "Boonusküsimused - poolfinaal" },
 ];
 
 export default function BonusAccordion({
