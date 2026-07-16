@@ -178,4 +178,11 @@ Jokkeri võit & ühe mängu skoor täpselt ennustatud = 35p + 5p. Jokkeri kaotus
 (27, 'Kes (mängija) lööb Inglismaa vs Argentiina mängus esimese värava?',                 7, null, 'sf', null),
 (28, 'Mitu kollast kaarti antakse Inglismaa ja Prantsusmaa võistkondade peale kokku?',    4, null, 'sf', null),
 (29, 'Millised võistkonnad jõuavad finaali?',                                             3, null, 'sf', null),
-(30, 'Kes võidab meie ennustusvõistluse?',                                                4, null, 'sf', null);
+(30, 'Kes võidab meie ennustusvõistluse?',                                                4, null, 'sf', null),
+-- Finaali bonus round
+(31, 'Kas VAR võtab mõne värava ära?',                              2, null, 'final', null),
+(32, 'Mitu tõrjet teeb finaali võitja võistkonna väravavaht?',     4, null, 'final', null),
+(33, 'Kas mõni vahetusmängija lööb värava?',                       3, null, 'final', null),
+(34, 'Kes valitakse pronksimängu parimaks mängijaks?',             4, null, 'final', null),
+(35, 'Kes (mängija) lööb turniiri viimase värava?',                4, null, 'final', null),
+(36, 'Milline mängija läbib finaalis kõige pikema vahemaa?',       4, null, 'final', null);
