@@ -78,33 +78,27 @@ page.drawImage(logoPng, {
   height: logoH,
 });
 
-// ── Round title ──
-let y = PAGE_H - 26 - logoH - 14;
-textCentered(page, "3. KOHT & FINAAL", PAGE_W / 2, y, 11, bold, NAVY);
-y -= 12;
-
-// ── Table header band ──
+// The two matches are shown as separate labelled blocks.
+const SECTIONS = [
+  { label: "3. KOHA MÄNG", match: MATCHES[0] },
+  { label: "FINAAL", match: MATCHES[1] },
+];
 const headerH = 18;
-page.drawRectangle({ x: LM, y: y - headerH, width: RM - LM, height: headerH, color: NAVY });
-const hy = y - headerH + 5.5;
-textCentered(page, "#", COL.num, hy, 7.5, bold, WHITE);
-textCentered(page, "Kuupäev", COL.date, hy, 7.5, bold, WHITE);
-textCentered(page, "P", COL.day, hy, 7.5, bold, WHITE);
-textCentered(page, "Kell", COL.time, hy, 7.5, bold, WHITE);
-textCentered(page, "RIIK 1", 272, hy, 7.5, bold, WHITE);
-textCentered(page, "SKOOR", (COL.boxHomeX + COL.boxAwayX + COL.boxW) / 2, hy, 7.5, bold, WHITE);
-textCentered(page, "RIIK 2", 432, hy, 7.5, bold, WHITE);
 
-// ── Match rows ──
-const rowTop = y - headerH;
-MATCHES.forEach(([id, day, date, time, home, away], i) => {
-  const top = rowTop - i * ROW_H;
-  const bottom = top - ROW_H;
-  if (i % 2 === 1) {
-    page.drawRectangle({ x: LM, y: bottom, width: RM - LM, height: ROW_H, color: ZEBRA });
-  }
+function drawHeaderBand(y) {
+  page.drawRectangle({ x: LM, y: y - headerH, width: RM - LM, height: headerH, color: NAVY });
+  const hy = y - headerH + 5.5;
+  textCentered(page, "Kuupäev", COL.date, hy, 7.5, bold, WHITE);
+  textCentered(page, "P", COL.day, hy, 7.5, bold, WHITE);
+  textCentered(page, "Kell", COL.time, hy, 7.5, bold, WHITE);
+  textCentered(page, "RIIK 1", 272, hy, 7.5, bold, WHITE);
+  textCentered(page, "SKOOR", (COL.boxHomeX + COL.boxAwayX + COL.boxW) / 2, hy, 7.5, bold, WHITE);
+  textCentered(page, "RIIK 2", 432, hy, 7.5, bold, WHITE);
+}
+
+function drawMatchRow(y, [id, day, date, time, home, away]) {
+  const bottom = y - ROW_H;
   const baseY = bottom + 4.1;
-  textCentered(page, String(i + 1), COL.num, baseY, 7, font, GREY);
   textCentered(page, date, COL.date, baseY, 7, bold, NAVY);
   textCentered(page, day, COL.day, baseY, 6.5, font, GREY);
   textCentered(page, time, COL.time, baseY, 7, bold, NAVY);
@@ -129,9 +123,19 @@ MATCHES.forEach(([id, day, date, time, home, away], i) => {
     });
     tf.setFontSize(8);
   }
-});
+}
 
-let cur = rowTop - MATCHES.length * ROW_H - 24;
+let cur = PAGE_H - 26 - logoH - 18;
+for (const { label, match } of SECTIONS) {
+  page.drawText(label, { x: LM, y: cur, size: 10, font: bold, color: NAVY });
+  cur -= 6;
+  drawHeaderBand(cur);
+  cur -= headerH;
+  drawMatchRow(cur, match);
+  cur -= ROW_H + 20;
+}
+
+cur -= 6;
 
 // ── Bonus questions (1/16) ──
 page.drawText("BOONUSKÜSIMUSED - FINAAL", { x: LM, y: cur, size: 8, font: bold, color: GREY });
