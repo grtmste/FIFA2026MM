@@ -41,7 +41,7 @@ export default async function AdminPage({
             placeholder="Salasõna"
             required
             autoFocus
-            className="w-full rounded-sm border border-line bg-surface px-3 py-2.5 text-sm text-ink placeholder-muted transition-colors focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
+            className="w-full rounded-sm border border-line bg-surface px-3 py-2.5 text-sm text-ink placeholder-muted transition-colors focus:border-fifared focus:outline-none focus:ring-2 focus:ring-gold/20"
           />
           {searchParams.error && (
             <p className="text-sm text-fifared">Vale salasõna.</p>

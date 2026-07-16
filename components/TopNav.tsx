@@ -21,14 +21,14 @@ export default function TopNav() {
                 href={link.href}
                 className={`group flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95 ${
                   isActive
-                    ? "bg-gradient-to-br from-navy to-blue-700 text-white shadow-card"
+                    ? "bg-gradient-to-br from-fifared to-fifaorange text-white shadow-card"
                     : "text-ink/75 hover:-translate-y-0.5 hover:bg-surface/80 hover:text-ink hover:shadow-card"
                 }`}
               >
                 <NavIcon
                   name={link.icon}
                   className={`h-[18px] w-[18px] transition-transform duration-200 group-hover:scale-110 ${
-                    isActive ? "text-white" : "text-fifagreen"
+                    isActive ? "text-white" : "text-fifared"
                   }`}
                 />
                 {link.label}

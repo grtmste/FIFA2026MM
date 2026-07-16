@@ -55,21 +55,21 @@ export default function LeaderboardTable<R extends LbRow>({
             layout
             transition={{ type: "spring", stiffness: 520, damping: 40 }}
             className={`relative grid items-center px-3 py-2.5 transition-colors ${
-              rowIdx === 0 ? "bg-fifagreen/[0.14]" : "hover:bg-white/[0.06]"
+              rowIdx === 0 ? "bg-fifared/[0.14]" : "hover:bg-white/[0.06]"
             }`}
             style={{ gridTemplateColumns: template }}
           >
             {rowIdx === 0 && (
               <span className="gold-shine pointer-events-none absolute inset-0" />
             )}
-            <span className="text-center font-semibold text-fifagreen">
+            <span className="text-center font-semibold text-fifared">
               {rowIdx + 1}
             </span>
             <span className="min-w-0 truncate font-medium text-ink">
               <button
                 type="button"
                 onClick={() => onSelect(row.id)}
-                className="truncate text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-fifagreen hover:decoration-fifagreen"
+                className="truncate text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-fifared hover:decoration-fifared"
               >
                 {row.name}
                 {row.isChampion && <span title="Maailmameister"> 🏆</span>}

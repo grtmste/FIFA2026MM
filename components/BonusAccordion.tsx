@@ -57,7 +57,7 @@ export default function BonusAccordion({
         return (
           <Reveal
             key={key}
-            className="overflow-hidden rounded-lg border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card transition-shadow hover:shadow-card-hover"
+            className="overflow-hidden rounded-lg border border-line border-t-2 border-t-fifared/50 bg-surface shadow-card transition-shadow hover:shadow-card-hover"
           >
             <button
               type="button"
@@ -118,7 +118,7 @@ function BonusCard({
   return (
     <section
       className={`overflow-hidden rounded-lg border border-line border-t-2 bg-surface shadow-card transition-shadow hover:shadow-card-hover ${
-        isJoker ? "border-t-fifagreen md:col-span-2" : "border-t-fifagreen/40"
+        isJoker ? "border-t-fifared md:col-span-2" : "border-t-fifared/40"
       }`}
     >
       <button
@@ -127,7 +127,7 @@ function BonusCard({
         aria-expanded={open}
         className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
       >
-        <span className="section-title text-2xl leading-none text-fifagreen">
+        <span className="section-title text-2xl leading-none text-fifared">
           {isJoker ? "★" : index + 1}
         </span>
         <span className="min-w-0 flex-1">
@@ -140,7 +140,7 @@ function BonusCard({
               <>
                 {" "}
                 · Õige vastus:{" "}
-                <span className="font-semibold text-fifagreen">
+                <span className="font-semibold text-fifared">
                   {question.correct_answer}
                 </span>
               </>

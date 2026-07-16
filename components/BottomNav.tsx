@@ -22,7 +22,7 @@ export default function BottomNav() {
               <Link
                 href={link.href}
                 className={`group flex flex-col items-center gap-1 py-2 text-[11px] font-semibold transition-colors active:scale-95 ${
-                  isActive ? "text-fifagreen" : "text-muted"
+                  isActive ? "text-fifared" : "text-muted"
                 }`}
               >
                 <span
@@ -35,7 +35,7 @@ export default function BottomNav() {
                   <NavIcon
                     name={link.icon}
                     className={`h-[23px] w-[23px] transition-transform duration-200 group-hover:scale-110 ${
-                      isActive ? "text-fifagreen" : "text-muted group-hover:text-ink"
+                      isActive ? "text-fifared" : "text-muted group-hover:text-ink"
                     }`}
                   />
                 </span>

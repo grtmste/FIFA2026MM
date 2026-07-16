@@ -35,7 +35,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 ];
 
 const INPUT =
-  "rounded-sm border border-line bg-surface text-ink transition-colors focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20";
+  "rounded-sm border border-line bg-surface text-ink transition-colors focus:border-fifared focus:outline-none focus:ring-2 focus:ring-gold/20";
 
 const SCORE_INPUT = `w-12 px-1 py-1.5 text-center text-sm font-semibold ${INPUT}`;
 
@@ -153,7 +153,7 @@ function ParticipantsTab({
                   className="flex w-full items-center justify-between gap-2 p-3 text-left transition-colors hover:bg-white/[0.06]"
                 >
                   <span className="flex items-center gap-2">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-fifared to-fifaorange text-sm font-bold text-white">
                       {p.name.charAt(0).toUpperCase()}
                     </span>
                     <span className="flex items-center gap-1.5 text-sm font-semibold text-ink">
@@ -363,7 +363,7 @@ function PredictionsTab({
               type="button"
               disabled={count === 0}
               onClick={() => setStage(s)}
-              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifagreen/60 hover:shadow-card-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifared/60 hover:shadow-card-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
             >
               <span className="text-sm font-semibold text-ink">
                 {STAGE_PRED_LABEL[s]}
@@ -403,10 +403,10 @@ function PredictionsTab({
               key={p.id}
               type="button"
               onClick={() => setViewingId(p.id)}
-              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifagreen/60 hover:shadow-card-hover active:scale-[0.99]"
+              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifared/60 hover:shadow-card-hover active:scale-[0.99]"
             >
               <span className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-fifared to-fifaorange text-sm font-bold text-white">
                   {p.name.charAt(0).toUpperCase()}
                 </span>
                 <span className="text-sm font-semibold text-ink">{p.name}</span>
@@ -445,7 +445,7 @@ function PredictionsTab({
           href={`/pdf/${viewingId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 rounded-sm border border-fifagreen bg-fifagreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-fifagreen-dark"
+          className="flex items-center gap-1.5 rounded-sm border border-fifared bg-fifared px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-fifared-dark"
         >
           🖨️ PDF
         </a>
@@ -595,7 +595,7 @@ function PredictionsForm({
         {importMsg && (
           <p
             className={`text-xs ${
-              importMsg.ok ? "text-fifagreen" : "text-fifared"
+              importMsg.ok ? "text-fifared" : "text-fifared"
             }`}
           >
             {importMsg.text}
@@ -636,7 +636,7 @@ function PredictionsForm({
           <p
             className={`rounded-sm px-3 py-1.5 text-xs font-medium ${
               saveMsg.ok
-                ? "bg-fifagreen/10 text-fifagreen"
+                ? "bg-fifared/10 text-fifared"
                 : "bg-fifared/10 text-fifared"
             }`}
           >
@@ -696,7 +696,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
         return (
           <div
             key={stage}
-            className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card"
+            className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifared/50 bg-surface shadow-card"
           >
             <button
               type="button"
@@ -776,7 +776,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                         name="extra_time_home_score"
                         min={0}
                         defaultValue={match.extra_time_home_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifared focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
                       <span className="text-xs font-bold text-muted/50">:</span>
                       <input
@@ -784,7 +784,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                         name="extra_time_away_score"
                         min={0}
                         defaultValue={match.extra_time_away_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifared focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -796,7 +796,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                         name="penalty_home_score"
                         min={0}
                         defaultValue={match.penalty_home_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifared focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
                       <span className="text-xs font-bold text-muted/50">:</span>
                       <input
@@ -804,7 +804,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                         name="penalty_away_score"
                         min={0}
                         defaultValue={match.penalty_away_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifared focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
                     </div>
                   </div>
@@ -939,10 +939,10 @@ function BonusTab({
                 key={p.id}
                 type="button"
                 onClick={() => onSelectParticipant(p.id)}
-                className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifagreen/60 hover:shadow-card-hover active:scale-[0.99]"
+                className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifared/60 hover:shadow-card-hover active:scale-[0.99]"
               >
                 <span className="flex items-center gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-fifared to-fifaorange text-sm font-bold text-white">
                     {p.name.charAt(0).toUpperCase()}
                   </span>
                   <span className="text-sm font-semibold text-ink">{p.name}</span>
@@ -979,7 +979,7 @@ function BonusTab({
         return (
           <div
             key={key}
-            className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card"
+            className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifared/50 bg-surface shadow-card"
           >
             <button
               type="button"
@@ -1169,7 +1169,7 @@ function ParticipantPoints({
                               : "–"}
                             {" · "}Auto {auto} p
                             {overridden && (
-                              <span className="font-semibold text-fifagreen">
+                              <span className="font-semibold text-fifared">
                                 {" "}
                                 · Muudetud
                               </span>

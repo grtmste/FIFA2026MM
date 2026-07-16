@@ -17,11 +17,10 @@ const config: Config = {
         line: "#282C3B",
 
         // FIFA World Cup 2026 palette
-        fifagreen: "#2BD576",
-        "fifagreen-dark": "#1FAE5E",
+        fifared: "#FF3B4E",
+        "fifared-dark": "#D92B3D",
         fifacyan: "#22D3EE",
         fifablue: "#3E7BFF",
-        fifared: "#FF4D5E",
         fifaorange: "#FF8A3D",
         fifapurple: "#A855F7",
         fifayellow: "#FBD34D",
@@ -29,8 +28,8 @@ const config: Config = {
         // Legacy names kept (remapped to dark/vibrant) as a safety net
         navy: "#1B2447",
         "navy-light": "#5C6A95",
-        gold: "#2BD576",
-        "gold-dark": "#1FAE5E",
+        gold: "#FF3B4E",
+        "gold-dark": "#D92B3D",
         purple: "#A855F7",
         cream: "#07080f",
         champagne: "#122019",
@@ -49,9 +48,9 @@ const config: Config = {
       boxShadow: {
         card: "0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35)",
         "card-hover":
-          "0 2px 6px rgba(0,0,0,0.5), 0 20px 44px rgba(0,0,0,0.5), 0 0 0 1px rgba(43,213,118,0.12)",
+          "0 2px 6px rgba(0,0,0,0.5), 0 20px 44px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,59,78,0.14)",
         luxe: "0 30px 60px -25px rgba(0,0,0,0.7)",
-        glow: "0 0 24px -4px rgba(43,213,118,0.5)",
+        glow: "0 0 24px -4px rgba(255,59,78,0.5)",
       },
       keyframes: {
         "fade-in-up": {

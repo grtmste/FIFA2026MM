@@ -45,12 +45,12 @@ export default async function MatchDetailPage({
       </Link>
 
       <div
-        className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card"
+        className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifared/50 bg-surface shadow-card"
       >
         <div className="p-5">
           <div className="mb-3 flex items-center justify-center gap-2 text-xs text-muted">
             <span>{formatMatchDate(typedMatch.match_date)}</span>
-            <span className="text-fifagreen/60">·</span>
+            <span className="text-fifared/60">·</span>
             <span>{formatMatchTime(typedMatch.match_date)}</span>
             {typedMatch.group_name && (
               <span
@@ -68,7 +68,7 @@ export default async function MatchDetailPage({
             <span
               className={`min-w-[88px] flex-shrink-0 rounded-sm px-3 py-1.5 text-center text-2xl font-bold tabular-nums tracking-tight ${
                 hasScore
-                  ? "bg-gradient-to-br from-fifagreen to-fifacyan text-white shadow-sm"
+                  ? "bg-gradient-to-br from-fifared to-fifacyan text-white shadow-sm"
                   : "bg-white/[0.06] text-muted"
               }`}
             >
@@ -81,7 +81,7 @@ export default async function MatchDetailPage({
             </span>
           </div>
           {hasScore && typedMatch.penalty_winner && (
-            <div className="mt-2 text-center text-xs font-semibold text-fifagreen">
+            <div className="mt-2 text-center text-xs font-semibold text-fifared">
               {typedMatch.penalty_home_score != null &&
               typedMatch.penalty_away_score != null
                 ? `Penaltid ${typedMatch.penalty_home_score}–${typedMatch.penalty_away_score} · `
@@ -92,7 +92,7 @@ export default async function MatchDetailPage({
             </div>
           )}
           {hasScore && !typedMatch.penalty_winner && typedMatch.extra_time_winner && (
-            <div className="mt-2 text-center text-xs font-semibold text-fifagreen">
+            <div className="mt-2 text-center text-xs font-semibold text-fifared">
               {typedMatch.extra_time_home_score != null &&
               typedMatch.extra_time_away_score != null
                 ? `Lisaajal ${typedMatch.extra_time_home_score}–${typedMatch.extra_time_away_score} · `
@@ -126,7 +126,7 @@ export default async function MatchDetailPage({
               if (winner) {
                 return (
                   <div className="mt-3 text-center text-xs font-semibold text-ink">
-                    Edasi pääses: <span className="text-fifagreen">{winner}</span>
+                    Edasi pääses: <span className="text-fifared">{winner}</span>
                   </div>
                 );
               }
@@ -183,7 +183,7 @@ export default async function MatchDetailPage({
                           : "–"}
                       </td>
                       {hasScore && (
-                        <td className="px-3 py-2 text-center font-bold text-fifagreen">
+                        <td className="px-3 py-2 text-center font-bold text-fifared">
                           {prediction ? `${points} p` : "–"}
                         </td>
                       )}

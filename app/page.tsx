@@ -16,6 +16,7 @@ import SectionHeading from "@/components/SectionHeading";
 import ParticipantDetail from "@/components/ParticipantDetail";
 import Reveal from "@/components/Reveal";
 import LeaderboardTable from "@/components/LeaderboardTable";
+import ChampionConfetti from "@/components/ChampionConfetti";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "third", "final"];
 
@@ -176,6 +177,9 @@ export default function LeaderboardPage() {
 
   return (
     <div className="space-y-5">
+      <ChampionConfetti
+        championId={rows.find((r) => r.isChampion)?.id ?? null}
+      />
       <SectionHeading eyebrow="Üldine seis" title="Edetabel" />
 
       {loading && <p className="text-sm text-muted">Laadimine...</p>}
@@ -274,7 +278,7 @@ function Section({
   return (
     <Reveal
       className={`overflow-hidden rounded-lg border border-line border-t-2 bg-surface shadow-card transition-shadow hover:shadow-card-hover ${
-        accent ? "border-t-fifagreen" : "border-t-fifagreen/50"
+        accent ? "border-t-fifared" : "border-t-fifared/50"
       }`}
     >
       <button

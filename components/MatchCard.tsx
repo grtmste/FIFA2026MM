@@ -10,7 +10,7 @@ export default function MatchCard({ match }: { match: Match }) {
   return (
     <Link
       href={`/matches/${match.id}`}
-      className="group relative flex transform-gpu overflow-hidden rounded-lg border border-line bg-surface shadow-card transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] will-change-transform hover:-translate-y-1.5 hover:border-fifagreen/60 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      className="group relative flex transform-gpu overflow-hidden rounded-lg border border-line bg-surface shadow-card transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] will-change-transform hover:-translate-y-1.5 hover:border-fifared/60 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       style={{ borderLeft: `3px solid ${groupColor(match.group_name)}` }}
     >
       {/* Gravity glow that blooms in on hover */}
@@ -45,7 +45,7 @@ export default function MatchCard({ match }: { match: Match }) {
           <span
             className={`min-w-[58px] flex-shrink-0 rounded-sm px-2 py-1 text-center text-base font-bold tabular-nums tracking-tight ${
               hasScore
-                ? "bg-gradient-to-br from-fifagreen to-fifacyan text-white shadow-sm"
+                ? "bg-gradient-to-br from-fifared to-fifacyan text-white shadow-sm"
                 : "bg-white/[0.06] text-muted"
             }`}
           >
@@ -74,7 +74,7 @@ export default function MatchCard({ match }: { match: Match }) {
                 <span
                   className={
                     match.penalty_winner === "home"
-                      ? "text-fifagreen"
+                      ? "text-fifared"
                       : "text-muted"
                   }
                 >
@@ -86,7 +86,7 @@ export default function MatchCard({ match }: { match: Match }) {
                 <span
                   className={
                     match.penalty_winner === "away"
-                      ? "text-fifagreen"
+                      ? "text-fifared"
                       : "text-muted"
                   }
                 >
@@ -94,7 +94,7 @@ export default function MatchCard({ match }: { match: Match }) {
                 </span>
               </>
             ) : (
-              <span className="text-fifagreen">
+              <span className="text-fifared">
                 pen.{" "}
                 {match.penalty_winner === "home"
                   ? match.home_team
@@ -111,7 +111,7 @@ export default function MatchCard({ match }: { match: Match }) {
                 <span
                   className={
                     match.extra_time_winner === "home"
-                      ? "text-fifagreen"
+                      ? "text-fifared"
                       : "text-muted"
                   }
                 >
@@ -123,7 +123,7 @@ export default function MatchCard({ match }: { match: Match }) {
                 <span
                   className={
                     match.extra_time_winner === "away"
-                      ? "text-fifagreen"
+                      ? "text-fifared"
                       : "text-muted"
                   }
                 >
@@ -135,7 +135,7 @@ export default function MatchCard({ match }: { match: Match }) {
                 <span className="text-[10px] uppercase tracking-wider text-muted">
                   lisaajal
                 </span>
-                <span className="text-fifagreen">
+                <span className="text-fifared">
                   {match.extra_time_winner === "home"
                     ? match.home_team
                     : match.away_team}

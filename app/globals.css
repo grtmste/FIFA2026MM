@@ -18,7 +18,7 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(30% 26% at 10% 6%, rgba(43, 213, 118, 0.22), transparent 70%),
+    radial-gradient(30% 26% at 10% 6%, rgba(255, 138, 61, 0.20), transparent 70%),
     radial-gradient(28% 24% at 88% 2%, rgba(62, 123, 255, 0.2), transparent 70%),
     radial-gradient(32% 30% at 96% 70%, rgba(168, 85, 247, 0.22), transparent 72%),
     radial-gradient(30% 28% at 4% 92%, rgba(255, 77, 94, 0.18), transparent 72%),
@@ -37,7 +37,7 @@ body::after {
   opacity: 0.5;
   background-image: repeating-linear-gradient(
     115deg,
-    rgba(43, 213, 118, 0.05) 0 34px,
+    rgba(255, 59, 78, 0.05) 0 34px,
     rgba(62, 123, 255, 0.05) 34px 68px,
     rgba(168, 85, 247, 0.05) 68px 102px,
     rgba(255, 77, 94, 0.045) 102px 136px,
@@ -104,8 +104,8 @@ body > * {
   border-radius: 9999px;
   background: linear-gradient(
     to right,
-    rgba(43, 213, 118, 0),
-    rgba(43, 213, 118, 0.7),
+    rgba(255, 59, 78, 0),
+    rgba(255, 59, 78, 0.75),
     rgba(34, 211, 238, 0.7),
     rgba(168, 85, 247, 0.7),
     rgba(255, 77, 94, 0)
@@ -116,10 +116,10 @@ body > * {
 .gradient-text {
   background-image: linear-gradient(
     90deg,
-    #2bd576,
-    #22d3ee,
+    #ff3b4e,
+    #ff8a3d,
     #a855f7,
-    #2bd576
+    #ff3b4e
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -142,8 +142,8 @@ body > * {
   background: linear-gradient(
     110deg,
     transparent 22%,
-    rgba(43, 213, 118, 0.16) 45%,
-    rgba(34, 211, 238, 0.14) 55%,
+    rgba(255, 59, 78, 0.18) 45%,
+    rgba(255, 138, 61, 0.14) 55%,
     transparent 78%
   );
   background-size: 250% 100%;
@@ -163,7 +163,7 @@ body > * {
 /* White logo tuned for the dark UI */
 .logo-white {
   filter: brightness(0) invert(1)
-    drop-shadow(0 4px 16px rgba(43, 213, 118, 0.25));
+    drop-shadow(0 4px 16px rgba(255, 59, 78, 0.3));
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -177,7 +177,7 @@ input[type="number"] {
 }
 
 ::selection {
-  background-color: rgba(43, 213, 118, 0.3);
+  background-color: rgba(255, 59, 78, 0.32);
   color: #fff;
 }
 

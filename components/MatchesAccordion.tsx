@@ -42,7 +42,7 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
           <Reveal
             key={stage}
             delay={Math.min(idx, 6) * 0.05}
-            className="overflow-hidden rounded-lg border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card transition-shadow hover:shadow-card-hover"
+            className="overflow-hidden rounded-lg border border-line border-t-2 border-t-fifared/50 bg-surface shadow-card transition-shadow hover:shadow-card-hover"
           >
             <button
               type="button"

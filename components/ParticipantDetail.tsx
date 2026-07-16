@@ -116,7 +116,7 @@ export default function ParticipantDetail({
         transition={{ type: "spring", stiffness: 320, damping: 26 }}
       >
         {/* Header */}
-        <div className="sticky top-0 flex items-center justify-between gap-3 border-b border-line bg-gradient-to-r from-navy to-blue-700 px-4 py-3">
+        <div className="sticky top-0 flex items-center justify-between gap-3 border-b border-line bg-gradient-to-r from-fifared to-fifaorange px-4 py-3">
           <div>
             <p className="text-[10px] uppercase tracking-wider text-white/60">
               Ennustuste ülevaade
@@ -145,7 +145,7 @@ export default function ParticipantDetail({
 
         {/* Results history */}
         {participant.history && (
-          <div className="border-b border-line bg-fifagreen/[0.10] px-4 py-2.5">
+          <div className="border-b border-line bg-fifared/[0.10] px-4 py-2.5">
             <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-muted">
               Tulemuste ajalugu
             </p>
@@ -276,7 +276,7 @@ function Stat({
     <div className="bg-surface py-2.5">
       <div
         className={`text-xl font-bold tabular-nums ${
-          highlight ? "text-fifagreen" : "text-ink"
+          highlight ? "text-fifared" : "text-ink"
         }`}
       >
         {value}
@@ -313,8 +313,8 @@ function PointsBadge({
     points === 0
       ? "bg-white/[0.06] text-muted"
       : top
-      ? "bg-gradient-to-br from-fifagreen to-fifacyan text-white"
-      : "bg-fifagreen/[0.14] text-ink";
+      ? "bg-gradient-to-br from-fifared to-fifacyan text-white"
+      : "bg-fifared/[0.14] text-ink";
   return (
     <span
       className={`flex h-6 min-w-9 flex-shrink-0 items-center justify-center rounded-sm px-1 text-[11px] font-bold tabular-nums ${color}`}
