@@ -28,12 +28,12 @@ export default async function AdminPage({
           <span className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-sm bg-gradient-to-br from-gold to-gold-dark text-2xl shadow-card">
             🔒
           </span>
-          <h2 className="section-title text-3xl text-navy">Admin sisselogimine</h2>
+          <h2 className="section-title text-3xl text-ink">Admin sisselogimine</h2>
           <p className="eyebrow mt-1">Sisesta salasõna jätkamiseks</p>
         </div>
         <form
           action={loginAction}
-          className="space-y-3 rounded-sm border border-stone-200 bg-white p-5 shadow-card"
+          className="space-y-3 rounded-sm border border-line bg-surface p-5 shadow-card"
         >
           <input
             type="password"
@@ -41,10 +41,10 @@ export default async function AdminPage({
             placeholder="Salasõna"
             required
             autoFocus
-            className="w-full rounded-sm border border-stone-200 bg-white px-3 py-2.5 text-sm text-navy placeholder-stone-400 transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+            className="w-full rounded-sm border border-line bg-surface px-3 py-2.5 text-sm text-ink placeholder-muted transition-colors focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
           />
           {searchParams.error && (
-            <p className="text-sm text-red-500">Vale salasõna.</p>
+            <p className="text-sm text-fifared">Vale salasõna.</p>
           )}
           <SubmitButton variant="primary" className="w-full py-2.5 text-sm">
             Logi sisse
@@ -75,11 +75,11 @@ export default async function AdminPage({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="section-title text-3xl text-navy">Admin</h2>
+        <h2 className="section-title text-3xl text-ink">Admin</h2>
         <form action={logoutAction}>
           <button
             type="submit"
-            className="rounded-sm border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-50 active:scale-95"
+            className="rounded-sm border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink/75 transition-colors hover:bg-white/[0.06] active:scale-95"
           >
             Logi välja
           </button>

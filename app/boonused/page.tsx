@@ -26,14 +26,14 @@ export default async function BonusPage() {
       <SectionHeading eyebrow="Lisapunktid" title="Boonusküsimused" />
 
       {(questionsError || bonusQuestions.length === 0) && (
-        <p className="text-sm text-red-500">
+        <p className="text-sm text-fifared">
           Boonusküsimusi ei leitud. Kontrolli, et Supabase on seadistatud ja
           scripts/seed.sql on käivitatud.
         </p>
       )}
 
       {allParticipants.length === 0 && bonusQuestions.length > 0 && (
-        <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+        <p className="text-sm text-muted">Osalejaid ei ole veel lisatud.</p>
       )}
 
       {bonusQuestions.length > 0 && (

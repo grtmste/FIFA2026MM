@@ -42,22 +42,22 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
           <Reveal
             key={stage}
             delay={Math.min(idx, 6) * 0.05}
-            className="overflow-hidden rounded-lg border border-stone-200/70 border-t-2 border-t-gold/50 bg-white shadow-card transition-shadow hover:shadow-card-hover"
+            className="overflow-hidden rounded-lg border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card transition-shadow hover:shadow-card-hover"
           >
             <button
               type="button"
               onClick={() => toggle(stage)}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
             >
               <span className="flex items-baseline gap-2">
-                <span className="text-sm font-semibold tracking-tight text-navy">
+                <span className="text-sm font-semibold tracking-tight text-ink">
                   {STAGE_TITLES[stage]}
                 </span>
                 <span className="eyebrow">{items.length} mängu</span>
               </span>
               <span
-                className={`text-stone-400 transition-transform duration-200 ${
+                className={`text-muted transition-transform duration-200 ${
                   isOpen ? "rotate-180" : ""
                 }`}
               >
@@ -65,7 +65,7 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
               </span>
             </button>
             {isOpen && (
-              <div className="border-t border-stone-100 p-3">
+              <div className="border-t border-line/60 p-3">
                 <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {items.map((match, i) => (
                     <div

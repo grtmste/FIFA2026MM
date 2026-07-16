@@ -35,7 +35,7 @@ export default function LeaderboardTable<R extends LbRow>({
     <div className="text-sm">
       {/* Header */}
       <div
-        className="grid items-center border-b border-stone-100 px-3 py-2 text-[10px] uppercase tracking-wider text-stone-400"
+        className="grid items-center border-b border-line/60 px-3 py-2 text-[10px] uppercase tracking-wider text-muted"
         style={{ gridTemplateColumns: template }}
       >
         <span className="text-center font-medium">#</span>
@@ -55,21 +55,21 @@ export default function LeaderboardTable<R extends LbRow>({
             layout
             transition={{ type: "spring", stiffness: 520, damping: 40 }}
             className={`relative grid items-center px-3 py-2.5 transition-colors ${
-              rowIdx === 0 ? "bg-champagne/60" : "hover:bg-stone-50/60"
+              rowIdx === 0 ? "bg-fifagreen/[0.14]" : "hover:bg-white/[0.06]"
             }`}
             style={{ gridTemplateColumns: template }}
           >
             {rowIdx === 0 && (
               <span className="gold-shine pointer-events-none absolute inset-0" />
             )}
-            <span className="text-center font-semibold text-gold">
+            <span className="text-center font-semibold text-fifagreen">
               {rowIdx + 1}
             </span>
-            <span className="min-w-0 truncate font-medium text-navy">
+            <span className="min-w-0 truncate font-medium text-ink">
               <button
                 type="button"
                 onClick={() => onSelect(row.id)}
-                className="truncate text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-gold hover:decoration-gold"
+                className="truncate text-left underline decoration-stone-300 decoration-dotted underline-offset-2 transition-colors hover:text-fifagreen hover:decoration-fifagreen"
               >
                 {row.name}
                 {row.isChampion && <span title="Maailmameister"> 🏆</span>}
@@ -79,7 +79,7 @@ export default function LeaderboardTable<R extends LbRow>({
               <span
                 key={c.label}
                 className={`text-center ${
-                  c.bold ? "font-bold text-navy" : "text-stone-600"
+                  c.bold ? "font-bold text-ink" : "text-ink/75"
                 }`}
               >
                 <CountUp value={c.get(row)} delay={Math.min(rowIdx, 16) * 0.05} />

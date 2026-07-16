@@ -109,14 +109,14 @@ export default function ParticipantDetail({
       transition={{ duration: 0.2 }}
     >
       <motion.div
-        className="my-4 w-full max-w-2xl overflow-hidden rounded-lg border border-stone-200 bg-white shadow-card-hover"
+        className="my-4 w-full max-w-2xl overflow-hidden rounded-lg border border-line bg-surface shadow-card-hover"
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.95, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 320, damping: 26 }}
       >
         {/* Header */}
-        <div className="sticky top-0 flex items-center justify-between gap-3 border-b border-stone-200 bg-gradient-to-r from-navy to-blue-700 px-4 py-3">
+        <div className="sticky top-0 flex items-center justify-between gap-3 border-b border-line bg-gradient-to-r from-navy to-blue-700 px-4 py-3">
           <div>
             <p className="text-[10px] uppercase tracking-wider text-white/60">
               Ennustuste ülevaade
@@ -137,7 +137,7 @@ export default function ParticipantDetail({
         </div>
 
         {/* Totals */}
-        <div className="grid grid-cols-3 gap-px bg-stone-100 text-center">
+        <div className="grid grid-cols-3 gap-px bg-white/[0.06] text-center">
           <Stat label="Mängud" value={totals.matchPts} />
           <Stat label="Boonus" value={totals.bonusPts} />
           <Stat label="Kokku" value={totals.total} highlight />
@@ -145,11 +145,11 @@ export default function ParticipantDetail({
 
         {/* Results history */}
         {participant.history && (
-          <div className="border-b border-stone-200 bg-champagne/30 px-4 py-2.5">
-            <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-stone-500">
+          <div className="border-b border-line bg-fifagreen/[0.10] px-4 py-2.5">
+            <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-muted">
               Tulemuste ajalugu
             </p>
-            <p className="whitespace-pre-line text-xs leading-relaxed text-stone-600">
+            <p className="whitespace-pre-line text-xs leading-relaxed text-ink/75">
               {participant.history}
             </p>
           </div>
@@ -159,7 +159,7 @@ export default function ParticipantDetail({
         <div className="max-h-none space-y-4 px-4 py-4">
           {stageGroups.map(({ stage, matches: stageMatches }) => (
             <div key={stage}>
-              <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-stone-500">
+              <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-muted">
                 {STAGE_LABELS[stage]}
               </h4>
               <div className="space-y-1">
@@ -172,26 +172,26 @@ export default function ParticipantDetail({
                   return (
                     <div
                       key={match.id}
-                      className="flex items-center gap-2 rounded-sm border border-stone-100 px-2 py-1.5 text-xs"
+                      className="flex items-center gap-2 rounded-sm border border-line/60 px-2 py-1.5 text-xs"
                       style={{
                         borderLeft: `3px solid ${groupColor(match.group_name)}`,
                       }}
                     >
                       <div className="min-w-0 flex-1">
-                        <div className="truncate font-medium text-navy">
+                        <div className="truncate font-medium text-ink">
                           {match.home_team} – {match.away_team}
                         </div>
-                        <div className="text-[10px] text-stone-400">
+                        <div className="text-[10px] text-muted">
                           {formatMatchDate(match.match_date)} ·{" "}
                           {formatMatchTime(match.match_date)}
                         </div>
                       </div>
 
                       <div className="flex flex-shrink-0 flex-col items-end text-right">
-                        <span className="text-[9px] uppercase tracking-wide text-stone-400">
+                        <span className="text-[9px] uppercase tracking-wide text-muted">
                           Ennustus
                         </span>
-                        <span className="font-bold tabular-nums text-navy">
+                        <span className="font-bold tabular-nums text-ink">
                           {pred
                             ? `${pred.predicted_home_score} : ${pred.predicted_away_score}`
                             : "–"}
@@ -199,10 +199,10 @@ export default function ParticipantDetail({
                       </div>
 
                       <div className="flex w-12 flex-shrink-0 flex-col items-end text-right">
-                        <span className="text-[9px] uppercase tracking-wide text-stone-400">
+                        <span className="text-[9px] uppercase tracking-wide text-muted">
                           Tulemus
                         </span>
-                        <span className="font-semibold tabular-nums text-stone-500">
+                        <span className="font-semibold tabular-nums text-muted">
                           {hasResult
                             ? `${match.actual_home_score} : ${match.actual_away_score}`
                             : "–"}
@@ -229,20 +229,20 @@ export default function ParticipantDetail({
           {/* Bonus */}
           {bonusRows.length > 0 && (
             <div>
-              <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-stone-500">
+              <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-muted">
                 Boonusküsimused
               </h4>
               <div className="space-y-1">
                 {bonusRows.map(({ question, answer }, idx) => (
                   <div
                     key={question.id}
-                    className="flex items-center gap-2 rounded-sm border border-stone-100 px-2 py-1.5 text-xs"
+                    className="flex items-center gap-2 rounded-sm border border-line/60 px-2 py-1.5 text-xs"
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="font-medium text-navy">
+                      <div className="font-medium text-ink">
                         {idx + 1}. {question.question_text}
                       </div>
-                      <div className="truncate text-[11px] text-stone-500">
+                      <div className="truncate text-[11px] text-muted">
                         {answer?.answer_text || "–"}
                       </div>
                     </div>
@@ -273,15 +273,15 @@ function Stat({
   highlight?: boolean;
 }) {
   return (
-    <div className="bg-white py-2.5">
+    <div className="bg-surface py-2.5">
       <div
         className={`text-xl font-bold tabular-nums ${
-          highlight ? "text-gold" : "text-navy"
+          highlight ? "text-fifagreen" : "text-ink"
         }`}
       >
         {value}
       </div>
-      <div className="text-[10px] uppercase tracking-wide text-stone-400">
+      <div className="text-[10px] uppercase tracking-wide text-muted">
         {label}
       </div>
     </div>
@@ -301,7 +301,7 @@ function PointsBadge({
 }) {
   if (!scored) {
     return (
-      <span className="flex h-6 w-9 flex-shrink-0 items-center justify-center rounded-sm bg-stone-100 text-[11px] font-bold text-stone-300">
+      <span className="flex h-6 w-9 flex-shrink-0 items-center justify-center rounded-sm bg-white/[0.06] text-[11px] font-bold text-muted/50">
         –
       </span>
     );
@@ -311,10 +311,10 @@ function PointsBadge({
   const top = exact ?? (max != null && points === max);
   const color =
     points === 0
-      ? "bg-stone-100 text-stone-400"
+      ? "bg-white/[0.06] text-muted"
       : top
-      ? "bg-gradient-to-br from-navy to-gold text-white"
-      : "bg-champagne text-navy";
+      ? "bg-gradient-to-br from-fifagreen to-fifacyan text-white"
+      : "bg-fifagreen/[0.14] text-ink";
   return (
     <span
       className={`flex h-6 min-w-9 flex-shrink-0 items-center justify-center rounded-sm px-1 text-[11px] font-bold tabular-nums ${color}`}

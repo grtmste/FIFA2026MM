@@ -39,22 +39,22 @@ export default async function MatchDetailPage({
     <div className="space-y-4">
       <Link
         href="/matches"
-        className="inline-flex items-center gap-1 text-sm font-medium text-stone-500 hover:text-navy"
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-ink"
       >
         ← Tagasi mängude juurde
       </Link>
 
       <div
-        className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
+        className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card"
       >
         <div className="p-5">
-          <div className="mb-3 flex items-center justify-center gap-2 text-xs text-stone-400">
+          <div className="mb-3 flex items-center justify-center gap-2 text-xs text-muted">
             <span>{formatMatchDate(typedMatch.match_date)}</span>
-            <span className="text-gold/60">·</span>
+            <span className="text-fifagreen/60">·</span>
             <span>{formatMatchTime(typedMatch.match_date)}</span>
             {typedMatch.group_name && (
               <span
-                className="ml-1 flex h-5 items-center rounded-sm px-1.5 text-[10px] font-bold text-navy/80"
+                className="ml-1 flex h-5 items-center rounded-sm px-1.5 text-[10px] font-bold text-ink/80"
                 style={{ backgroundColor: groupColor(typedMatch.group_name) }}
               >
                 {typedMatch.group_name}
@@ -62,26 +62,26 @@ export default async function MatchDetailPage({
             )}
           </div>
           <div className="flex items-center justify-between gap-2">
-            <span className="min-w-0 flex-1 break-words text-right text-base font-semibold leading-tight text-navy">
+            <span className="min-w-0 flex-1 break-words text-right text-base font-semibold leading-tight text-ink">
               {typedMatch.home_team}
             </span>
             <span
               className={`min-w-[88px] flex-shrink-0 rounded-sm px-3 py-1.5 text-center text-2xl font-bold tabular-nums tracking-tight ${
                 hasScore
-                  ? "bg-gradient-to-br from-navy to-gold text-white shadow-sm"
-                  : "bg-stone-100 text-stone-400"
+                  ? "bg-gradient-to-br from-fifagreen to-fifacyan text-white shadow-sm"
+                  : "bg-white/[0.06] text-muted"
               }`}
             >
               {hasScore
                 ? `${typedMatch.actual_home_score} : ${typedMatch.actual_away_score}`
                 : "vs"}
             </span>
-            <span className="min-w-0 flex-1 break-words text-left text-base font-semibold leading-tight text-navy">
+            <span className="min-w-0 flex-1 break-words text-left text-base font-semibold leading-tight text-ink">
               {typedMatch.away_team}
             </span>
           </div>
           {hasScore && typedMatch.penalty_winner && (
-            <div className="mt-2 text-center text-xs font-semibold text-gold">
+            <div className="mt-2 text-center text-xs font-semibold text-fifagreen">
               {typedMatch.penalty_home_score != null &&
               typedMatch.penalty_away_score != null
                 ? `Penaltid ${typedMatch.penalty_home_score}–${typedMatch.penalty_away_score} · `
@@ -92,7 +92,7 @@ export default async function MatchDetailPage({
             </div>
           )}
           {hasScore && !typedMatch.penalty_winner && typedMatch.extra_time_winner && (
-            <div className="mt-2 text-center text-xs font-semibold text-gold">
+            <div className="mt-2 text-center text-xs font-semibold text-fifagreen">
               {typedMatch.extra_time_home_score != null &&
               typedMatch.extra_time_away_score != null
                 ? `Lisaajal ${typedMatch.extra_time_home_score}–${typedMatch.extra_time_away_score} · `
@@ -125,14 +125,14 @@ export default async function MatchDetailPage({
                   : null;
               if (winner) {
                 return (
-                  <div className="mt-3 text-center text-xs font-semibold text-navy">
-                    Edasi pääses: <span className="text-gold">{winner}</span>
+                  <div className="mt-3 text-center text-xs font-semibold text-ink">
+                    Edasi pääses: <span className="text-fifagreen">{winner}</span>
                   </div>
                 );
               }
             }
             return (
-              <div className="mt-3 text-center text-xs text-stone-400">
+              <div className="mt-3 text-center text-xs text-muted">
                 {typedMatch.venue ?? "Selgub"}
               </div>
             );
@@ -142,21 +142,21 @@ export default async function MatchDetailPage({
 
       <section className="space-y-3">
         <div className="flex items-center gap-3">
-          <h3 className="section-title whitespace-nowrap text-lg text-navy">
+          <h3 className="section-title whitespace-nowrap text-lg text-ink">
             Ennustused
           </h3>
           <div className="gold-rule flex-1" />
         </div>
 
         {allParticipants.length === 0 && (
-          <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+          <p className="text-sm text-muted">Osalejaid ei ole veel lisatud.</p>
         )}
 
         {allParticipants.length > 0 && (
-          <div className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card">
+          <div className="overflow-hidden rounded-sm border border-line bg-surface shadow-card">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">
+                <tr className="bg-white/[0.04] text-left text-xs uppercase text-muted">
                   <th className="px-3 py-2">Nimi</th>
                   <th className="px-3 py-2 text-center">Ennustus</th>
                   {hasScore && <th className="px-3 py-2 text-center">Punktid</th>}
@@ -173,17 +173,17 @@ export default async function MatchDetailPage({
                       : null;
 
                   return (
-                    <tr key={participant.id} className="border-t border-stone-100">
-                      <td className="px-3 py-2 font-medium text-navy">
+                    <tr key={participant.id} className="border-t border-line/60">
+                      <td className="px-3 py-2 font-medium text-ink">
                         {participant.name}
                       </td>
-                      <td className="px-3 py-2 text-center text-stone-600">
+                      <td className="px-3 py-2 text-center text-ink/75">
                         {prediction
                           ? `${prediction.predicted_home_score} : ${prediction.predicted_away_score}`
                           : "–"}
                       </td>
                       {hasScore && (
-                        <td className="px-3 py-2 text-center font-bold text-gold">
+                        <td className="px-3 py-2 text-center font-bold text-fifagreen">
                           {prediction ? `${points} p` : "–"}
                         </td>
                       )}

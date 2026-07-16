@@ -9,8 +9,8 @@ const BASE =
   "relative inline-flex items-center justify-center gap-1.5 rounded-sm font-semibold transition-all duration-150 active:scale-95 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40";
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-gold text-white shadow-sm hover:bg-gold-dark",
-  outline: "border border-gold text-gold hover:bg-gold/10",
+  primary: "bg-fifagreen text-white shadow-sm hover:bg-fifagreen-dark",
+  outline: "border border-fifagreen text-fifagreen hover:bg-fifagreen/10",
   danger: "border border-rose-200 text-rose-500 hover:bg-rose-50",
 };
 

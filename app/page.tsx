@@ -178,14 +178,14 @@ export default function LeaderboardPage() {
     <div className="space-y-5">
       <SectionHeading eyebrow="Üldine seis" title="Edetabel" />
 
-      {loading && <p className="text-sm text-stone-400">Laadimine...</p>}
+      {loading && <p className="text-sm text-muted">Laadimine...</p>}
 
       {!loading && error && (
-        <p className="text-sm text-red-500">{error}</p>
+        <p className="text-sm text-fifared">{error}</p>
       )}
 
       {!loading && !error && rows.length === 0 && (
-        <p className="text-sm text-stone-400">
+        <p className="text-sm text-muted">
           Osalejaid ei ole veel lisatud. Admin saab osalejaid lisada admin alas.
         </p>
       )}
@@ -273,29 +273,29 @@ function Section({
 }) {
   return (
     <Reveal
-      className={`overflow-hidden rounded-lg border border-stone-200/70 border-t-2 bg-white shadow-card transition-shadow hover:shadow-card-hover ${
-        accent ? "border-t-gold" : "border-t-gold/50"
+      className={`overflow-hidden rounded-lg border border-line border-t-2 bg-surface shadow-card transition-shadow hover:shadow-card-hover ${
+        accent ? "border-t-fifagreen" : "border-t-fifagreen/50"
       }`}
     >
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
       >
         <span className="flex items-baseline gap-2">
-          <span className="text-sm font-semibold tracking-tight text-navy">{title}</span>
+          <span className="text-sm font-semibold tracking-tight text-ink">{title}</span>
           {eyebrow && <span className="eyebrow">{eyebrow}</span>}
         </span>
         <span
-          className={`text-stone-400 transition-transform duration-200 ${
+          className={`text-muted transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
         >
           ▾
         </span>
       </button>
-      {open && <div className="border-t border-stone-100">{children}</div>}
+      {open && <div className="border-t border-line/60">{children}</div>}
     </Reveal>
   );
 }

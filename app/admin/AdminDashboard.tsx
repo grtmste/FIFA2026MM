@@ -35,7 +35,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 ];
 
 const INPUT =
-  "rounded-sm border border-stone-200 bg-white text-navy transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20";
+  "rounded-sm border border-line bg-surface text-ink transition-colors focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20";
 
 const SCORE_INPUT = `w-12 px-1 py-1.5 text-center text-sm font-semibold ${INPUT}`;
 
@@ -57,15 +57,15 @@ export default function AdminDashboard({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 rounded-sm border border-stone-200 bg-stone-100 p-1">
+      <div className="flex gap-1 rounded-sm border border-line bg-white/[0.06] p-1">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-150 active:scale-95 ${
               tab === t.id
-                ? "bg-white text-navy shadow-sm"
-                : "text-stone-500 hover:text-navy"
+                ? "bg-surface text-ink shadow-sm"
+                : "text-muted hover:text-ink"
             }`}
           >
             <span>{t.icon}</span>
@@ -122,14 +122,14 @@ function ParticipantsTab({
     <div className="space-y-3">
       <form
         action={addParticipant}
-        className="flex gap-2 rounded-sm border border-stone-200 bg-white p-3 shadow-card"
+        className="flex gap-2 rounded-sm border border-line bg-surface p-3 shadow-card"
       >
         <input
           type="text"
           name="name"
           placeholder="Uue osaleja nimi"
           required
-          className={`flex-1 px-3 py-2 text-sm placeholder-stone-400 ${INPUT}`}
+          className={`flex-1 px-3 py-2 text-sm placeholder-muted ${INPUT}`}
         />
         <SubmitButton variant="primary" className="px-4 py-2 text-sm" successLabel="Lisatud">
           + Lisa
@@ -137,7 +137,7 @@ function ParticipantsTab({
       </form>
 
       {participants.length === 0 ? (
-        <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+        <p className="text-sm text-muted">Osalejaid ei ole veel lisatud.</p>
       ) : (
         <div className="space-y-2">
           {participants.map((p) => {
@@ -145,24 +145,24 @@ function ParticipantsTab({
             return (
               <div
                 key={p.id}
-                className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card"
+                className="overflow-hidden rounded-sm border border-line bg-surface shadow-card"
               >
                 <button
                   type="button"
                   onClick={() => setExpandedId(open ? null : p.id)}
-                  className="flex w-full items-center justify-between gap-2 p-3 text-left transition-colors hover:bg-stone-50/60"
+                  className="flex w-full items-center justify-between gap-2 p-3 text-left transition-colors hover:bg-white/[0.06]"
                 >
                   <span className="flex items-center gap-2">
                     <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
                       {p.name.charAt(0).toUpperCase()}
                     </span>
-                    <span className="flex items-center gap-1.5 text-sm font-semibold text-navy">
+                    <span className="flex items-center gap-1.5 text-sm font-semibold text-ink">
                       {p.name}
                       {p.is_champion && <span title="Maailmameister">🏆</span>}
                     </span>
                   </span>
                   <span
-                    className={`text-stone-400 transition-transform duration-200 ${
+                    className={`text-muted transition-transform duration-200 ${
                       open ? "rotate-180" : ""
                     }`}
                   >
@@ -171,11 +171,11 @@ function ParticipantsTab({
                 </button>
 
                 {open && (
-                  <div className="space-y-3 border-t border-stone-100 p-3">
+                  <div className="space-y-3 border-t border-line/60 p-3">
                     <form action={updateParticipant} className="space-y-2.5">
                       <input type="hidden" name="id" value={p.id} />
                       <label className="block">
-                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted">
                           Nimi
                         </span>
                         <input
@@ -187,7 +187,7 @@ function ParticipantsTab({
                       </label>
 
                       <label className="block">
-                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted">
                           Tulemuste ajalugu (MM-id, EM-id)
                         </span>
                         <textarea
@@ -200,7 +200,7 @@ function ParticipantsTab({
                       </label>
 
                       <label className="block">
-                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+                        <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted">
                           Punktide korrektsioon (+/-)
                         </span>
                         <input
@@ -210,13 +210,13 @@ function ParticipantsTab({
                           defaultValue={p.points_adjustment ?? 0}
                           className={`w-28 px-3 py-2 text-sm ${INPUT}`}
                         />
-                        <span className="mt-1 block text-[11px] text-stone-400">
+                        <span className="mt-1 block text-[11px] text-muted">
                           Liidetakse osaleja kogusummale edetabelis (nt Jokkeri
                           korrektsioonid). Võib olla negatiivne.
                         </span>
                       </label>
 
-                      <label className="flex items-center gap-2 text-sm font-medium text-navy">
+                      <label className="flex items-center gap-2 text-sm font-medium text-ink">
                         <input
                           type="checkbox"
                           name="is_champion"
@@ -243,7 +243,7 @@ function ParticipantsTab({
 
                     <form
                       action={deleteParticipant}
-                      className="border-t border-stone-100 pt-2.5"
+                      className="border-t border-line/60 pt-2.5"
                     >
                       <input type="hidden" name="id" value={p.id} />
                       <SubmitButton variant="danger" className="px-3 py-2 text-xs">
@@ -266,17 +266,17 @@ function MatchLabel({ match }: { match: Match }) {
     <div className="flex flex-1 items-center gap-2 text-xs">
       {match.group_name && (
         <span
-          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-sm text-[11px] font-bold text-navy/80"
+          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-sm text-[11px] font-bold text-ink/80"
           style={{ backgroundColor: groupColor(match.group_name) }}
         >
           {match.group_name}
         </span>
       )}
       <div className="flex min-w-0 flex-col">
-        <span className="truncate font-semibold text-navy">
+        <span className="truncate font-semibold text-ink">
           {match.home_team} – {match.away_team}
         </span>
-        <span className="text-[10px] text-stone-400">
+        <span className="text-[10px] text-muted">
           {formatMatchDate(match.match_date)} · {formatMatchTime(match.match_date)}
         </span>
       </div>
@@ -363,14 +363,14 @@ function PredictionsTab({
               type="button"
               disabled={count === 0}
               onClick={() => setStage(s)}
-              className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifagreen/60 hover:shadow-card-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
             >
-              <span className="text-sm font-semibold text-navy">
+              <span className="text-sm font-semibold text-ink">
                 {STAGE_PRED_LABEL[s]}
               </span>
               <span className="flex items-center gap-2">
-                <span className="text-xs text-stone-400">{count} mängu</span>
-                <span className="text-stone-300">›</span>
+                <span className="text-xs text-muted">{count} mängu</span>
+                <span className="text-muted/50">›</span>
               </span>
             </button>
           );
@@ -387,35 +387,35 @@ function PredictionsTab({
           <button
             type="button"
             onClick={() => setStage(null)}
-            className="flex items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:bg-stone-50"
+            className="flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-2 text-xs font-semibold text-ink/75 shadow-sm transition-colors hover:bg-white/[0.06]"
           >
             ‹ Voorud
           </button>
-          <h3 className="flex-1 truncate text-base font-bold text-navy">
+          <h3 className="flex-1 truncate text-base font-bold text-ink">
             {STAGE_PRED_LABEL[stage]}
           </h3>
         </div>
         {participants.length === 0 ? (
-          <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+          <p className="text-sm text-muted">Osalejaid ei ole veel lisatud.</p>
         ) : (
           participants.map((p) => (
             <button
               key={p.id}
               type="button"
               onClick={() => setViewingId(p.id)}
-              className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99]"
+              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifagreen/60 hover:shadow-card-hover active:scale-[0.99]"
             >
               <span className="flex items-center gap-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
                   {p.name.charAt(0).toUpperCase()}
                 </span>
-                <span className="text-sm font-semibold text-navy">{p.name}</span>
+                <span className="text-sm font-semibold text-ink">{p.name}</span>
               </span>
               <span className="flex items-center gap-2">
-                <span className="text-xs text-stone-400">
+                <span className="text-xs text-muted">
                   {predictionCount.get(p.id) ?? 0}/{stageMatches.length}
                 </span>
-                <span className="text-stone-300">›</span>
+                <span className="text-muted/50">›</span>
               </span>
             </button>
           ))
@@ -431,13 +431,13 @@ function PredictionsTab({
         <button
           type="button"
           onClick={() => setViewingId(null)}
-          className="flex items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:bg-stone-50"
+          className="flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-2 text-xs font-semibold text-ink/75 shadow-sm transition-colors hover:bg-white/[0.06]"
         >
           ‹ Tagasi
         </button>
-        <h3 className="flex-1 truncate text-base font-bold text-navy">
+        <h3 className="flex-1 truncate text-base font-bold text-ink">
           {viewingParticipant.name}
-          <span className="ml-1.5 text-xs font-normal text-stone-400">
+          <span className="ml-1.5 text-xs font-normal text-muted">
             · {STAGE_PRED_LABEL[stage]}
           </span>
         </h3>
@@ -445,7 +445,7 @@ function PredictionsTab({
           href={`/pdf/${viewingId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 rounded-sm border border-gold bg-gold px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-gold-dark"
+          className="flex items-center gap-1.5 rounded-sm border border-fifagreen bg-fifagreen px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-fifagreen-dark"
         >
           🖨️ PDF
         </a>
@@ -581,7 +581,7 @@ function PredictionsForm({
   return (
     <div className="space-y-2">
       <div className="space-y-1.5">
-        <label className="flex w-fit cursor-pointer items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-navy shadow-sm transition-colors hover:bg-stone-50">
+        <label className="flex w-fit cursor-pointer items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-2 text-xs font-semibold text-ink shadow-sm transition-colors hover:bg-white/[0.06]">
           {isImporting ? "Laen..." : "📥 Impordi PDF"}
           <input
             ref={fileInputRef}
@@ -595,7 +595,7 @@ function PredictionsForm({
         {importMsg && (
           <p
             className={`text-xs ${
-              importMsg.ok ? "text-green-600" : "text-red-500"
+              importMsg.ok ? "text-fifagreen" : "text-fifared"
             }`}
           >
             {importMsg.text}
@@ -606,7 +606,7 @@ function PredictionsForm({
       {stageMatches.map((match) => (
         <div
           key={match.id}
-          className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
+          className="rounded-sm border border-line bg-surface p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
         >
           <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
             <MatchLabel match={match} />
@@ -618,7 +618,7 @@ function PredictionsForm({
                 onChange={(e) => updateScore(match.id, "home", e.target.value)}
                 className={SCORE_INPUT}
               />
-              <span className="text-xs font-bold text-stone-300">:</span>
+              <span className="text-xs font-bold text-muted/50">:</span>
               <input
                 type="number"
                 min={0}
@@ -636,8 +636,8 @@ function PredictionsForm({
           <p
             className={`rounded-sm px-3 py-1.5 text-xs font-medium ${
               saveMsg.ok
-                ? "bg-green-50 text-green-700"
-                : "bg-red-50 text-red-600"
+                ? "bg-fifagreen/10 text-fifagreen"
+                : "bg-fifared/10 text-fifared"
             }`}
           >
             {saveMsg.text}
@@ -684,7 +684,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
         <SubmitButton variant="primary" className="px-4 py-2 text-sm" successLabel="Uuendatud!">
           ⚡ Uuenda järgmine voor
         </SubmitButton>
-        <p className="mt-1 text-[11px] text-stone-400">
+        <p className="mt-1 text-[11px] text-muted">
           Arvutab alagrupi seisud ja täidab järgmised voorud automaatselt.
         </p>
       </form>
@@ -696,22 +696,22 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
         return (
           <div
             key={stage}
-            className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
+            className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card"
           >
             <button
               type="button"
               onClick={() => toggle(stage)}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
             >
               <span className="flex items-baseline gap-2">
-                <span className="text-sm font-semibold tracking-tight text-navy">
+                <span className="text-sm font-semibold tracking-tight text-ink">
                   {STAGE_LABEL[stage]}
                 </span>
                 <span className="eyebrow">{stageMatches.length} mängu</span>
               </span>
               <span
-                className={`text-stone-400 transition-transform duration-200 ${
+                className={`text-muted transition-transform duration-200 ${
                   isOpen ? "rotate-180" : ""
                 }`}
               >
@@ -719,12 +719,12 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
               </span>
             </button>
             {isOpen && (
-              <div className="space-y-2 border-t border-stone-100 p-3">
+              <div className="space-y-2 border-t border-line/60 p-3">
                 {stageMatches.map((match) => (
               <form
                 key={match.id}
                 action={saveMatchResult}
-                className="rounded-sm border border-stone-200 bg-white p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
+                className="rounded-sm border border-line bg-surface p-2.5 shadow-card transition-shadow hover:shadow-card-hover"
               >
                 <input type="hidden" name="match_id" value={match.id} />
                 <div className="flex w-full flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
@@ -737,7 +737,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                       defaultValue={match.actual_home_score ?? ""}
                       className={SCORE_INPUT}
                     />
-                    <span className="text-xs font-bold text-stone-300">:</span>
+                    <span className="text-xs font-bold text-muted/50">:</span>
                     <input
                       type="number"
                       name="actual_away_score"
@@ -749,7 +749,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                   </div>
                 </div>
                 {stage !== "group" && (
-                  <div className="mt-1.5 flex flex-wrap items-center gap-2 border-t border-stone-100 pt-1.5">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2 border-t border-line/60 pt-1.5">
                     <select
                       name="decision"
                       defaultValue={
@@ -768,7 +768,7 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                       <option value="pen_away">Penaltitega võitis {match.away_team}</option>
                     </select>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] font-medium text-stone-400">
+                      <span className="text-[11px] font-medium text-muted">
                         Lisaaeg:
                       </span>
                       <input
@@ -776,19 +776,19 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                         name="extra_time_home_score"
                         min={0}
                         defaultValue={match.extra_time_home_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
-                      <span className="text-xs font-bold text-stone-300">:</span>
+                      <span className="text-xs font-bold text-muted/50">:</span>
                       <input
                         type="number"
                         name="extra_time_away_score"
                         min={0}
                         defaultValue={match.extra_time_away_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] font-medium text-stone-400">
+                      <span className="text-[11px] font-medium text-muted">
                         Penaltid:
                       </span>
                       <input
@@ -796,15 +796,15 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
                         name="penalty_home_score"
                         min={0}
                         defaultValue={match.penalty_home_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
-                      <span className="text-xs font-bold text-stone-300">:</span>
+                      <span className="text-xs font-bold text-muted/50">:</span>
                       <input
                         type="number"
                         name="penalty_away_score"
                         min={0}
                         defaultValue={match.penalty_away_score ?? ""}
-                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-stone-200 bg-white text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+                        className="w-11 px-1 py-1 text-center text-xs font-semibold rounded-sm border border-line bg-surface text-ink focus:border-fifagreen focus:outline-none focus:ring-2 focus:ring-gold/20"
                       />
                     </div>
                   </div>
@@ -882,17 +882,17 @@ function BonusTab({
 
   // ── Correct-answers editor (collapsible, global) ──
   const correctAnswers = (
-    <div className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-card">
+    <div className="overflow-hidden rounded-sm border border-line bg-surface shadow-card">
       <button
         type="button"
         onClick={() => toggle("correct")}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
       >
-        <span className="text-sm font-semibold tracking-tight text-navy">
+        <span className="text-sm font-semibold tracking-tight text-ink">
           ⭐ Õiged vastused
         </span>
         <span
-          className={`text-stone-400 transition-transform duration-200 ${
+          className={`text-muted transition-transform duration-200 ${
             open.has("correct") ? "rotate-180" : ""
           }`}
         >
@@ -900,11 +900,11 @@ function BonusTab({
         </span>
       </button>
       {open.has("correct") && (
-        <div className="space-y-2.5 border-t border-stone-100 p-3">
+        <div className="space-y-2.5 border-t border-line/60 p-3">
           {bonusQuestions.map((q, idx) => (
             <form key={q.id} action={saveBonusCorrectAnswer} className="flex items-center gap-2">
               <input type="hidden" name="question_id" value={q.id} />
-              <span className="flex-1 text-xs text-stone-600">
+              <span className="flex-1 text-xs text-ink/75">
                 {idx + 1}. {q.question_text}
               </span>
               <input
@@ -930,7 +930,7 @@ function BonusTab({
       <div className="space-y-3">
         {correctAnswers}
         {participants.length === 0 ? (
-          <p className="text-sm text-stone-400">Osalejaid ei ole veel lisatud.</p>
+          <p className="text-sm text-muted">Osalejaid ei ole veel lisatud.</p>
         ) : (
           <div className="space-y-2">
             <p className="eyebrow">Vali osaleja vastuste sisestamiseks</p>
@@ -939,15 +939,15 @@ function BonusTab({
                 key={p.id}
                 type="button"
                 onClick={() => onSelectParticipant(p.id)}
-                className="flex w-full items-center justify-between gap-2 rounded-sm border border-stone-200 bg-white p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-card-hover active:scale-[0.99]"
+                className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifagreen/60 hover:shadow-card-hover active:scale-[0.99]"
               >
                 <span className="flex items-center gap-2">
                   <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-gradient-to-br from-navy to-blue-600 text-sm font-bold text-white">
                     {p.name.charAt(0).toUpperCase()}
                   </span>
-                  <span className="text-sm font-semibold text-navy">{p.name}</span>
+                  <span className="text-sm font-semibold text-ink">{p.name}</span>
                 </span>
-                <span className="text-stone-300">›</span>
+                <span className="text-muted/50">›</span>
               </button>
             ))}
           </div>
@@ -963,11 +963,11 @@ function BonusTab({
         <button
           type="button"
           onClick={() => onSelectParticipant("")}
-          className="flex items-center gap-1.5 rounded-sm border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:bg-stone-50"
+          className="flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-2 text-xs font-semibold text-ink/75 shadow-sm transition-colors hover:bg-white/[0.06]"
         >
           ‹ Osalejad
         </button>
-        <h3 className="flex-1 truncate text-base font-bold text-navy">
+        <h3 className="flex-1 truncate text-base font-bold text-ink">
           {selectedParticipant.name}
         </h3>
       </div>
@@ -979,20 +979,20 @@ function BonusTab({
         return (
           <div
             key={key}
-            className="overflow-hidden rounded-sm border border-stone-200 border-t-2 border-t-gold/50 bg-white shadow-card"
+            className="overflow-hidden rounded-sm border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card"
           >
             <button
               type="button"
               onClick={() => toggle(key)}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
             >
               <span className="flex items-baseline gap-2">
-                <span className="text-sm font-semibold tracking-tight text-navy">{title}</span>
+                <span className="text-sm font-semibold tracking-tight text-ink">{title}</span>
                 <span className="eyebrow">{qs.length} küsimust</span>
               </span>
               <span
-                className={`text-stone-400 transition-transform duration-200 ${
+                className={`text-muted transition-transform duration-200 ${
                   isOpen ? "rotate-180" : ""
                 }`}
               >
@@ -1000,20 +1000,20 @@ function BonusTab({
               </span>
             </button>
             {isOpen && (
-              <div className="space-y-2 border-t border-stone-100 p-3">
+              <div className="space-y-2 border-t border-line/60 p-3">
                 {qs.map((q, idx) => {
                   const existing = answerByQuestion.get(q.id);
                   return (
                     <form
                       key={`${selectedParticipantId}-${q.id}`}
                       action={saveBonusAnswer}
-                      className="space-y-2.5 rounded-sm border border-stone-200 bg-white p-3 shadow-card transition-shadow hover:shadow-card-hover"
+                      className="space-y-2.5 rounded-sm border border-line bg-surface p-3 shadow-card transition-shadow hover:shadow-card-hover"
                     >
                       <input type="hidden" name="participant_id" value={selectedParticipantId} />
                       <input type="hidden" name="question_id" value={q.id} />
-                      <p className="text-xs font-semibold text-navy">
+                      <p className="text-xs font-semibold text-ink">
                         {idx + 1}. {q.question_text}{" "}
-                        <span className="font-normal text-stone-400">({q.max_points} p)</span>
+                        <span className="font-normal text-muted">({q.max_points} p)</span>
                       </p>
                       <input
                         type="text"
@@ -1023,7 +1023,7 @@ function BonusTab({
                         className={`w-full px-2.5 py-2 text-sm ${INPUT}`}
                       />
                       <div className="flex items-center gap-2">
-                        <label className="text-xs font-medium text-stone-500">Punktid:</label>
+                        <label className="text-xs font-medium text-muted">Punktid:</label>
                         <input
                           type="number"
                           name="points_awarded"
@@ -1096,8 +1096,8 @@ function ParticipantPoints({
   if (stageGroups.length === 0) return null;
 
   return (
-    <div className="border-t border-stone-100 pt-2.5">
-      <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+    <div className="border-t border-line/60 pt-2.5">
+      <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted">
         Punktid mängude kaupa
       </p>
       <div className="space-y-1.5">
@@ -1110,23 +1110,23 @@ function ParticipantPoints({
           return (
             <div
               key={stage}
-              className="overflow-hidden rounded-sm border border-stone-200"
+              className="overflow-hidden rounded-sm border border-line"
             >
               <button
                 type="button"
                 onClick={() => toggle(stage)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-2 bg-stone-50/60 px-2.5 py-2 text-left transition-colors hover:bg-stone-100/70"
+                className="flex w-full items-center justify-between gap-2 bg-white/[0.04] px-2.5 py-2 text-left transition-colors hover:bg-white/[0.08]"
               >
-                <span className="text-xs font-semibold text-navy">
+                <span className="text-xs font-semibold text-ink">
                   {STAGE_LABEL[stage]}
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className="text-[11px] font-semibold text-stone-500">
+                  <span className="text-[11px] font-semibold text-muted">
                     {stagePts} p
                   </span>
                   <span
-                    className={`text-stone-400 transition-transform duration-200 ${
+                    className={`text-muted transition-transform duration-200 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   >
@@ -1135,7 +1135,7 @@ function ParticipantPoints({
                 </span>
               </button>
               {isOpen && (
-                <div className="divide-y divide-stone-100">
+                <div className="divide-y divide-line/60">
                   {items.map((m) => {
                     const pred = predByMatch.get(m.id)!;
                     const auto = calcMatchPoints(
@@ -1157,10 +1157,10 @@ function ParticipantPoints({
                         <input type="hidden" name="participant_id" value={participantId} />
                         <input type="hidden" name="match_id" value={m.id} />
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-xs font-medium text-navy">
+                          <div className="truncate text-xs font-medium text-ink">
                             {m.home_team} – {m.away_team}
                           </div>
-                          <div className="text-[10px] text-stone-400">
+                          <div className="text-[10px] text-muted">
                             Ennustus {pred.predicted_home_score}:{pred.predicted_away_score}
                             {" · "}
                             Tulemus{" "}
@@ -1169,7 +1169,7 @@ function ParticipantPoints({
                               : "–"}
                             {" · "}Auto {auto} p
                             {overridden && (
-                              <span className="font-semibold text-gold">
+                              <span className="font-semibold text-fifagreen">
                                 {" "}
                                 · Muudetud
                               </span>
@@ -1197,7 +1197,7 @@ function ParticipantPoints({
           );
         })}
       </div>
-      <p className="mt-1 text-[10px] text-stone-400">
+      <p className="mt-1 text-[10px] text-muted">
         Tühi väli = punktid arvutatakse automaatselt. Sisesta number, et punktid
         käsitsi üle kirjutada (võib olla 0).
       </p>

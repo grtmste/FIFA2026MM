@@ -57,20 +57,20 @@ export default function BonusAccordion({
         return (
           <Reveal
             key={key}
-            className="overflow-hidden rounded-lg border border-stone-200/70 border-t-2 border-t-gold/50 bg-white shadow-card transition-shadow hover:shadow-card-hover"
+            className="overflow-hidden rounded-lg border border-line border-t-2 border-t-fifagreen/50 bg-surface shadow-card transition-shadow hover:shadow-card-hover"
           >
             <button
               type="button"
               onClick={() => toggle(key)}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
             >
               <span className="flex items-baseline gap-2">
-                <span className="text-sm font-semibold tracking-tight text-navy">{title}</span>
+                <span className="text-sm font-semibold tracking-tight text-ink">{title}</span>
                 <span className="eyebrow">{sectionQuestions.length} küsimust</span>
               </span>
               <span
-                className={`text-stone-400 transition-transform duration-200 ${
+                className={`text-muted transition-transform duration-200 ${
                   isOpen ? "rotate-180" : ""
                 }`}
               >
@@ -78,7 +78,7 @@ export default function BonusAccordion({
               </span>
             </button>
             {isOpen && (
-              <div className="border-t border-stone-100 p-3">
+              <div className="border-t border-line/60 p-3">
                 <div className="grid gap-4 md:grid-cols-2">
                   {sectionQuestions.map((question, idx) => (
                     <BonusCard
@@ -117,30 +117,30 @@ function BonusCard({
 
   return (
     <section
-      className={`overflow-hidden rounded-lg border border-stone-200 border-t-2 bg-white shadow-card transition-shadow hover:shadow-card-hover ${
-        isJoker ? "border-t-gold md:col-span-2" : "border-t-gold/40"
+      className={`overflow-hidden rounded-lg border border-line border-t-2 bg-surface shadow-card transition-shadow hover:shadow-card-hover ${
+        isJoker ? "border-t-fifagreen md:col-span-2" : "border-t-fifagreen/40"
       }`}
     >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-stone-50/60"
+        className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
       >
-        <span className="section-title text-2xl leading-none text-gold">
+        <span className="section-title text-2xl leading-none text-fifagreen">
           {isJoker ? "★" : index + 1}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold text-navy">
+          <span className="block text-sm font-semibold text-ink">
             {question.question_text}
           </span>
-          <span className="text-[11px] text-stone-400">
+          <span className="text-[11px] text-muted">
             Maksimum: {question.max_points} punkti
             {question.correct_answer && (
               <>
                 {" "}
                 · Õige vastus:{" "}
-                <span className="font-semibold text-gold">
+                <span className="font-semibold text-fifagreen">
                   {question.correct_answer}
                 </span>
               </>
@@ -148,7 +148,7 @@ function BonusCard({
           </span>
         </span>
         <span
-          className={`text-stone-400 transition-transform duration-200 ${
+          className={`text-muted transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
         >
@@ -157,18 +157,18 @@ function BonusCard({
       </button>
 
       {open && (
-        <div className="space-y-2 border-t border-stone-100 p-3">
+        <div className="space-y-2 border-t border-line/60 p-3">
           {question.description && (
-            <div className="whitespace-pre-line rounded-sm bg-stone-50 px-3 py-2 text-xs leading-relaxed text-stone-600">
+            <div className="whitespace-pre-line rounded-sm bg-white/[0.04] px-3 py-2 text-xs leading-relaxed text-ink/75">
               {question.description}
             </div>
           )}
 
           {participants.length > 0 && (
-            <div className="overflow-hidden rounded-sm border border-stone-200">
+            <div className="overflow-hidden rounded-sm border border-line">
               <table className="w-full text-sm">
             <thead>
-              <tr className="bg-stone-50 text-left text-xs uppercase text-stone-500">
+              <tr className="bg-white/[0.04] text-left text-xs uppercase text-muted">
                 <th className="px-2 py-1">Nimi</th>
                 <th className="px-2 py-1">{isJoker ? "Valis combo?" : "Vastus"}</th>
                 <th className="px-2 py-1 text-center">Punktid</th>
@@ -183,14 +183,14 @@ function BonusCard({
                 );
 
                 return (
-                  <tr key={participant.id} className="border-t border-stone-100">
-                    <td className="px-2 py-1 font-medium text-navy">
+                  <tr key={participant.id} className="border-t border-line/60">
+                    <td className="px-2 py-1 font-medium text-ink">
                       {participant.name}
                     </td>
-                    <td className="px-2 py-1 text-stone-600">
+                    <td className="px-2 py-1 text-ink/75">
                       {answer?.answer_text || "–"}
                     </td>
-                    <td className="px-2 py-1 text-center text-stone-600">
+                    <td className="px-2 py-1 text-center text-ink/75">
                       {answer?.points_awarded !== null &&
                       answer?.points_awarded !== undefined
                         ? `${answer.points_awarded} p`

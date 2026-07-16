@@ -19,7 +19,7 @@ export default async function MatchesPage() {
       <SectionHeading eyebrow="Kava" title="Mängud" />
 
       {(error || allMatches.length === 0) && (
-        <p className="text-sm text-red-500">
+        <p className="text-sm text-fifared">
           Mänge ei leitud. Kontrolli, et Supabase on seadistatud ja
           scripts/seed.sql on käivitatud.
         </p>

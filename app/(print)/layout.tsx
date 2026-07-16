@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function PrintLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="et" className={inter.variable}>
-      <body className="bg-white font-sans text-navy">{children}</body>
+      <body className="bg-surface font-sans text-ink">{children}</body>
     </html>
   );
 }

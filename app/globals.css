@@ -4,52 +4,53 @@
 
 html,
 body {
-  background-color: #f7f8fc;
-  color: #1b2447;
+  background-color: #07080f;
+  color: #eaedf7;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Soft, drifting pastel backdrop for a sense of depth and colour */
+/* Drifting FIFA-colour orbs — the moving glow behind everything */
 body::before {
   content: "";
   position: fixed;
-  inset: -10%;
+  inset: -15%;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(42% 32% at 12% 4%, rgba(61, 90, 192, 0.16), transparent 70%),
-    radial-gradient(38% 30% at 88% 0%, rgba(147, 85, 224, 0.14), transparent 70%),
-    radial-gradient(45% 38% at 100% 75%, rgba(127, 194, 188, 0.16), transparent 72%),
-    radial-gradient(46% 40% at 0% 100%, rgba(233, 168, 201, 0.15), transparent 72%),
-    radial-gradient(40% 34% at 50% 120%, rgba(244, 199, 161, 0.13), transparent 72%);
-  animation: bg-drift 18s ease-in-out infinite;
+    radial-gradient(30% 26% at 10% 6%, rgba(43, 213, 118, 0.22), transparent 70%),
+    radial-gradient(28% 24% at 88% 2%, rgba(62, 123, 255, 0.2), transparent 70%),
+    radial-gradient(32% 30% at 96% 70%, rgba(168, 85, 247, 0.22), transparent 72%),
+    radial-gradient(30% 28% at 4% 92%, rgba(255, 77, 94, 0.18), transparent 72%),
+    radial-gradient(26% 24% at 50% 108%, rgba(34, 211, 238, 0.2), transparent 72%);
+  filter: saturate(1.15);
+  animation: bg-drift 24s ease-in-out infinite;
 }
 
-/* Faint football goal-net: a 45° diamond mesh, full-bleed and subtle.
-   Built from CSS gradients (not an SVG image) so it renders at the device's
-   native resolution — perfectly crisp on hi-DPI mobile, never rasterised. */
+/* Slowly sweeping colour bands — the FIFA "26" rainbow-tunnel vibe, very subtle */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image:
-    repeating-linear-gradient(
-      45deg,
-      rgba(27, 36, 71, 0.085) 0 1px,
-      transparent 1px 32px
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      rgba(27, 36, 71, 0.085) 0 1px,
-      transparent 1px 32px
-    );
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(43, 213, 118, 0.05) 0 34px,
+    rgba(62, 123, 255, 0.05) 34px 68px,
+    rgba(168, 85, 247, 0.05) 68px 102px,
+    rgba(255, 77, 94, 0.045) 102px 136px,
+    rgba(34, 211, 238, 0.05) 136px 170px,
+    rgba(251, 211, 77, 0.04) 170px 204px
+  );
+  background-size: 400px 100%;
+  animation: bands-move 22s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body::before {
+  body::before,
+  body::after {
     animation: none;
   }
 }
@@ -68,12 +69,23 @@ body > * {
   100% {
     transform: translate3d(0, 0, 0) scale(1);
   }
-  50% {
-    transform: translate3d(0, -2%, 0) scale(1.05);
+  33% {
+    transform: translate3d(2%, -3%, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-2%, 2%, 0) scale(1.04);
   }
 }
 
-/* Elegant section label: bold sans, with a hairline accent rule */
+@keyframes bands-move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
 .section-title {
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -83,43 +95,37 @@ body > * {
   font-size: 0.6875rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #5c6a95;
+  color: #7f88a3;
 }
 
-/* Thin accent divider with a soft multi-colour wash */
+/* FIFA gradient divider */
 .gold-rule {
   height: 1.5px;
   border-radius: 9999px;
   background: linear-gradient(
     to right,
-    rgba(61, 90, 192, 0),
-    rgba(61, 90, 192, 0.55),
-    rgba(147, 85, 224, 0.55),
-    rgba(127, 194, 188, 0.5),
-    rgba(233, 168, 201, 0)
+    rgba(43, 213, 118, 0),
+    rgba(43, 213, 118, 0.7),
+    rgba(34, 211, 238, 0.7),
+    rgba(168, 85, 247, 0.7),
+    rgba(255, 77, 94, 0)
   );
 }
 
-/* Blue→purple→teal gradient text, gently shifting */
+/* FIFA gradient text, gently shifting */
 .gradient-text {
   background-image: linear-gradient(
     90deg,
-    #3d5ac0,
-    #9355e0,
-    #7fc2bc,
-    #3d5ac0
+    #2bd576,
+    #22d3ee,
+    #a855f7,
+    #2bd576
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: shimmer 6s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gradient-text {
-    animation: none;
-  }
 }
 
 @keyframes shimmer {
@@ -131,27 +137,35 @@ body > * {
   }
 }
 
-/* Slow gold sheen sweeping across the leaderboard leader's row */
+/* Sheen sweeping across the leaderboard leader's row */
 .gold-shine {
   background: linear-gradient(
     110deg,
-    transparent 25%,
-    rgba(61, 90, 192, 0.1) 45%,
-    rgba(147, 85, 224, 0.1) 55%,
-    transparent 75%
+    transparent 22%,
+    rgba(43, 213, 118, 0.16) 45%,
+    rgba(34, 211, 238, 0.14) 55%,
+    transparent 78%
   );
   background-size: 250% 100%;
   animation: shimmer 4.5s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .gradient-text,
   .gold-shine {
     animation: none;
+  }
+  .gold-shine {
     background: none;
   }
 }
 
-/* Remove number input spinners for a cleaner score-entry UI */
+/* White logo tuned for the dark UI */
+.logo-white {
+  filter: brightness(0) invert(1)
+    drop-shadow(0 4px 16px rgba(43, 213, 118, 0.25));
+}
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -163,19 +177,19 @@ input[type="number"] {
 }
 
 ::selection {
-  background-color: rgba(61, 90, 192, 0.22);
+  background-color: rgba(43, 213, 118, 0.3);
+  color: #fff;
 }
 
-/* Subtle, refined scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #c7cee6;
+  background-color: #2c3142;
   border-radius: 9999px;
-  border: 2px solid #f7f8fc;
+  border: 2px solid #07080f;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #a4b0d6;
+  background-color: #3a4055;
 }
