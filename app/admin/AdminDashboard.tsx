@@ -284,15 +284,20 @@ function MatchLabel({ match }: { match: Match }) {
   );
 }
 
-const STAGE_PRED_LABEL: Record<string, string> = {
-  group: "Alagrupi ennustused",
-  r32: "1/32 ennustused",
-  r16: "1/16 ennustused",
-  qf: "Veerandfinaali ennustused",
-  sf: "Poolfinaali ennustused",
-  third: "3. koha mängu ennustused",
-  final: "Finaali ennustused",
-};
+// Prediction rounds shown in the admin Ennustused tab. Most map to a single
+// stage; the 3rd-place game and the final are combined into one round so both
+// scores can be entered together.
+const PRED_ROUNDS: { key: string; label: string; stages: Match["stage"][] }[] = [
+  { key: "group", label: "Alagrupi ennustused", stages: ["group"] },
+  { key: "r32", label: "1/32 ennustused", stages: ["r32"] },
+  { key: "r16", label: "1/16 ennustused", stages: ["r16"] },
+  { key: "qf", label: "Veerandfinaali ennustused", stages: ["qf"] },
+  { key: "sf", label: "Poolfinaali ennustused", stages: ["sf"] },
+  { key: "third-final", label: "3. koht & finaal ennustused", stages: ["third", "final"] },
+];
+const PRED_ROUND_LABEL: Record<string, string> = Object.fromEntries(
+  PRED_ROUNDS.map((r) => [r.key, r.label])
+);
 
 function PredictionsTab({
   participants,
@@ -306,24 +311,27 @@ function PredictionsTab({
   const [stage, setStage] = useState<string | null>(null);
   const [viewingId, setViewingId] = useState<string | null>(null);
 
-  const matchesByStage = useMemo(() => {
-    const map = new Map<string, Match[]>();
+  const matchesByRound = useMemo(() => {
+    const byStage = new Map<string, Match[]>();
     matches.forEach((m) => {
-      if (!map.has(m.stage)) map.set(m.stage, []);
-      map.get(m.stage)!.push(m);
+      if (!byStage.has(m.stage)) byStage.set(m.stage, []);
+      byStage.get(m.stage)!.push(m);
     });
-    for (const list of map.values()) {
+    const map = new Map<string, Match[]>();
+    for (const r of PRED_ROUNDS) {
+      const list = r.stages.flatMap((s) => byStage.get(s) ?? []);
       list.sort((a, b) => {
         const da = a.match_date ?? "";
         const db = b.match_date ?? "";
         if (da !== db) return da < db ? -1 : 1;
         return a.id - b.id;
       });
+      map.set(r.key, list);
     }
     return map;
   }, [matches]);
 
-  const stageMatches = stage ? matchesByStage.get(stage) ?? [] : [];
+  const stageMatches = stage ? matchesByRound.get(stage) ?? [] : [];
   const stageMatchIds = useMemo(
     () => new Set(stageMatches.map((m) => m.id)),
     [stageMatches]
@@ -355,18 +363,18 @@ function PredictionsTab({
     return (
       <div className="space-y-2">
         <p className="eyebrow">Vali voor ennustuste sisestamiseks</p>
-        {STAGE_ORDER.map((s) => {
-          const count = matchesByStage.get(s)?.length ?? 0;
+        {PRED_ROUNDS.map((r) => {
+          const count = matchesByRound.get(r.key)?.length ?? 0;
           return (
             <button
-              key={s}
+              key={r.key}
               type="button"
               disabled={count === 0}
-              onClick={() => setStage(s)}
+              onClick={() => setStage(r.key)}
               className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-fifared/60 hover:shadow-card-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
             >
               <span className="text-sm font-semibold text-ink">
-                {STAGE_PRED_LABEL[s]}
+                {r.label}
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-xs text-muted">{count} mängu</span>
@@ -392,7 +400,7 @@ function PredictionsTab({
             ‹ Voorud
           </button>
           <h3 className="flex-1 truncate text-base font-bold text-ink">
-            {STAGE_PRED_LABEL[stage]}
+            {PRED_ROUND_LABEL[stage]}
           </h3>
         </div>
         {participants.length === 0 ? (
@@ -438,7 +446,7 @@ function PredictionsTab({
         <h3 className="flex-1 truncate text-base font-bold text-ink">
           {viewingParticipant.name}
           <span className="ml-1.5 text-xs font-normal text-muted">
-            · {STAGE_PRED_LABEL[stage]}
+            · {PRED_ROUND_LABEL[stage]}
           </span>
         </h3>
         <a
