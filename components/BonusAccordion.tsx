@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BonusAnswer, BonusQuestion, Participant } from "@/lib/types";
 import Reveal from "@/components/Reveal";
+import ToggleAllButton from "@/components/ToggleAllButton";
 
 // Section order + headings for the bonus categories.
 const CATEGORIES: { key: string; title: string }[] = [
@@ -27,12 +28,20 @@ export default function BonusAccordion({
 }) {
   // All sections start collapsed; the user opens each round on demand.
   const [open, setOpen] = useState<Set<string>>(() => new Set());
+  const [openQ, setOpenQ] = useState<Set<number>>(() => new Set());
 
   const toggle = (key: string) =>
     setOpen((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
       else next.add(key);
+      return next;
+    });
+  const toggleQ = (id: number) =>
+    setOpenQ((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
 
@@ -48,8 +57,24 @@ export default function BonusAccordion({
     byCategory.get(cat)!.push(q);
   }
 
+  const visibleCats = CATEGORIES.filter((c) => (byCategory.get(c.key) ?? []).length);
+  const allOpen =
+    visibleCats.length > 0 &&
+    visibleCats.every((c) => open.has(c.key)) &&
+    questions.every((q) => openQ.has(q.id));
+  const toggleAll = () => {
+    if (allOpen) {
+      setOpen(new Set());
+      setOpenQ(new Set());
+    } else {
+      setOpen(new Set(visibleCats.map((c) => c.key)));
+      setOpenQ(new Set(questions.map((q) => q.id)));
+    }
+  };
+
   return (
     <div className="space-y-3">
+      <ToggleAllButton allOpen={allOpen} onToggle={toggleAll} />
       {CATEGORIES.map(({ key, title }) => {
         const sectionQuestions = byCategory.get(key) ?? [];
         if (sectionQuestions.length === 0) return null;
@@ -89,6 +114,8 @@ export default function BonusAccordion({
                       isJoker={key.startsWith("jokker")}
                       participants={participants}
                       answers={answers}
+                      open={openQ.has(question.id)}
+                      onToggle={() => toggleQ(question.id)}
                     />
                   ))}
                 </div>
@@ -107,15 +134,17 @@ function BonusCard({
   isJoker,
   participants,
   answers,
+  open,
+  onToggle,
 }: {
   question: BonusQuestion;
   index: number;
   isJoker: boolean;
   participants: Participant[];
   answers: BonusAnswer[];
+  open: boolean;
+  onToggle: () => void;
 }) {
-  const [open, setOpen] = useState(false);
-
   return (
     <section
       className={`overflow-hidden rounded-lg border border-line border-t-2 bg-surface shadow-card transition-shadow hover:shadow-card-hover ${
@@ -124,7 +153,7 @@ function BonusCard({
     >
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         aria-expanded={open}
         className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
       >

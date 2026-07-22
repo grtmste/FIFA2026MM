@@ -17,6 +17,7 @@ import ParticipantDetail from "@/components/ParticipantDetail";
 import Reveal from "@/components/Reveal";
 import LeaderboardTable from "@/components/LeaderboardTable";
 import ChampionConfetti from "@/components/ChampionConfetti";
+import ToggleAllButton from "@/components/ToggleAllButton";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "third", "final"];
 
@@ -196,6 +197,18 @@ export default function LeaderboardPage() {
 
       {!loading && !error && rows.length > 0 && (
         <div className="space-y-3">
+          {(() => {
+            const keys = ["overall", ...(stages.length > 0 ? stages : ["group"])];
+            const allOpen = keys.every((k) => openSections.has(k));
+            return (
+              <ToggleAllButton
+                allOpen={allOpen}
+                onToggle={() =>
+                  setOpenSections(allOpen ? new Set() : new Set(keys))
+                }
+              />
+            );
+          })()}
           {/* ── Overall standings (total) — open by default ── */}
           <Section
             title="Üldine edetabel"

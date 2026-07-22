@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Match, Stage, STAGE_LABELS } from "@/lib/types";
 import MatchCard from "@/components/MatchCard";
 import Reveal from "@/components/Reveal";
+import ToggleAllButton from "@/components/ToggleAllButton";
 
 const STAGE_ORDER: Stage[] = ["group", "r32", "r16", "qf", "sf", "third", "final"];
 
@@ -34,8 +35,13 @@ export default function MatchesAccordion({ matches }: { matches: Match[] }) {
     items: matches.filter((m) => m.stage === stage),
   })).filter((s) => s.items.length > 0);
 
+  const allOpen = stages.length > 0 && stages.every((s) => open.has(s.stage));
+  const toggleAll = () =>
+    setOpen(allOpen ? new Set() : new Set(stages.map((s) => s.stage)));
+
   return (
     <div className="space-y-3">
+      <ToggleAllButton allOpen={allOpen} onToggle={toggleAll} />
       {stages.map(({ stage, items }, idx) => {
         const isOpen = open.has(stage);
         return (

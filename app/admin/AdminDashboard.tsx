@@ -12,6 +12,7 @@ import { groupColor } from "@/lib/groupColors";
 import { calcMatchPoints } from "@/lib/scoring";
 import { formatMatchDate, formatMatchTime } from "@/lib/format";
 import SubmitButton from "@/components/SubmitButton";
+import ToggleAllButton from "@/components/ToggleAllButton";
 import {
   addParticipant,
   advanceBracket,
@@ -697,6 +698,21 @@ function ResultsTab({ allMatches }: { allMatches: Match[] }) {
         </p>
       </form>
 
+      {(() => {
+        const present = STAGE_ORDER.filter((s) =>
+          allMatches.some((m) => m.stage === s)
+        );
+        const allOpen = present.length > 0 && present.every((s) => open.has(s));
+        return (
+          <ToggleAllButton
+            allOpen={allOpen}
+            onToggle={() =>
+              setOpen(allOpen ? new Set() : new Set(present))
+            }
+          />
+        );
+      })()}
+
       {STAGE_ORDER.map((stage) => {
         const stageMatches = allMatches.filter((m) => m.stage === stage);
         if (stageMatches.length === 0) return null;
@@ -981,6 +997,19 @@ function BonusTab({
         </h3>
       </div>
 
+      {(() => {
+        const cats = BONUS_CATS.filter((c) => (grouped.get(c.key) ?? []).length);
+        const allOpen = cats.length > 0 && cats.every((c) => open.has(c.key));
+        return (
+          <ToggleAllButton
+            allOpen={allOpen}
+            onToggle={() =>
+              setOpen(allOpen ? new Set() : new Set(cats.map((c) => c.key)))
+            }
+          />
+        );
+      })()}
+
       {BONUS_CATS.map(({ key, title }) => {
         const qs = grouped.get(key) ?? [];
         if (qs.length === 0) return null;
@@ -1023,6 +1052,12 @@ function BonusTab({
                       <p className="text-xs font-semibold text-ink">
                         {idx + 1}. {q.question_text}{" "}
                         <span className="font-normal text-muted">({q.max_points} p)</span>
+                      </p>
+                      <p className="text-xs">
+                        <span className="text-muted">Õige vastus: </span>
+                        <span className="font-semibold text-fifacyan">
+                          {q.correct_answer || "—"}
+                        </span>
                       </p>
                       <input
                         type="text"
